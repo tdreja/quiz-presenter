@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import de.dreja.quiz.model.game.ModeGrosserPreis;
 import de.dreja.quiz.model.persistence.quiz.Quiz;
 import de.dreja.quiz.model.persistence.quiz.QuizTestData;
 import de.dreja.quiz.service.persistence.game.GameSetupService;
@@ -26,6 +27,9 @@ public class TeamPersistenceTest {
     private GameSetupService gameSetupService;
 
     @Autowired
+    private ModeGrosserPreis grosserPreis;
+
+    @Autowired
     private TeamRepository teamRepository;
 
     private Long teamId;
@@ -37,8 +41,9 @@ public class TeamPersistenceTest {
         final Team team = teamRepository.findById(teamId).orElse(null);
         assertThat(team).isNotNull().hasNoNullFieldsOrProperties();
 
-        assertThat(team.getGame()).isNotNull().hasNoNullFieldsOrProperties();
+        assertThat(team.getGame()).isNotNull().hasNoNullFieldsOrPropertiesExcept("activePlayer", "currentQuestion");
         assertThat(team.getGame().getTeams()).isNotNull().hasSize(1).containsExactly(team);
+        assertThat(team.getGame().getActiveTeam()).isNotNull().isEqualTo(team);
 
         final GameSection gameCategory = assertFirst(team.getGame().getSections());
         final GameQuestion gameQuestion = assertFirst(gameCategory.getQuestions());
@@ -49,7 +54,7 @@ public class TeamPersistenceTest {
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     void setupGame() {
         final Quiz quiz = quizTestData.quiz("Quiz");
-        final Game game = gameSetupService.setupNewGame(quiz);
+        final Game game = grosserPreis.prepareGame(quiz);
 
         final GameSection gameCategory = assertFirst(game.getSections());
         final GameQuestion gameQuestion = assertFirst(gameCategory.getQuestions());
@@ -57,6 +62,7 @@ public class TeamPersistenceTest {
 
         final Team team = gameSetupService.addTeam(game, Color.RED);
         gameQuestion.setAnsweredBy(team);
+        game.setActiveTeam(team);
         teamId = team.getId();
     }
 

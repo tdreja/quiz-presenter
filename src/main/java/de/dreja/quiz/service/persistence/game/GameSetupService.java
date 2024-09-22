@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 import de.dreja.quiz.model.persistence.game.Color;
 import de.dreja.quiz.model.persistence.game.Emoji;
 import de.dreja.quiz.model.persistence.game.Game;
-import de.dreja.quiz.model.persistence.game.GameSection;
 import de.dreja.quiz.model.persistence.game.GameQuestion;
+import de.dreja.quiz.model.persistence.game.GameSection;
 import de.dreja.quiz.model.persistence.game.Player;
 import de.dreja.quiz.model.persistence.game.Team;
 import de.dreja.quiz.model.persistence.quiz.Question;
-import de.dreja.quiz.model.persistence.quiz.Section;
 import de.dreja.quiz.model.persistence.quiz.Quiz;
+import de.dreja.quiz.model.persistence.quiz.Section;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -59,36 +59,34 @@ public class GameSetupService {
         this.entityManager = entityManager;
         this.random = new Random();
     }
-
+    
     @Nonnull
     @Transactional
-    public Game setupNewGame(@Nonnull Quiz quiz) {
-        final Game game = new Game();
-        game.setGameCode(findNextGameCode());
-
-        final Quiz mQuiz = entityManager.merge(quiz);
-        game.setQuiz(mQuiz);
-        gameRepository.save(game);
-
-        for (Section category : mQuiz.getSections()) {
-            final GameSection gameCategory = new GameSection().setSection(category);
-            game.addSection(gameCategory);
-            gameCategory.setName(category.getName());
-            gameCategoryRepository.save(gameCategory);
-            long points = 100;
-
-            for (Question question : category.getQuestions()) {
-                final GameQuestion gameQuestion = new GameQuestion().setQuestion(question).setPoints(points);
-                gameCategory.addQuestion(gameQuestion);
-                points += 100L;
-                gameQuestionRepository.save(gameQuestion);
-            }
-            gameCategoryRepository.save(gameCategory);
-        }
-
+    public Game newGame(@Nonnull Quiz quiz) {
+        final Game game = new Game().setGameCode(findNextGameCode()).setQuiz(entityManager.merge(quiz)).setLocale(quiz.getLocale());
         gameRepository.save(game);
         return game;
     }
+
+    @Nonnull
+    @Transactional
+    public GameSection newSection(@Nonnull Game game, @Nonnull Section section, @Nonnull String name) {
+        final GameSection gameSection = new GameSection().setName(name).setSection(entityManager.merge(section));
+        entityManager.merge(game).addSection(gameSection);
+        gameCategoryRepository.save(gameSection);
+        return gameSection;
+    }
+
+    @Nonnull
+    @Transactional
+    public GameQuestion newQuestion(@Nonnull GameSection section, @Nonnull Question question, long points) {
+        final GameQuestion gameQuestion = new GameQuestion().setPoints(points).setQuestion(entityManager.merge(question));
+        entityManager.merge(section).addQuestion(gameQuestion);
+        gameQuestionRepository.save(gameQuestion);
+        return gameQuestion;
+    }
+
+    
 
     @Nonnull
     @Transactional

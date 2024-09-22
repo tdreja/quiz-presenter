@@ -2,16 +2,21 @@ package de.dreja.quiz.model.persistence.game;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import de.dreja.quiz.model.game.IsGameMode;
 import de.dreja.quiz.model.persistence.LocalizedEntity;
 import de.dreja.quiz.model.persistence.quiz.Quiz;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "game")
@@ -32,6 +37,31 @@ public class Game extends LocalizedEntity {
     @ManyToOne(targetEntity = Quiz.class, optional = false)
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
+
+    @Column(name="game_mode", nullable=false)
+    private String gameModeType = IsGameMode.class.getCanonicalName();
+
+    @Transient
+    private Class<? extends IsGameMode> gameMode = IsGameMode.class;
+
+    @OneToOne(targetEntity=Team.class)
+    @JoinColumn(name="active_team_id")
+    private Team activeTeam;
+
+    @OneToOne(targetEntity=Player.class)
+    @JoinColumn(name="active_player_id")
+    private Player activePlayer;
+
+    @OneToOne(targetEntity=GameQuestion.class)
+    @JoinColumn(name="current_question_id")
+    private GameQuestion currentQuestion;
+
+    @Override
+    @Nonnull
+    public Game setLocale(@Nonnull Locale locale) {
+        super.setLocale(locale);
+        return this;
+    }
 
     @Nonnull
     public List<Player> getPlayers() {
@@ -123,4 +153,58 @@ public class Game extends LocalizedEntity {
         this.quiz = quiz;
         return this;
     }
+
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    public Class<? extends IsGameMode> getGameMode() {
+        if(gameMode == null) {
+            try {
+                gameMode = (Class<? extends IsGameMode>) Class.forName(gameModeType);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalStateException("Could not load game mode type!", e);
+            }
+        }
+        return gameMode;
+    }
+
+    @Nonnull
+    public Game setGameMode(@Nonnull Class<? extends IsGameMode> gameMode) {
+        this.gameMode = gameMode;
+        this.gameModeType = this.gameMode.getCanonicalName();
+        return this;
+    }
+
+    @Nullable
+    public Team getActiveTeam() {
+        return activeTeam;
+    }
+
+    @Nonnull
+    public Game setActiveTeam(@Nullable Team team) {
+        this.activeTeam = team;
+        return this;
+    }
+
+    @Nullable
+    public Player getActivePlayer() {
+        return activePlayer;
+    }
+
+    @Nonnull
+    public Game setActivePlayer(@Nullable Player player) {
+        this.activePlayer = player;
+        return this;
+    }
+
+    @Nullable
+    public GameQuestion getCurrentQuestion() {
+        return currentQuestion;
+    }
+
+    @Nonnull
+    public Game setCurrentQuestion(@Nullable GameQuestion question) {
+        this.currentQuestion = question;
+        return this;
+    }
+
 }
