@@ -1,0 +1,7 @@
+de:
+  dreja:
+    quiz:
+      datasource:
+        url: "jdbc:sqlite:./build/test-db.db"
+        username: "sa"
+        password: "sa"
