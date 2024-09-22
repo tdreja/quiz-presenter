@@ -37,6 +37,7 @@ public class GamePersistenceTest {
         final Game game = gameRepository.findById(gameId).orElse(null);
         assertThat(game).isNotNull().hasNoNullFieldsOrPropertiesExcept("activeTeam", "activePlayer", "currentQuestion");
         assertThat(game.getSections()).isNotNull().hasSize(1);
+        assertThat(game.getGameMode()).isNotNull().isEqualTo(ModeGrosserPreis.class);
 
         final GameSection category = game.getSections().getFirst();
         assertThat(category).isNotNull().hasNoNullFieldsOrProperties();
