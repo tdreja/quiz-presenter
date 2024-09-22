@@ -1,0 +1,12 @@
+spring:
+    application:
+        jpa:
+            properties:
+                hibernate:
+                    dialect: org.hibernate.community.dialect.SQLiteDialect
+
+de:
+  dreja:
+    quiz:
+      datasource:
+        driver-class-name: org.sqlite.JDBC
