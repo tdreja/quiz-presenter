@@ -3,7 +3,7 @@ package de.dreja.quiz.model.persistence.game;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.dreja.quiz.model.persistence.quiz.Category;
+import de.dreja.quiz.model.persistence.quiz.Section;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,19 +16,22 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "game_category")
-public class GameCategory {
+@Table(name = "game_section")
+public class GameSection {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private long id;
 
-    @ManyToOne(targetEntity = Category.class, optional = false)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @Column(nullable = false)
+    private String name;
 
-    @OneToMany(targetEntity = GameQuestion.class, mappedBy = "category")
+    @ManyToOne(targetEntity = Section.class, optional = false)
+    @JoinColumn(name = "section_id")
+    private Section section;
+
+    @OneToMany(targetEntity = GameQuestion.class, mappedBy = "section")
     private final List<GameQuestion> questions = new ArrayList<>();
 
     @ManyToOne(targetEntity = Game.class)
@@ -44,13 +47,13 @@ public class GameCategory {
     }
 
     @Nonnull
-    public Category getCategory() {
-        return category;
+    public Section getSection() {
+        return section;
     }
 
     @Nonnull
-    public GameCategory setCategory(@Nonnull Category category) {
-        this.category = category;
+    public GameSection setSection(@Nonnull Section category) {
+        this.section = category;
         return this;
     }
 
@@ -60,8 +63,8 @@ public class GameCategory {
     }
 
     @Nonnull
-    public GameCategory addQuestion(@Nonnull GameQuestion question) {
-        question.setCategory(this);
+    public GameSection addQuestion(@Nonnull GameQuestion question) {
+        question.setSection(this);
         if (questions.contains(question)) {
             return this;
         }
@@ -70,9 +73,9 @@ public class GameCategory {
     }
 
     @Nonnull
-    public GameCategory removeQuestion(@Nonnull GameQuestion question) {
+    public GameSection removeQuestion(@Nonnull GameQuestion question) {
         if (questions.remove(question)) {
-            question.setCategory(null);
+            question.setSection(null);
         }
         return this;
     }
@@ -84,5 +87,16 @@ public class GameCategory {
 
     protected void setGame(Game game) {
         this.game = game;
+    }
+
+    @Nonnull
+    public String getName() {
+        return name;
+    }
+
+    @Nonnull
+    public GameSection setName(@Nonnull String name) {
+        this.name = name;
+        return this;
     }
 }

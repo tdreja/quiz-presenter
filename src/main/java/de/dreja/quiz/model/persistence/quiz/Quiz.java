@@ -23,27 +23,27 @@ public class Quiz extends LocalizedEntity {
     private String author;
 
     @OneToMany(mappedBy = "quiz")
-    private final List<Category> categories = new ArrayList<>();
+    private final List<Section> sections = new ArrayList<>();
 
     @Nonnull
-    public List<Category> getCategories() {
-        return categories;
+    public List<Section> getSections() {
+        return sections;
     }
 
     @Nonnull
-    public Quiz addCategory(@Nonnull Category category) {
-        category.setQuiz(this);
-        if (categories.contains(category)) {
+    public Quiz addSection(@Nonnull Section section) {
+        section.setQuiz(this);
+        if (sections.contains(section)) {
             return this;
         }
-        categories.add(category);
+        sections.add(section);
         return this;
     }
 
     @Nonnull
-    public Quiz removeCategory(@Nonnull Category category) {
-        if (categories.remove(category)) {
-            category.setQuiz(null);
+    public Quiz removeSection(@Nonnull Section section) {
+        if (sections.remove(section)) {
+            section.setQuiz(null);
         }
         return this;
     }

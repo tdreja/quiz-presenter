@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service;
 import de.dreja.quiz.model.persistence.game.Color;
 import de.dreja.quiz.model.persistence.game.Emoji;
 import de.dreja.quiz.model.persistence.game.Game;
-import de.dreja.quiz.model.persistence.game.GameCategory;
+import de.dreja.quiz.model.persistence.game.GameSection;
 import de.dreja.quiz.model.persistence.game.GameQuestion;
 import de.dreja.quiz.model.persistence.game.Player;
 import de.dreja.quiz.model.persistence.game.Team;
-import de.dreja.quiz.model.persistence.quiz.Category;
 import de.dreja.quiz.model.persistence.quiz.Question;
+import de.dreja.quiz.model.persistence.quiz.Section;
 import de.dreja.quiz.model.persistence.quiz.Quiz;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
@@ -32,7 +32,7 @@ public class GameSetupService {
 
     private final GameRepository gameRepository;
 
-    private final GameCategoryRepository gameCategoryRepository;
+    private final GameQuestionGroupRepository gameCategoryRepository;
 
     private final GameQuestionRepository gameQuestionRepository;
 
@@ -46,7 +46,7 @@ public class GameSetupService {
 
     @Autowired
     GameSetupService(GameRepository gameRepository,
-                     GameCategoryRepository gameCategoryRepository,
+                     GameQuestionGroupRepository gameCategoryRepository,
                      GameQuestionRepository gameQuestionRepository,
                      TeamRepository teamRepository,
                      PlayerRepository playerRepository,
@@ -70,9 +70,10 @@ public class GameSetupService {
         game.setQuiz(mQuiz);
         gameRepository.save(game);
 
-        for (Category category : mQuiz.getCategories()) {
-            final GameCategory gameCategory = new GameCategory().setCategory(category);
-            game.addCategory(gameCategory);
+        for (Section category : mQuiz.getSections()) {
+            final GameSection gameCategory = new GameSection().setSection(category);
+            game.addSection(gameCategory);
+            gameCategory.setName(category.getName());
             gameCategoryRepository.save(gameCategory);
             long points = 100;
 

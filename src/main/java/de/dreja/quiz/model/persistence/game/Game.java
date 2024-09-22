@@ -26,8 +26,8 @@ public class Game extends LocalizedEntity {
     @OneToMany(targetEntity = Team.class, mappedBy = "game")
     private final List<Team> teams = new ArrayList<>();
 
-    @OneToMany(targetEntity = GameCategory.class, mappedBy = "game")
-    private final List<GameCategory> categories = new ArrayList<>();
+    @OneToMany(targetEntity = GameSection.class, mappedBy = "game")
+    private final List<GameSection> sections = new ArrayList<>();
 
     @ManyToOne(targetEntity = Quiz.class, optional = false)
     @JoinColumn(name = "quiz_id")
@@ -80,24 +80,24 @@ public class Game extends LocalizedEntity {
     }
 
     @Nonnull
-    public List<GameCategory> getCategories() {
-        return categories;
+    public List<GameSection> getSections() {
+        return sections;
     }
 
     @Nonnull
-    public Game addCategory(@Nonnull GameCategory gameCategory) {
-        gameCategory.setGame(this);
-        if (categories.contains(gameCategory)) {
+    public Game addSection(@Nonnull GameSection section) {
+        section.setGame(this);
+        if (sections.contains(section)) {
             return this;
         }
-        categories.add(gameCategory);
+        sections.add(section);
         return this;
     }
 
     @Nonnull
-    public Game removeCategory(@Nonnull GameCategory gameCategory) {
-        if (categories.remove(gameCategory)) {
-            gameCategory.setGame(null);
+    public Game removeSection(@Nonnull GameSection section) {
+        if (sections.remove(section)) {
+            section.setGame(null);
         }
         return this;
     }

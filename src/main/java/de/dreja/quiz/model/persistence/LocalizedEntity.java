@@ -10,6 +10,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 
+/** 
+ * Common API for all entitites in the database that reference a specific language
+*/
 @MappedSuperclass
 public class LocalizedEntity {
 
@@ -21,6 +24,9 @@ public class LocalizedEntity {
     @Column(name = "locale", nullable = false)
     private Locale locale = Locale.GERMAN;
 
+    /**
+     * @return ID of the entity
+     */
     public long getId() {
         return id;
     }
@@ -28,7 +34,10 @@ public class LocalizedEntity {
     protected void setId(long id) {
         this.id = id;
     }
-
+    
+    /**
+     * @return Language of the current entity
+     */
     @Nonnull
     public Locale getLocale() {
         return locale;

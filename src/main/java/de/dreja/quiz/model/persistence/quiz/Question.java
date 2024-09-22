@@ -74,4 +74,9 @@ public class Question extends LocalizedEntity {
         this.questionText = questionText;
         return this;
     }
+
+    @Nullable
+    public MultipleChoiceQuestion asMultipleChoiceQuestion() {
+        return null;
+    }
 }

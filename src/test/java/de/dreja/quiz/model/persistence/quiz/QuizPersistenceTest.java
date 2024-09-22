@@ -35,11 +35,11 @@ class QuizPersistenceTest {
                 .hasFieldOrPropertyWithValue("name", "Quiz")
                 .hasFieldOrPropertyWithValue("author", "Author");
 
-        assertThat(quiz.getCategories())
+        assertThat(quiz.getSections())
                 .isNotNull()
                 .isNotEmpty()
                 .hasSize(1);
-        final Category category = quiz.getCategories().getFirst();
+        final Section category = quiz.getSections().getFirst();
         assertThat(category)
                 .isNotNull()
                 .hasNoNullFieldsOrProperties()

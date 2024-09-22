@@ -55,4 +55,10 @@ public class TextAnswer extends Answer {
         super.setCorrect(correct);
         return this;
     }
+
+    @Override
+    @Nonnull
+    public TextAnswer asTextAnswer() {
+        return this;
+    }
 }

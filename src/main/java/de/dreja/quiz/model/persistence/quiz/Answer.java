@@ -38,4 +38,9 @@ public class Answer extends LocalizedEntity {
         super.setLocale(locale);
         return this;
     }
+
+    @Nullable
+    public TextAnswer asTextAnswer() {
+        return null;
+    }
 }

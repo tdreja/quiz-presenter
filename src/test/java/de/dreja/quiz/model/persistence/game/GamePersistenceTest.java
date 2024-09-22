@@ -32,9 +32,9 @@ public class GamePersistenceTest {
         assertThat(gameId).isNotNull().isNotNegative();
         final Game game = gameRepository.findById(gameId).orElse(null);
         assertThat(game).isNotNull().hasNoNullFieldsOrProperties();
-        assertThat(game.getCategories()).isNotNull().hasSize(1);
+        assertThat(game.getSections()).isNotNull().hasSize(1);
 
-        final GameCategory category = game.getCategories().getFirst();
+        final GameSection category = game.getSections().getFirst();
         assertThat(category).isNotNull().hasNoNullFieldsOrProperties();
         assertThat(category.getQuestions()).isNotNull().hasSize(1);
 

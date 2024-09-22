@@ -1,12 +1,16 @@
 package de.dreja.quiz.model.persistence.quiz;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 
 @Entity
 @DiscriminatorValue("multiple_choice")
@@ -69,6 +73,12 @@ public class MultipleChoiceQuestion extends Question {
     @Override
     public MultipleChoiceQuestion setQuestionText(@Nonnull String questionText) {
         super.setQuestionText(questionText);
+        return this;
+    }
+
+    @Override
+    @Nonnull
+    public MultipleChoiceQuestion asMultipleChoiceQuestion() {
         return this;
     }
 }

@@ -28,9 +28,9 @@ public class GameQuestion {
     @JoinColumn(name = "answered_by_team_id")
     private Team answeredBy;
 
-    @ManyToOne(targetEntity = GameCategory.class, optional = false)
-    @JoinColumn(name = "category_id")
-    private GameCategory category;
+    @ManyToOne(targetEntity = GameSection.class, optional = false)
+    @JoinColumn(name = "section_id")
+    private GameSection section;
 
     @ManyToOne(targetEntity = Question.class, optional = false)
     @JoinColumn(name = "question_id")
@@ -77,11 +77,11 @@ public class GameQuestion {
     }
 
     @Nonnull
-    public GameCategory getCategory() {
-        return category;
+    public GameSection getSection() {
+        return section;
     }
 
-    protected void setCategory(GameCategory category) {
-        this.category = category;
+    protected void setSection(GameSection category) {
+        this.section = category;
     }
 }

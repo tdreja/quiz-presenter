@@ -40,7 +40,7 @@ public class TeamPersistenceTest {
         assertThat(team.getGame()).isNotNull().hasNoNullFieldsOrProperties();
         assertThat(team.getGame().getTeams()).isNotNull().hasSize(1).containsExactly(team);
 
-        final GameCategory gameCategory = assertFirst(team.getGame().getCategories());
+        final GameSection gameCategory = assertFirst(team.getGame().getSections());
         final GameQuestion gameQuestion = assertFirst(gameCategory.getQuestions());
         assertThat(gameQuestion).isNotNull().hasNoNullFieldsOrProperties();
     }
@@ -51,7 +51,7 @@ public class TeamPersistenceTest {
         final Quiz quiz = quizTestData.quiz("Quiz");
         final Game game = gameSetupService.setupNewGame(quiz);
 
-        final GameCategory gameCategory = assertFirst(game.getCategories());
+        final GameSection gameCategory = assertFirst(game.getSections());
         final GameQuestion gameQuestion = assertFirst(gameCategory.getQuestions());
         assertThat(gameQuestion).isNotNull().hasNoNullFieldsOrPropertiesExcept("answeredBy");
 

@@ -16,8 +16,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "category")
-public class Category extends LocalizedEntity {
+@Table(name = "section")
+public class Section extends LocalizedEntity {
 
     @Column(nullable = false)
     private String name;
@@ -27,14 +27,14 @@ public class Category extends LocalizedEntity {
     private Quiz quiz;
 
     @ManyToMany(targetEntity = Question.class)
-    @JoinTable(name = "category_questions",
-            joinColumns = @JoinColumn(name = "category_id"),
+    @JoinTable(name = "questions_in_section",
+            joinColumns = @JoinColumn(name = "section_id"),
             inverseJoinColumns = @JoinColumn(name = "question_id"))
     private final List<Question> questions = new ArrayList<>();
 
     @Nonnull
     @Override
-    public Category setLocale(@Nullable Locale locale) {
+    public Section setLocale(@Nullable Locale locale) {
         super.setLocale(locale);
         return this;
     }
@@ -54,7 +54,7 @@ public class Category extends LocalizedEntity {
     }
 
     @Nonnull
-    public Category addQuestion(@Nonnull Question question) {
+    public Section addQuestion(@Nonnull Question question) {
         if (questions.contains(question)) {
             return this;
         }
@@ -63,7 +63,7 @@ public class Category extends LocalizedEntity {
     }
 
     @Nonnull
-    public Category removeQuestion(@Nonnull Question question) {
+    public Section removeQuestion(@Nonnull Question question) {
         questions.remove(question);
         return this;
     }
@@ -74,7 +74,7 @@ public class Category extends LocalizedEntity {
     }
 
     @Nonnull
-    public Category setName(@Nonnull String name) {
+    public Section setName(@Nonnull String name) {
         this.name = name;
         return this;
     }

@@ -1,7 +1,7 @@
 -- liquibase formatted sql
--- changeset tdreja:001-create-category-table
+-- changeset tdreja:001-create-section-table
 create table
-    category (
+    section (
         id INTEGER not null,
         name TEXT not null,
         quiz_id INTEGER not null,
@@ -10,8 +10,8 @@ create table
     );
 
 create table
-    category_questions (
-        category_id INTEGER not null,
+    questions_in_section (
+        section_id INTEGER not null,
         question_id INTEGER not null,
-        primary key (category_id, question_id)
+        primary key (section_id, question_id)
     );

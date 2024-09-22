@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import de.dreja.quiz.service.persistence.quiz.AnswerRepository;
-import de.dreja.quiz.service.persistence.quiz.CategoryRepository;
+import de.dreja.quiz.service.persistence.quiz.QuestionGroupRepository;
 import de.dreja.quiz.service.persistence.quiz.QuestionRepository;
 import de.dreja.quiz.service.persistence.quiz.QuizRepository;
 import jakarta.annotation.Nonnull;
@@ -24,7 +24,7 @@ public class QuizTestData {
     private final QuestionRepository questionRepository;
 
     @Autowired
-    private final CategoryRepository categoryRepository;
+    private final QuestionGroupRepository categoryRepository;
 
     @Autowired
     private final QuizRepository quizRepository;
@@ -35,7 +35,7 @@ public class QuizTestData {
     @Autowired
     QuizTestData(AnswerRepository answerRepository,
                  QuestionRepository questionRepository,
-                 CategoryRepository categoryRepository,
+                 QuestionGroupRepository categoryRepository,
                  QuizRepository quizRepository, EntityManager entityManager) {
         this.answerRepository = answerRepository;
         this.questionRepository = questionRepository;
@@ -72,7 +72,7 @@ public class QuizTestData {
     public Quiz quiz(@Nonnull String name,
                      @Nonnull Question question) {
         final Question actual = entityManager.merge(question);
-        final Category category = new Category()
+        final Section category = new Section()
                 .setName(name)
                 .setLocale(ENGLISH)
                 .addQuestion(actual);
@@ -81,7 +81,7 @@ public class QuizTestData {
                 .setName(name)
                 .setAuthor("Author")
                 .setLocale(ENGLISH)
-                .addCategory(category);
+                .addSection(category);
         quizRepository.save(quiz);
         categoryRepository.save(category);
 

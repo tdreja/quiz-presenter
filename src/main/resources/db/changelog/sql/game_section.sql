@@ -1,9 +1,10 @@
 -- liquibase formatted sql
--- changeset tdreja:001-create-game-category-table
+-- changeset tdreja:001-create-game-section-table
 create table
-    game_category (
+    game_section (
         id INTEGER not null,
-        category_id INTEGER not null,
+        section_id INTEGER not null,
         game_id INTEGER not null,
+        name TEXT not null,
         primary key (id)
     );
