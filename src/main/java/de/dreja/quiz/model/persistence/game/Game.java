@@ -3,6 +3,7 @@ package de.dreja.quiz.model.persistence.game;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Stream;
 
 import de.dreja.quiz.model.game.IsGameMode;
 import de.dreja.quiz.model.persistence.LocalizedEntity;
@@ -55,6 +56,9 @@ public class Game extends LocalizedEntity {
     @OneToOne(targetEntity=GameQuestion.class)
     @JoinColumn(name="current_question_id")
     private GameQuestion currentQuestion;
+
+    @Column(nullable=false)
+    private SelectionMode selectionMode = SelectionMode.NEXT_IN_ORDER;
 
     @Override
     @Nonnull
@@ -207,4 +211,20 @@ public class Game extends LocalizedEntity {
         return this;
     }
 
+    @Nonnull
+    public Stream<Team> getOrderedTeams() {
+        return teams.stream().sorted();
+    }
+
+    @Nonnull
+    public SelectionMode getSelectionMode() {
+        return selectionMode;
+    }
+
+    @Nonnull
+    public Game setSelectionMode(@Nonnull SelectionMode teamSelection) {
+        this.selectionMode = teamSelection;
+        return this;
+    }
+    
 }

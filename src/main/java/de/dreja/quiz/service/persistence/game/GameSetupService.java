@@ -124,7 +124,8 @@ public class GameSetupService {
             }
         }
 
-        final Team team = new Team().setColor(teamColor).setPoints(0L);
+        final long orderNumber = mGame.getTeams().size() + 1L;
+        final Team team = new Team().setColor(teamColor).setPoints(0L).setOrderNumber(orderNumber);
         mGame.addTeam(team);
         teamRepository.save(team);
         gameRepository.save(mGame);

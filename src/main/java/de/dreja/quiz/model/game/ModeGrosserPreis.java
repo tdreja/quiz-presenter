@@ -22,16 +22,20 @@ import jakarta.transaction.Transactional;
 public class ModeGrosserPreis implements IsGameMode {
 
     ModeGrosserPreis(
-        @Value(value = "${de.dreja.quiz.game-modes.grosser-preis.starting-points:100}") long startingPoints, 
-        @Value(value = "${de.dreja.quiz.game-modes.grosser-preis.point-increment:100}") long pointIncrements, 
-        GameSetupService gameSetupService) {
+            @Value(value = "${de.dreja.quiz.game-modes.grosser-preis.starting-points:100}") long startingPoints,
+            @Value(value = "${de.dreja.quiz.game-modes.grosser-preis.point-increment:100}") long pointIncrements,
+            GameSetupService gameSetupService,
+            Teams teams) {
         this.startingPoints = startingPoints;
         this.pointIncrement = pointIncrements;
         this.gameSetupService = gameSetupService;
+        this.teams = teams;
     }
 
-    private static final Comparator<Question> LOWEST_DIFFICULTY_FIRST = Comparator.comparingInt(Question::getDifficulty);
+    private static final Comparator<Question> LOWEST_DIFFICULTY_FIRST = Comparator
+            .comparingInt(Question::getDifficulty);
 
+    private final Teams teams;
     private final GameSetupService gameSetupService;
     private final long startingPoints;
     private final long pointIncrement;
@@ -42,32 +46,53 @@ public class ModeGrosserPreis implements IsGameMode {
     public Game prepareGame(@Nonnull Quiz quiz) {
         final Game game = gameSetupService.newGame(quiz).setGameMode(this.getClass());
 
-            for(Section section : quiz.getSections()) {
-                final GameSection gameSection = gameSetupService.newSection(game, section, section.getName());
+        for (Section section : quiz.getSections()) {
+            final GameSection gameSection = gameSetupService.newSection(game, section, section.getName());
 
-                final List<Question> easiestFirst = new ArrayList<>(section.getQuestions()); 
-                easiestFirst.sort(LOWEST_DIFFICULTY_FIRST);
+            final List<Question> easiestFirst = new ArrayList<>(section.getQuestions());
+            easiestFirst.sort(LOWEST_DIFFICULTY_FIRST);
 
-                long points = startingPoints;
-                for(Question question : easiestFirst) {
-                    gameSetupService.newQuestion(gameSection, question, points);
-                    points += pointIncrement;
-                }
+            long points = startingPoints;
+            for (Question question : easiestFirst) {
+                gameSetupService.newQuestion(gameSection, question, points);
+                points += pointIncrement;
             }
-            
-            return game;
+        }
+
+        return game;
     }
 
     @Override
     @Transactional
     public void onCorrectAnswer(@Nonnull Game game, @Nullable Team team, @Nullable Player player) {
-        // Ignore for now
+        final var current = game.getCurrentQuestion();
+        if (current == null) {
+            return;
+        }
+
+        // Store points
+        current.setAnswered(true);
+        current.setAnsweredBy(team);
+        teams.alterPoints(team, current.getPoints());
+
+        // Prepare for next question
+        game.setCurrentQuestion(null);
+        game.setActiveTeam(teams.getNextTeam(game, team));
     }
 
     @Override
     @Transactional
     public void onWrongAnswer(@Nonnull Game game, @Nullable Team team, @Nullable Player player) {
-        // Ignore for now
+        final var current = game.getCurrentQuestion();
+        if (current == null) {
+            return;
+        }
+
+        // Mark question as done
+        current.setAnswered(true);
+        
+        // Prepare for next question
+        game.setCurrentQuestion(null);
+        game.setActiveTeam(teams.getNextTeam(game, null));
     }
-    
 }

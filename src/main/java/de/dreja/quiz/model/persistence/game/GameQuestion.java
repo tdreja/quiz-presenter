@@ -24,6 +24,9 @@ public class GameQuestion {
     @Column(nullable = false)
     private long points;
 
+    @Column(nullable = false)
+    private boolean answered;
+
     @ManyToOne(targetEntity = Team.class)
     @JoinColumn(name = "answered_by_team_id")
     private Team answeredBy;
@@ -84,4 +87,15 @@ public class GameQuestion {
     protected void setSection(GameSection category) {
         this.section = category;
     }
+
+    public boolean isAnswered() {
+        return answered;
+    }
+
+    @Nonnull
+    public GameQuestion setAnswered(boolean answered) {
+        this.answered = answered;
+        return this;
+    }
+
 }

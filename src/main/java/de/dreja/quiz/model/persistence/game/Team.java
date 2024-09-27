@@ -18,7 +18,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "team")
-public class Team {
+public class Team implements Comparable<Team> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +38,9 @@ public class Team {
 
     @Column(nullable = false)
     private long points;
+
+    @Column(nullable = false)
+    private long orderNumber;
 
     public long getId() {
         return id;
@@ -99,4 +102,21 @@ public class Team {
     protected void setGame(Game game) {
         this.game = game;
     }
+
+    public long getOrderNumber() {
+        return orderNumber;
+    }
+
+    @Nonnull
+    public Team setOrderNumber(long orderNumber) {
+        this.orderNumber = orderNumber;
+        return this;
+    }
+
+    @Override
+    public int compareTo(@Nonnull Team o) {
+        return Long.compare(orderNumber, o.orderNumber);
+    }
+
+    
 }
