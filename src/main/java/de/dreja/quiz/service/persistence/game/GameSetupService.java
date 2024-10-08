@@ -1,20 +1,12 @@
 package de.dreja.quiz.service.persistence.game;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
+import de.dreja.quiz.model.persistence.game.*;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import de.dreja.quiz.model.persistence.game.Color;
-import de.dreja.quiz.model.persistence.game.Emoji;
-import de.dreja.quiz.model.persistence.game.Game;
-import de.dreja.quiz.model.persistence.game.GameQuestion;
-import de.dreja.quiz.model.persistence.game.GameSection;
-import de.dreja.quiz.model.persistence.game.Player;
-import de.dreja.quiz.model.persistence.game.Team;
 import de.dreja.quiz.model.persistence.quiz.Question;
 import de.dreja.quiz.model.persistence.quiz.Quiz;
 import de.dreja.quiz.model.persistence.quiz.Section;
@@ -37,6 +29,8 @@ public class GameSetupService {
 
     private final PlayerRepository playerRepository;
 
+    private final GameSettingRepository settingRepository;
+
     private final EntityManager entityManager;
 
     private final Random random;
@@ -47,12 +41,14 @@ public class GameSetupService {
                      GameQuestionRepository gameQuestionRepository,
                      TeamRepository teamRepository,
                      PlayerRepository playerRepository,
+                     GameSettingRepository settingRepository,
                      EntityManager entityManager) {
         this.gameRepository = gameRepository;
         this.gameCategoryRepository = gameCategoryRepository;
         this.gameQuestionRepository = gameQuestionRepository;
         this.teamRepository = teamRepository;
         this.playerRepository = playerRepository;
+        this.settingRepository = settingRepository;
         this.entityManager = entityManager;
         this.random = new Random();
     }
@@ -127,5 +123,26 @@ public class GameSetupService {
         teamRepository.save(team);
         gameRepository.save(mGame);
         return team;
+    }
+
+    @Transactional
+    public void updateSettings(@Nonnull Game game, @Nullable Map<String,String> settings) {
+        final Map<String,String> map = settings == null ? new TreeMap<>() : new TreeMap<>(settings);
+
+        final List<GameSetting> oldSettings = new ArrayList<>(game.getSettings());
+        for(GameSetting old : oldSettings) {
+            if(map.containsKey(old.getKey())) {
+                old.setValue(map.remove(old.getKey()));
+            } else {
+                game.removeSetting(old);
+                settingRepository.delete(old);
+            }
+        }
+
+        for(Map.Entry<String,String> entry : map.entrySet()) {
+            final GameSetting setting = new GameSetting().setKey(entry.getKey()).setValue(entry.getValue());
+            game.addSetting(setting);
+            settingRepository.save(setting);
+        }
     }
 }

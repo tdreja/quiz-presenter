@@ -6,10 +6,9 @@ import de.dreja.quiz.model.persistence.quiz.Quiz;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Entity
@@ -27,6 +26,12 @@ public class Game extends LocalizedEntity {
 
     @OneToMany(targetEntity = GameSection.class, mappedBy = "game")
     private final List<GameSection> sections = new ArrayList<>();
+
+    @OneToMany(targetEntity = GameSetting.class, mappedBy = "game")
+    private final List<GameSetting> settings = new ArrayList<>();
+
+    @Transient
+    private Map<String,String> settingsMap;
 
     @ManyToOne(targetEntity = Quiz.class, optional = false)
     @JoinColumn(name = "quiz_id")
@@ -203,4 +208,39 @@ public class Game extends LocalizedEntity {
         return teams.stream().sorted();
     }
 
+    @Nonnull
+    public List<GameSetting> getSettings() {
+        return settings;
+    }
+
+    @Nonnull
+    public Game addSetting(@Nonnull GameSetting setting) {
+        setting.setGame(this);
+        if(settings.contains(setting)) {
+            return this;
+        }
+        settingsMap = null;
+        settings.add(setting);
+        return this;
+    }
+
+    @Nonnull
+    public Game removeSetting(@Nonnull GameSetting setting) {
+        if(settings.remove(setting)) {
+            settingsMap = null;
+            setting.setGame(null);
+        }
+        return this;
+    }
+
+    @Nonnull
+    public Map<String, String> getSettingsMap() {
+        if(settingsMap == null) {
+            settingsMap = new TreeMap<>();
+            for(GameSetting setting : settings) {
+                settingsMap.put(setting.getKey(), setting.getValue());
+            }
+        }
+        return Collections.unmodifiableMap(settingsMap);
+    }
 }

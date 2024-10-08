@@ -12,3 +12,13 @@ create table
     current_question_id INTEGER null,
     primary key (id)
 );
+-- changeset tdreja:002-create-settings-table
+create table
+    game_settings
+(
+    id            INTEGER not null,
+    setting_key   TEXT    not null,
+    setting_value TEXT    not null,
+    game_id       INTEGER not null,
+    primary key (id)
+);
