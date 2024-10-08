@@ -1,9 +1,6 @@
 package de.dreja.quiz.model.game;
 
-import de.dreja.quiz.model.persistence.game.Game;
-import de.dreja.quiz.model.persistence.game.GameSection;
-import de.dreja.quiz.model.persistence.game.Player;
-import de.dreja.quiz.model.persistence.game.Team;
+import de.dreja.quiz.model.persistence.game.*;
 import de.dreja.quiz.model.persistence.quiz.Question;
 import de.dreja.quiz.model.persistence.quiz.Quiz;
 import de.dreja.quiz.model.persistence.quiz.Section;
@@ -63,16 +60,20 @@ public class ModeGrosserPreis implements IsGameMode {
 
     @Override
     @Transactional
-    public void onCorrectAnswer(@Nonnull Game game, @Nullable Team team, @Nullable Player player) {
+    public void onCorrectAnswer(@Nonnull Game game) {
         final var current = game.getCurrentQuestion();
         if (current == null) {
             return;
         }
 
-        // Store points
         current.setAnswered(true);
-        current.setAnsweredBy(team);
-        teams.alterPoints(team, current.getPoints());
+
+        // Store points
+        final Team active = game.getActiveTeam();
+        if(active != null) {
+            current.setAnsweredBy(active);
+            teams.alterPoints(active, current.getPoints());
+        }
 
         // Prepare for next question
         game.setCurrentQuestion(null);
@@ -81,7 +82,7 @@ public class ModeGrosserPreis implements IsGameMode {
 
     @Override
     @Transactional
-    public void onWrongAnswer(@Nonnull Game game, @Nullable Team team, @Nullable Player player) {
+    public void onWrongAnswer(@Nonnull Game game) {
         final var current = game.getCurrentQuestion();
         if (current == null) {
             return;
@@ -93,5 +94,15 @@ public class ModeGrosserPreis implements IsGameMode {
         // Prepare for next question
         game.setCurrentQuestion(null);
         game.setActiveTeam(teams.getNextInOrder(game));
+    }
+
+    @Override
+    @Transactional
+    public boolean onQuestionSelected(@Nonnull Game game, @Nonnull GameQuestion question) {
+        game.setCurrentQuestion(question);
+        game.setActiveTeam(null);
+        game.setActivePlayer(null);
+        game.setInteractive(false);
+        return true;
     }
 }

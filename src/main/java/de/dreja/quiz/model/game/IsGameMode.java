@@ -1,6 +1,7 @@
 package de.dreja.quiz.model.game;
 
 import de.dreja.quiz.model.persistence.game.Game;
+import de.dreja.quiz.model.persistence.game.GameQuestion;
 import de.dreja.quiz.model.persistence.game.Player;
 import de.dreja.quiz.model.persistence.game.Team;
 import de.dreja.quiz.model.persistence.quiz.Quiz;
@@ -18,8 +19,11 @@ public interface IsGameMode {
     Game prepareGame(@Nonnull Quiz quiz);
 
     @Transactional
-    void onCorrectAnswer(@Nonnull Game game, @Nullable Team team, @Nullable Player player);
+    void onCorrectAnswer(@Nonnull Game game);
 
     @Transactional
-    void onWrongAnswer(@Nonnull Game game, @Nullable Team team, @Nullable Player player);
+    void onWrongAnswer(@Nonnull Game game);
+
+    @Transactional
+    boolean onQuestionSelected(@Nonnull Game game, @Nonnull GameQuestion question);
 }

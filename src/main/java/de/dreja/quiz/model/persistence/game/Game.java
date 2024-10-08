@@ -55,6 +55,9 @@ public class Game extends LocalizedEntity {
     @JoinColumn(name = "current_question_id")
     private GameQuestion currentQuestion;
 
+    @Column(nullable = false)
+    private boolean interactive = false;
+
     @Nonnull
     public GameId getGameId() {
         if (gameId == null) {
@@ -242,5 +245,15 @@ public class Game extends LocalizedEntity {
             }
         }
         return Collections.unmodifiableMap(settingsMap);
+    }
+
+    public boolean isInteractive() {
+        return interactive;
+    }
+
+    @Nonnull
+    public Game setInteractive(boolean interactive) {
+        this.interactive = interactive;
+        return this;
     }
 }
