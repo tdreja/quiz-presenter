@@ -1,11 +1,5 @@
 package de.dreja.quiz.model.game;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Value;
-
 import de.dreja.quiz.model.persistence.game.Game;
 import de.dreja.quiz.model.persistence.game.GameSection;
 import de.dreja.quiz.model.persistence.game.Player;
@@ -17,6 +11,11 @@ import de.dreja.quiz.service.persistence.game.GameSetupService;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 @GameMode
 public class ModeGrosserPreis implements IsGameMode {
@@ -77,7 +76,7 @@ public class ModeGrosserPreis implements IsGameMode {
 
         // Prepare for next question
         game.setCurrentQuestion(null);
-        game.setActiveTeam(teams.getNextTeam(game, team));
+        game.setActiveTeam(teams.getNextInOrder(game));
     }
 
     @Override
@@ -90,9 +89,9 @@ public class ModeGrosserPreis implements IsGameMode {
 
         // Mark question as done
         current.setAnswered(true);
-        
+
         // Prepare for next question
         game.setCurrentQuestion(null);
-        game.setActiveTeam(teams.getNextTeam(game, null));
+        game.setActiveTeam(teams.getNextInOrder(game));
     }
 }

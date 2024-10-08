@@ -27,9 +27,6 @@ public class GameSetupService {
 
     private static final Comparator<Team> SORT_BY_MEMBER_COUNT = Comparator.comparing(team -> team.getPlayers().size());
 
-    private static final int START = 'A';
-    private static final int END = 'Z' + 1;
-
     private final GameRepository gameRepository;
 
     private final GameQuestionGroupRepository gameCategoryRepository;
@@ -63,7 +60,7 @@ public class GameSetupService {
     @Nonnull
     @Transactional
     public Game newGame(@Nonnull Quiz quiz) {
-        final Game game = new Game().setGameCode(findNextGameCode()).setQuiz(entityManager.merge(quiz)).setLocale(quiz.getLocale());
+        final Game game = new Game().setQuiz(entityManager.merge(quiz)).setLocale(quiz.getLocale());
         gameRepository.save(game);
         return game;
     }
@@ -130,24 +127,5 @@ public class GameSetupService {
         teamRepository.save(team);
         gameRepository.save(mGame);
         return team;
-    }
-
-    @Transactional
-    public String findNextGameCode() {
-        final Set<String> codes = new HashSet<>(gameRepository.findAllGameCodes());
-        String code = generateRandomCode();
-        while (codes.contains(code)) {
-            code = generateRandomCode();
-        }
-        return code;
-    }
-
-    @Nonnull
-    protected String generateRandomCode() {
-        final StringBuilder builder = new StringBuilder(4);
-        for (int i = 0; i < 4; i++) {
-            builder.append((char) random.nextInt(START, END));
-        }
-        return builder.toString();
     }
 }

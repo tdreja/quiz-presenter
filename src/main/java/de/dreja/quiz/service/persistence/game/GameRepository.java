@@ -1,21 +1,24 @@
 package de.dreja.quiz.service.persistence.game;
 
-import java.util.List;
-import java.util.Optional;
-
+import de.dreja.quiz.model.persistence.game.Game;
+import de.dreja.quiz.model.persistence.game.GameId;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import de.dreja.quiz.model.persistence.game.Game;
-import jakarta.annotation.Nonnull;
+import java.util.Optional;
 
 @Repository
 public interface GameRepository extends JpaRepository<Game, Long> {
 
     @Nonnull
-    Optional<Game> findByGameCode(@Nonnull String gameCode);
+    default Optional<Game> findGameByGameId(@Nonnull GameId gameId) {
+        return findById(gameId.getNumerical());
+    }
 
-    @Query("SELECT g.gameCode FROM Game g")
-    List<String> findAllGameCodes();
+    @Nonnull
+    default Optional<Game> findGameByGameId(@Nullable String gameId) {
+        return findGameByGameId(GameId.of(gameId));
+    }
 }

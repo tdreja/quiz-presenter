@@ -1,30 +1,23 @@
 package de.dreja.quiz.model.persistence.game;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Stream;
-
 import de.dreja.quiz.model.game.IsGameMode;
 import de.dreja.quiz.model.persistence.LocalizedEntity;
 import de.dreja.quiz.model.persistence.quiz.Quiz;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Stream;
 
 @Entity
 @Table(name = "game")
 public class Game extends LocalizedEntity {
 
-    @Column(name = "game_code", unique = true)
-    private String gameCode;
+    @Transient
+    private GameId gameId;
 
     @OneToMany(targetEntity = Player.class, mappedBy = "game")
     private final List<Player> players = new ArrayList<>();
@@ -39,26 +32,31 @@ public class Game extends LocalizedEntity {
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 
-    @Column(name="game_mode", nullable=false)
+    @Column(name = "game_mode", nullable = false)
     private String gameModeType = IsGameMode.class.getCanonicalName();
 
     @Transient
     private Class<? extends IsGameMode> gameMode = IsGameMode.class;
 
-    @OneToOne(targetEntity=Team.class)
-    @JoinColumn(name="active_team_id")
+    @OneToOne(targetEntity = Team.class)
+    @JoinColumn(name = "active_team_id")
     private Team activeTeam;
 
-    @OneToOne(targetEntity=Player.class)
-    @JoinColumn(name="active_player_id")
+    @OneToOne(targetEntity = Player.class)
+    @JoinColumn(name = "active_player_id")
     private Player activePlayer;
 
-    @OneToOne(targetEntity=GameQuestion.class)
-    @JoinColumn(name="current_question_id")
+    @OneToOne(targetEntity = GameQuestion.class)
+    @JoinColumn(name = "current_question_id")
     private GameQuestion currentQuestion;
 
-    @Column(nullable=false)
-    private SelectionMode selectionMode = SelectionMode.NEXT_IN_ORDER;
+    @Nonnull
+    public GameId getGameId() {
+        if (gameId == null) {
+            gameId = GameId.of(getId());
+        }
+        return gameId;
+    }
 
     @Override
     @Nonnull
@@ -137,17 +135,6 @@ public class Game extends LocalizedEntity {
     }
 
     @Nonnull
-    public String getGameCode() {
-        return gameCode;
-    }
-
-    @Nonnull
-    public Game setGameCode(@Nonnull String gameCode) {
-        this.gameCode = gameCode;
-        return this;
-    }
-
-    @Nonnull
     public Quiz getQuiz() {
         return quiz;
     }
@@ -161,7 +148,7 @@ public class Game extends LocalizedEntity {
     @SuppressWarnings("unchecked")
     @Nonnull
     public Class<? extends IsGameMode> getGameMode() {
-        if(gameMode == null) {
+        if (gameMode == null) {
             try {
                 gameMode = (Class<? extends IsGameMode>) Class.forName(gameModeType);
             } catch (ClassNotFoundException e) {
@@ -216,15 +203,4 @@ public class Game extends LocalizedEntity {
         return teams.stream().sorted();
     }
 
-    @Nonnull
-    public SelectionMode getSelectionMode() {
-        return selectionMode;
-    }
-
-    @Nonnull
-    public Game setSelectionMode(@Nonnull SelectionMode teamSelection) {
-        this.selectionMode = teamSelection;
-        return this;
-    }
-    
 }

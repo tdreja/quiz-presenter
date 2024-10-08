@@ -30,17 +30,7 @@ public class Teams {
     }
 
     @Nonnull
-    public Team getNextTeam(@Nonnull Game game, @Nullable Team previousWinner) {
-        return switch (game.getSelectionMode()) {
-            case WINNER -> previousWinner == null ? nextInOrder(game) : previousWinner;
-            case RANDOM -> randomTeam(game);
-            case NEXT_IN_ORDER -> nextInOrder(game);
-            default -> nextInOrder(game);
-        };
-    }
-
-    @Nonnull
-    protected Team nextInOrder(@Nonnull Game game) {
+    public Team getNextInOrder(@Nonnull Game game) {
         final Team activeTeam = game.getActiveTeam();
         if (activeTeam == null) {
             return game.getOrderedTeams().findFirst().orElseThrow();
@@ -56,9 +46,15 @@ public class Teams {
     }
 
     @Nonnull
-    protected Team randomTeam(@Nonnull Game game) {
+    public Team getRandomTeam(@Nonnull Game game) {
         final Team activeTeam = game.getActiveTeam();
         final int size = game.getTeams().size();
+        if(size <= 1) {
+            if(activeTeam == null) {
+                throw new IllegalStateException("No team available found");
+            }
+            return activeTeam;
+        }
         Team selected = game.getTeams().get(random.nextInt(size));
         while(selected.equals(activeTeam)) {
             selected = game.getTeams().get(random.nextInt(size));
