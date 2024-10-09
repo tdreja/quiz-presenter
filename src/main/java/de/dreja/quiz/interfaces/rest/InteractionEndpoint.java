@@ -1,12 +1,5 @@
-package de.dreja.quiz.service.rest;
+package de.dreja.quiz.interfaces.rest;
 
-import de.dreja.quiz.model.game.IsGameMode;
-import de.dreja.quiz.model.persistence.game.Color;
-import de.dreja.quiz.model.persistence.game.Game;
-import de.dreja.quiz.model.persistence.game.GameQuestion;
-import de.dreja.quiz.model.persistence.game.Team;
-import de.dreja.quiz.service.persistence.game.GameRepository;
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +9,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import de.dreja.quiz.model.game.IsGameMode;
+import de.dreja.quiz.model.persistence.game.Color;
+import de.dreja.quiz.model.persistence.game.Game;
+import de.dreja.quiz.model.persistence.game.GameQuestion;
+import de.dreja.quiz.model.persistence.game.Team;
+import de.dreja.quiz.service.persistence.game.GameRepository;
+import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("api/v1")
