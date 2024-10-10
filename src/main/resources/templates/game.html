@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Website</title>
+    <!--<link rel="stylesheet" href="./style.css">-->
+    <!--<link rel="icon" href="./favicon.ico" type="image/x-icon">-->
+    <script>
+        function refresh() {
+            const iframe = document.getElementById('main-content');
+            const src = iframe.src;
+            iframe.src = '';
+            iframe.src = src;
+        }
+    </script>
+</head>
+<body>
+<iframe id="main-content"
+        style="width: 100%; height: 100%; border: none;"
+        src="./content"
+        th:src="'./' + ${gameId} + '/content'">
+</iframe>
+<button onclick="refresh()">Refresh</button>
+</body>
+</html>
