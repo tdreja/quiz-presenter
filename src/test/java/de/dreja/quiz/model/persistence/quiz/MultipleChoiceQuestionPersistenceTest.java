@@ -10,15 +10,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import de.dreja.quiz.service.persistence.quiz.QuestionRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class MultipleChoiceQuestionPersistenceTest {
 
     @Autowired
     private QuestionRepository questionRepository;
 
     @Autowired
-    private QuizTestData dataProvider;
+    private QuizDevSetup dataProvider;
 
     private Long questionId;
 

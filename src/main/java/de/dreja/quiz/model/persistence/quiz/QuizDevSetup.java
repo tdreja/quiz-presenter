@@ -1,39 +1,32 @@
 package de.dreja.quiz.model.persistence.quiz;
 
-import static java.util.Locale.ENGLISH;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import de.dreja.quiz.service.persistence.quiz.AnswerRepository;
 import de.dreja.quiz.service.persistence.quiz.QuestionGroupRepository;
 import de.dreja.quiz.service.persistence.quiz.QuestionRepository;
 import de.dreja.quiz.service.persistence.quiz.QuizRepository;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Service;
+
+import static java.util.Locale.ENGLISH;
 
 @Service
 @Transactional(Transactional.TxType.REQUIRES_NEW)
-public class QuizTestData {
+@Profile({"dev","test"})
+public class QuizDevSetup {
 
-    @Autowired
     private final AnswerRepository answerRepository;
-
-    @Autowired
     private final QuestionRepository questionRepository;
-
-    @Autowired
     private final QuestionGroupRepository categoryRepository;
-
-    @Autowired
     private final QuizRepository quizRepository;
-
-    @Autowired
     private final EntityManager entityManager;
 
     @Autowired
-    QuizTestData(AnswerRepository answerRepository,
+    QuizDevSetup(AnswerRepository answerRepository,
                  QuestionRepository questionRepository,
                  QuestionGroupRepository categoryRepository,
                  QuizRepository quizRepository, EntityManager entityManager) {
@@ -46,9 +39,14 @@ public class QuizTestData {
 
     @Nonnull
     public TextAnswer textAnswer(@Nonnull String text) {
+        return textAnswer(text, true);
+    }
+
+    @Nonnull
+    public TextAnswer textAnswer(@Nonnull String text, boolean correct) {
         final TextAnswer answer = new TextAnswer()
                 .setAnswerText(text)
-                .setCorrect(true)
+                .setCorrect(correct)
                 .setLocale(ENGLISH);
         answerRepository.save(answer);
         return answer;
@@ -56,26 +54,38 @@ public class QuizTestData {
 
     @Nonnull
     public MultipleChoiceQuestion multipleChoiceQuestion(@Nonnull String questionText,
-                                                         @Nonnull TextAnswer singleAnswer) {
-        final TextAnswer actual = entityManager.merge(singleAnswer);
+                                                         @Nonnull TextAnswer correctAnswer,
+                                                         @Nullable TextAnswer... falseOptions) {
+        final TextAnswer correct = entityManager.merge(correctAnswer);
         final MultipleChoiceQuestion question = new MultipleChoiceQuestion()
-                .addAnswerOption(actual)
-                .setCorrectAnswer(actual)
+                .addAnswerOption(correct)
+                .setCorrectAnswer(correct)
                 .setQuestionText(questionText)
                 .setDifficulty(5)
                 .setLocale(ENGLISH);
+        if(falseOptions != null) {
+            for(TextAnswer option : falseOptions) {
+                question.addAnswerOption(entityManager.merge(option));
+            }
+        }
         questionRepository.save(question);
         return question;
     }
 
     @Nonnull
     public Quiz quiz(@Nonnull String name,
-                     @Nonnull Question question) {
+                     @Nonnull Question question,
+                     @Nullable Question... furtherQuestions) {
         final Question actual = entityManager.merge(question);
         final Section category = new Section()
                 .setName(name)
                 .setLocale(ENGLISH)
                 .addQuestion(actual);
+        if(furtherQuestions != null) {
+            for(Question add : furtherQuestions) {
+                category.addQuestion(entityManager.merge(add));
+            }
+        }
 
         final Quiz quiz = new Quiz()
                 .setName(name)

@@ -1,24 +1,26 @@
 package de.dreja.quiz.model.persistence.game;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import de.dreja.quiz.model.game.ModeGrosserPreis;
+import de.dreja.quiz.model.persistence.quiz.Quiz;
+import de.dreja.quiz.model.persistence.quiz.QuizDevSetup;
+import de.dreja.quiz.service.persistence.game.GameSetupService;
+import de.dreja.quiz.service.persistence.game.PlayerRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
-import de.dreja.quiz.model.game.ModeGrosserPreis;
 import static de.dreja.quiz.model.persistence.game.TeamPersistenceTest.assertFirst;
-import de.dreja.quiz.model.persistence.quiz.Quiz;
-import de.dreja.quiz.model.persistence.quiz.QuizTestData;
-import de.dreja.quiz.service.persistence.game.GameSetupService;
-import de.dreja.quiz.service.persistence.game.PlayerRepository;
-import jakarta.transaction.Transactional;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class PlayerPersistenceTest {
 
     @Autowired
-    private QuizTestData quizTestData;
+    private QuizDevSetup quizTestData;
 
     @Autowired
     private GameSetupService gameSetupService;

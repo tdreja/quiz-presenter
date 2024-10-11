@@ -10,8 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import de.dreja.quiz.service.persistence.quiz.QuizRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class QuizPersistenceTest {
 
     private Long quizId;
@@ -20,7 +22,7 @@ class QuizPersistenceTest {
     private QuizRepository quizRepository;
 
     @Autowired
-    private QuizTestData dataProvider;
+    private QuizDevSetup dataProvider;
 
     @Test
     @Transactional(Transactional.TxType.REQUIRES_NEW)

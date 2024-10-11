@@ -1,5 +1,6 @@
 package de.dreja.quiz.interfaces.rest;
 
+import de.dreja.quiz.model.persistence.game.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.dreja.quiz.model.game.IsGameMode;
-import de.dreja.quiz.model.persistence.game.Color;
-import de.dreja.quiz.model.persistence.game.Game;
-import de.dreja.quiz.model.persistence.game.GameQuestion;
-import de.dreja.quiz.model.persistence.game.Team;
 import de.dreja.quiz.service.persistence.game.GameRepository;
 import jakarta.transaction.Transactional;
 
@@ -38,7 +35,7 @@ public class InteractionEndpoint {
     @Transactional
     public ResponseEntity<Boolean> selectQuestion(@PathVariable("gameId") String gameId,
                                                   @PathVariable("questionId") Long questionId) {
-        final Game game = gameRepository.findGameByGameId(gameId).orElse(null);
+        final Game game = gameRepository.findById(GameId.of(gameId).longValue()).orElse(null);
         if (game == null) {
             return ResponseEntity.notFound().build();
         }
@@ -64,7 +61,7 @@ public class InteractionEndpoint {
     @PutMapping(value = "game/{gameId}/interactive")
     @Transactional
     public ResponseEntity<Boolean> makeInteractive(@PathVariable("gameId") String gameId) {
-        final Game game = gameRepository.findGameByGameId(gameId).orElse(null);
+        final Game game = gameRepository.findById(GameId.of(gameId).longValue()).orElse(null);
         if (game == null) {
             return ResponseEntity.notFound().build();
         }
@@ -77,7 +74,7 @@ public class InteractionEndpoint {
     @Transactional
     public ResponseEntity<Boolean> makeTeamActive(@PathVariable("gameId") String gameId,
                                                   @PathVariable("team") Color color) {
-        final Game game = gameRepository.findGameByGameId(gameId).orElse(null);
+        final Game game = gameRepository.findById(GameId.of(gameId).longValue()).orElse(null);
         if (game == null) {
             return ResponseEntity.notFound().build();
         }
@@ -97,7 +94,7 @@ public class InteractionEndpoint {
     @Transactional
     public ResponseEntity<Boolean> tryToAnswer(@PathVariable("gameId") String gameId,
                                                @PathVariable("answerId") Long answerId) {
-        final Game game = gameRepository.findGameByGameId(gameId).orElse(null);
+        final Game game = gameRepository.findById(GameId.of(gameId).longValue()).orElse(null);
         if (game == null) {
             return ResponseEntity.notFound().build();
         }
