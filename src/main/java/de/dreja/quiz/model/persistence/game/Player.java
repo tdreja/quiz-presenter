@@ -1,5 +1,6 @@
 package de.dreja.quiz.model.persistence.game;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 
@@ -19,11 +20,11 @@ public class Player {
     @Column(nullable = false)
     private long points;
 
-    @ManyToOne(targetEntity = Team.class, optional = false)
+    @ManyToOne(targetEntity = Team.class, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
 
-    @ManyToOne(targetEntity = Game.class, optional = false)
+    @ManyToOne(targetEntity = Game.class, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id")
     private Game game;
 
@@ -57,6 +58,7 @@ public class Player {
     }
 
     @Nonnull
+    @JsonIgnore
     public Team getTeam() {
         return team;
     }
@@ -66,6 +68,7 @@ public class Player {
     }
 
     @Nonnull
+    @JsonIgnore
     public Game getGame() {
         return game;
     }

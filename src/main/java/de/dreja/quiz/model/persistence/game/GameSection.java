@@ -5,15 +5,7 @@ import java.util.List;
 
 import de.dreja.quiz.model.persistence.quiz.Section;
 import jakarta.annotation.Nonnull;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "game_section")
@@ -27,14 +19,14 @@ public class GameSection {
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne(targetEntity = Section.class, optional = false)
+    @ManyToOne(targetEntity = Section.class, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "section_id")
     private Section section;
 
     @OneToMany(targetEntity = GameQuestion.class, mappedBy = "section")
     private final List<GameQuestion> questions = new ArrayList<>();
 
-    @ManyToOne(targetEntity = Game.class)
+    @ManyToOne(targetEntity = Game.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id")
     private Game game;
 

@@ -44,10 +44,11 @@ public class GameEndpoint {
     @GetMapping("/game/{gameId}/content")
     @Transactional
     public String getGameInnerPage(@PathVariable("gameId") String gameId, Model model) {
-        if(!gameRepository.existsByGameId(GameId.of(gameId))) {
+        final var search = gameRepository.findByGameId(GameId.of(gameId));
+        if(search.isEmpty()) {
             throw new WebException(HttpStatus.NOT_FOUND, "Game was not found");
         }
-        final var game = gameRepository.getReferenceById(GameId.of(gameId).longValue());
+        final var game = search.get();
         model.addAttribute("gameId", gameId);
         model.addAttribute("game", game);
         model.addAttribute("quiz", game.getQuiz());

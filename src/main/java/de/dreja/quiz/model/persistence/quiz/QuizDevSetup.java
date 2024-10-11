@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import static java.util.Locale.ENGLISH;
 
 @Service
-@Transactional(Transactional.TxType.REQUIRES_NEW)
+@Transactional
 @Profile({"dev","test"})
 public class QuizDevSetup {
 

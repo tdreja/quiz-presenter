@@ -2,6 +2,7 @@ package de.dreja.quiz.model.persistence.quiz;
 
 import java.util.Locale;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
@@ -34,6 +35,7 @@ public class TextAnswer extends Answer {
     }
 
     @Nullable
+    @JsonIgnore
     public MultipleChoiceQuestion getMultipleChoiceQuestion() {
         return multipleChoiceQuestion;
     }

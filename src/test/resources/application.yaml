@@ -1,7 +1,5 @@
-de:
-  dreja:
-    quiz:
-      datasource:
-        url: "jdbc:sqlite:./build/test-db.db"
-        username: "sa"
-        password: "sa"
+spring:
+  datasource:
+    driverClassName: org.sqlite.JDBC
+    password: "sa"
+    url: jdbc:sqlite:./build/dev-db.db

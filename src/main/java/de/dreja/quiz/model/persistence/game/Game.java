@@ -1,12 +1,12 @@
 package de.dreja.quiz.model.persistence.game;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.dreja.quiz.model.game.IsGameMode;
 import de.dreja.quiz.model.persistence.LocalizedEntity;
 import de.dreja.quiz.model.persistence.quiz.Quiz;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -31,9 +31,9 @@ public class Game extends LocalizedEntity {
     private final List<GameSetting> settings = new ArrayList<>();
 
     @Transient
-    private Map<String,String> settingsMap;
+    private Map<String, String> settingsMap;
 
-    @ManyToOne(targetEntity = Quiz.class, optional = false)
+    @ManyToOne(targetEntity = Quiz.class, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 
@@ -43,15 +43,15 @@ public class Game extends LocalizedEntity {
     @Transient
     private Class<? extends IsGameMode> gameMode = IsGameMode.class;
 
-    @OneToOne(targetEntity = Team.class)
+    @OneToOne(targetEntity = Team.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "active_team_id")
     private Team activeTeam;
 
-    @OneToOne(targetEntity = Player.class)
+    @OneToOne(targetEntity = Player.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "active_player_id")
     private Player activePlayer;
 
-    @OneToOne(targetEntity = GameQuestion.class)
+    @OneToOne(targetEntity = GameQuestion.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "current_question_id")
     private GameQuestion currentQuestion;
 
@@ -59,6 +59,7 @@ public class Game extends LocalizedEntity {
     private boolean interactive = false;
 
     @Nonnull
+    @JsonIgnore
     public GameId getGameId() {
         if (gameId == null) {
             gameId = GameId.of(getId());
@@ -143,6 +144,7 @@ public class Game extends LocalizedEntity {
     }
 
     @Nonnull
+    @JsonIgnore
     public Quiz getQuiz() {
         return quiz;
     }
@@ -219,7 +221,7 @@ public class Game extends LocalizedEntity {
     @Nonnull
     public Game addSetting(@Nonnull GameSetting setting) {
         setting.setGame(this);
-        if(settings.contains(setting)) {
+        if (settings.contains(setting)) {
             return this;
         }
         settingsMap = null;
@@ -229,7 +231,7 @@ public class Game extends LocalizedEntity {
 
     @Nonnull
     public Game removeSetting(@Nonnull GameSetting setting) {
-        if(settings.remove(setting)) {
+        if (settings.remove(setting)) {
             settingsMap = null;
             setting.setGame(null);
         }
@@ -238,9 +240,9 @@ public class Game extends LocalizedEntity {
 
     @Nonnull
     public Map<String, String> getSettingsMap() {
-        if(settingsMap == null) {
+        if (settingsMap == null) {
             settingsMap = new TreeMap<>();
-            for(GameSetting setting : settings) {
+            for (GameSetting setting : settings) {
                 settingsMap.put(setting.getKey(), setting.getValue());
             }
         }

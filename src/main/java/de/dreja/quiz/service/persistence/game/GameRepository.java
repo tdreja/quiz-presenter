@@ -13,6 +13,11 @@ import java.util.Optional;
 @Repository
 public interface GameRepository extends JpaRepository<Game, Long> {
 
+    @Nonnull
+    default Optional<Game> findByGameId(@Nonnull GameId gameId) {
+        return findById(gameId.longValue());
+    }
+
     default boolean existsByGameId(@Nonnull GameId gameId) {
         return existsById(gameId.longValue());
     }

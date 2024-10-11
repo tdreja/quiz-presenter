@@ -1,16 +1,22 @@
 spring:
-    application:
+  application:
         jpa:
             properties:
                 hibernate:
                     dialect: org.hibernate.community.dialect.SQLiteDialect
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+  datasource:
+    hikari:
+      maximum-pool-size: 1
+    driverClassName: org.sqlite.JDBC
+    password:
+    username: sa
+    url: jdbc:sqlite:./build/dev-db.db
 
-de:
   dreja:
     quiz:
       game-modes:
         grosser-preis:
           starting-points: 100
           point-increment: 100
-      datasource:
-        driver-class-name: org.sqlite.JDBC

@@ -3,14 +3,7 @@ package de.dreja.quiz.model.persistence.game;
 import de.dreja.quiz.model.persistence.quiz.Question;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "game_question")
@@ -27,15 +20,15 @@ public class GameQuestion {
     @Column(nullable = false)
     private boolean answered;
 
-    @ManyToOne(targetEntity = Team.class)
+    @ManyToOne(targetEntity = Team.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "answered_by_team_id")
     private Team answeredBy;
 
-    @ManyToOne(targetEntity = GameSection.class, optional = false)
+    @ManyToOne(targetEntity = GameSection.class, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "section_id")
     private GameSection section;
 
-    @ManyToOne(targetEntity = Question.class, optional = false)
+    @ManyToOne(targetEntity = Question.class, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private Question question;
 
