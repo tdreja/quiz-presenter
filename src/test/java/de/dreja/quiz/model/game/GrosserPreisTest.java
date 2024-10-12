@@ -1,6 +1,17 @@
 package de.dreja.quiz.model.game;
 
-import de.dreja.quiz.model.persistence.game.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
+import de.dreja.quiz.model.persistence.game.Color;
+import de.dreja.quiz.model.persistence.game.Game;
+import de.dreja.quiz.model.persistence.game.GameQuestion;
+import de.dreja.quiz.model.persistence.game.GameSection;
+import de.dreja.quiz.model.persistence.game.Team;
 import de.dreja.quiz.model.persistence.quiz.Question;
 import de.dreja.quiz.model.persistence.quiz.Quiz;
 import de.dreja.quiz.model.persistence.quiz.QuizDevSetup;
@@ -9,13 +20,6 @@ import de.dreja.quiz.service.persistence.game.GameSetupService;
 import de.dreja.quiz.service.persistence.game.TeamRepository;
 import jakarta.annotation.Nonnull;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -39,6 +43,7 @@ class GrosserPreisTest {
     private Long gameId;
 
     private Game game;
+    private GameSection firstSection;
     private GameQuestion firstQuestion;
     private GameQuestion secondQuestion;
     private Team firstTeam;
@@ -51,14 +56,14 @@ class GrosserPreisTest {
         game = gameRepository.findById(gameId).orElse(null);
         assertThat(game).isNotNull();
         assertThat(game.getSections()).isNotNull().isNotEmpty().hasSize(1);
-        final GameSection section = game.getSections().getFirst();
-        assertThat(section).isNotNull();
-        assertThat(section.getQuestions()).isNotNull().isNotEmpty().hasSize(2);
+        firstSection = game.getSections().getFirst();
+        assertThat(firstSection).isNotNull();
+        assertThat(firstSection.getQuestions()).isNotNull().isNotEmpty().hasSize(2);
 
-        firstQuestion = game.getSections().getFirst().getQuestions().getFirst();
+        firstQuestion = firstSection.getQuestions().getFirst();
         assertThat(firstQuestion).isNotNull().hasFieldOrPropertyWithValue("answered", false);
 
-        secondQuestion = game.getSections().getFirst().getQuestions().get(1);
+        secondQuestion = firstSection.getQuestions().get(1);
         assertThat(secondQuestion).isNotNull().hasFieldOrPropertyWithValue("answered", false);
 
         assertThat(game.getOrderedTeams()).isNotNull().isNotEmpty().hasSize(2);
@@ -88,6 +93,7 @@ class GrosserPreisTest {
         assertThat(firstQuestion.getAnsweredBy()).as("Answered By").isEqualTo(firstTeam);
         assertThat(firstQuestion.isAnswered()).isTrue();
         assertThat(game.isWaitForTeamInput()).isFalse();
+        assertThat(firstSection.isComplete()).isFalse();
     }
 
     private void runSecondQuestion() {
@@ -105,6 +111,8 @@ class GrosserPreisTest {
         assertThat(secondQuestion.getAnsweredBy()).as("Answered By").isNull();
         assertThat(secondQuestion.isAnswered()).isTrue();
         assertThat(game.isWaitForTeamInput()).isFalse();
+        assertThat(firstSection.isComplete()).isTrue();
+        assertThat(game.getEnd()).isNotNull();
     }
 
     @BeforeEach

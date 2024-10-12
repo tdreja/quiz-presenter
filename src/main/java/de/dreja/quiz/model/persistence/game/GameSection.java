@@ -5,7 +5,16 @@ import java.util.List;
 
 import de.dreja.quiz.model.persistence.quiz.Section;
 import jakarta.annotation.Nonnull;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "game_section")
@@ -29,6 +38,9 @@ public class GameSection {
     @ManyToOne(targetEntity = Game.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id")
     private Game game;
+
+    @Column(nullable=false)
+    private boolean complete = false;
 
     public long getId() {
         return id;
@@ -91,4 +103,15 @@ public class GameSection {
         this.name = name;
         return this;
     }
+
+    public boolean isComplete() {
+        return complete;
+    }
+
+    @Nonnull
+    public GameSection setComplete(boolean complete) {
+        this.complete = complete;
+        return this;
+    }
+    
 }

@@ -5,6 +5,7 @@ create table
         id INTEGER not null,
         section_id INTEGER not null,
         game_id INTEGER not null,
+        complete INTEGER not null,
         name TEXT not null,
         primary key (id)
     );

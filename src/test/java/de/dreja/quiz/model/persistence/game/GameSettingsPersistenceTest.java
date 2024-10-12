@@ -1,21 +1,21 @@
 package de.dreja.quiz.model.persistence.game;
 
-import de.dreja.quiz.model.game.ModeGrosserPreis;
-import de.dreja.quiz.model.persistence.quiz.Quiz;
-import de.dreja.quiz.model.persistence.quiz.QuizDevSetup;
-import de.dreja.quiz.service.persistence.game.GameRepository;
-import de.dreja.quiz.service.persistence.game.GameSetupService;
-import jakarta.transaction.Transactional;
+import java.util.Map;
+
 import org.apache.commons.lang3.tuple.Pair;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import de.dreja.quiz.model.game.ModeGrosserPreis;
+import de.dreja.quiz.model.persistence.quiz.Quiz;
+import de.dreja.quiz.model.persistence.quiz.QuizDevSetup;
+import de.dreja.quiz.service.persistence.game.GameRepository;
+import de.dreja.quiz.service.persistence.game.GameSetupService;
+import jakarta.transaction.Transactional;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -39,7 +39,7 @@ public class GameSettingsPersistenceTest {
     void testDatabase() {
         assertThat(gameId).isNotNull().isNotNegative();
         final Game game = gameRepository.findById(gameId).orElse(null);
-        assertThat(game).isNotNull().hasNoNullFieldsOrPropertiesExcept("activeTeam", "activePlayer", "currentQuestion");
+        assertThat(game).isNotNull().hasNoNullFieldsOrPropertiesExcept("activeTeam", "activePlayer", "currentQuestion", "end");
         assertThat(game.getSections()).isNotNull().hasSize(1);
         assertThat(game.getGameMode()).isNotNull().isEqualTo(ModeGrosserPreis.class);
         assertThat(game.getSettings()).isNotNull().hasSize(2);

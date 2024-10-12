@@ -1,7 +1,8 @@
-package de.dreja.quiz.model.game;
+package de.dreja.quiz.service.game;
 
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import de.dreja.quiz.model.persistence.game.Game;
@@ -9,22 +10,29 @@ import de.dreja.quiz.model.persistence.game.Player;
 import de.dreja.quiz.model.persistence.game.Team;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 
 @Service
 public class Teams {
 
+    private final EntityManager entityManager;
     private final Random random;
 
-    Teams() {
+    @Autowired
+    Teams(EntityManager entityManager) {
         random = new Random();
+        this.entityManager = entityManager;
     }
 
+    @Transactional
     public void alterPoints(@Nullable Team team, long additionalPoints) {
         if(team == null) {
             return;
         }
-        team.setPoints(team.getPoints() + additionalPoints);
-        for(Player player : team.getPlayers()) {
+        final Team editTeam = entityManager.merge(team);
+        editTeam.setPoints(editTeam.getPoints() + additionalPoints);
+        for(Player player : editTeam.getPlayers()) {
             player.setPoints(player.getPoints() + additionalPoints);
         }
     }
