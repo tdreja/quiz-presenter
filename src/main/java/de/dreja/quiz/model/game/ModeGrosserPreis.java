@@ -1,12 +1,12 @@
 package de.dreja.quiz.model.game;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 
+import de.dreja.quiz.model.json.game.AnswerFromTeam;
 import de.dreja.quiz.model.persistence.game.Game;
 import de.dreja.quiz.model.persistence.game.GameQuestion;
 import de.dreja.quiz.model.persistence.game.GameSection;
@@ -17,7 +17,6 @@ import de.dreja.quiz.model.persistence.quiz.Section;
 import de.dreja.quiz.service.game.GameQuestions;
 import de.dreja.quiz.service.game.Teams;
 import de.dreja.quiz.service.persistence.game.GameSetupService;
-import io.micrometer.common.lang.Nullable;
 import jakarta.annotation.Nonnull;
 import jakarta.transaction.Transactional;
 
@@ -71,37 +70,35 @@ public class ModeGrosserPreis implements IsGameMode {
         return game;
     }
 
-    @Override
-    @Transactional
-    public void onCorrectAnswer(@Nonnull Game game) {
-        onAnswer(game, game.getCurrentQuestion(), game.getActiveTeam());
-    }
+    
 
     @Override
     @Transactional
-    public void onWrongAnswer(@Nonnull Game game) {
-        onAnswer(game, game.getCurrentQuestion(), null);
-    }
-
-    protected void onAnswer(@Nonnull Game game, @Nullable GameQuestion question, @Nullable Team team) {
+    public void onAnswersReceived(@Nonnull Game game, @Nonnull List<AnswerFromTeam> answers) {
+        final GameQuestion question = game.getCurrentQuestion();
         if (question == null) {
             return;
         }
 
-        // Mark question as done
-        questions.answerQuestion(question, team);
+        // Mark question as answered, by either none or more teams
+        if(answers.isEmpty()) {
+            questions.answerQuestion(game, question, null);
+        } else {
+            for(AnswerFromTeam answer : answers) {
+                questions.answerQuestion(game, question, answer);
+            }
+        }
+
         // Prepare for next question
         game.setCurrentQuestion(null);
         game.setWaitForTeamInput(false);
         
         // Are we done already?
-        if(game.getSections().stream().allMatch(GameSection::isComplete)) {
-            game.setEnd(LocalDateTime.now());
+        if(game.getEnd() != null) {
             final Team winner = game.getTeams().stream().sorted(HIGHEST_POINTS_FIRST).findFirst().orElse(null);
             game.setActiveTeam(winner);
-
-            // Otherwise the next team gets to choose
         } else {
+            // Otherwise the next team gets to choose
             game.setActiveTeam(teams.getNextInOrder(game));
         }
     }

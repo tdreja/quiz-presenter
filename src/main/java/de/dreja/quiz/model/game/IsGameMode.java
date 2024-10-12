@@ -1,12 +1,12 @@
 package de.dreja.quiz.model.game;
 
+import java.util.List;
+
+import de.dreja.quiz.model.json.game.AnswerFromTeam;
 import de.dreja.quiz.model.persistence.game.Game;
 import de.dreja.quiz.model.persistence.game.GameQuestion;
-import de.dreja.quiz.model.persistence.game.Player;
-import de.dreja.quiz.model.persistence.game.Team;
 import de.dreja.quiz.model.persistence.quiz.Quiz;
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 
 /**
@@ -19,10 +19,7 @@ public interface IsGameMode {
     Game prepareGame(@Nonnull Quiz quiz);
 
     @Transactional
-    void onCorrectAnswer(@Nonnull Game game);
-
-    @Transactional
-    void onWrongAnswer(@Nonnull Game game);
+    void onAnswersReceived(@Nonnull Game game, @Nonnull List<AnswerFromTeam> answers);
 
     @Transactional
     boolean onQuestionSelected(@Nonnull Game game, @Nonnull GameQuestion question);

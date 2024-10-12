@@ -1,10 +1,12 @@
 package de.dreja.quiz.service.game;
 
+import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import de.dreja.quiz.model.persistence.game.Color;
 import de.dreja.quiz.model.persistence.game.Game;
 import de.dreja.quiz.model.persistence.game.Player;
 import de.dreja.quiz.model.persistence.game.Team;
@@ -68,5 +70,15 @@ public class Teams {
             selected = game.getTeams().get(random.nextInt(size));
         }
         return selected;
+    }
+
+    @Nonnull
+    public Optional<Team> getTeamByColor(@Nullable Game game, @Nullable Color color) {
+        if(game == null || color == null) {
+            return Optional.empty();
+        }
+        return game.getTeams().stream()
+            .filter(team -> team.getColor() == color)
+            .findFirst();
     }
 }

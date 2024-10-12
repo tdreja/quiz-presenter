@@ -79,4 +79,8 @@ public class Question extends LocalizedEntity {
     public MultipleChoiceQuestion asMultipleChoiceQuestion() {
         return null;
     }
+
+    public boolean isAnswerCorrect(@Nonnull String answerByTeam) {
+        return false; // Question itself doesn't handle this!
+    }
 }

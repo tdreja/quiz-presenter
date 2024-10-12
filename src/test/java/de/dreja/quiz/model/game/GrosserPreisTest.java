@@ -1,5 +1,8 @@
 package de.dreja.quiz.model.game;
 
+import java.util.List;
+import java.util.Objects;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import de.dreja.quiz.model.json.game.AnswerFromTeam;
 import de.dreja.quiz.model.persistence.game.Color;
 import de.dreja.quiz.model.persistence.game.Game;
 import de.dreja.quiz.model.persistence.game.GameQuestion;
@@ -15,6 +19,7 @@ import de.dreja.quiz.model.persistence.game.Team;
 import de.dreja.quiz.model.persistence.quiz.Question;
 import de.dreja.quiz.model.persistence.quiz.Quiz;
 import de.dreja.quiz.model.persistence.quiz.QuizDevSetup;
+import de.dreja.quiz.model.persistence.quiz.TextAnswer;
 import de.dreja.quiz.service.persistence.game.GameRepository;
 import de.dreja.quiz.service.persistence.game.GameSetupService;
 import de.dreja.quiz.service.persistence.game.TeamRepository;
@@ -85,7 +90,9 @@ class GrosserPreisTest {
         game.setWaitForTeamInput(true);
         game.setActiveTeam(firstTeam);
 
-        grosserPreis.onCorrectAnswer(game);
+        final TextAnswer textAnswer = firstQuestion.getQuestion().getCorrectAnswer().asTextAnswer();
+        assertThat(textAnswer).isNotNull();
+        grosserPreis.onAnswersReceived(game, List.of(new AnswerFromTeam(firstTeam.getColor(), Objects.requireNonNull(textAnswer).getAnswerText())));
 
 
         assertThat(game.getCurrentQuestion()).as("Current Question").isNull();
@@ -104,7 +111,7 @@ class GrosserPreisTest {
         game.setWaitForTeamInput(true);
         game.setActiveTeam(secondTeam);
 
-        grosserPreis.onWrongAnswer(game);
+        grosserPreis.onAnswersReceived(game, List.of());
 
         assertThat(game.getCurrentQuestion()).as("Current Question").isNull();
         assertThat(game.getActiveTeam()).as("Active Team").isEqualTo(firstTeam);

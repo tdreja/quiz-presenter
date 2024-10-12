@@ -3,6 +3,7 @@ package de.dreja.quiz.model.persistence.quiz;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -81,4 +82,14 @@ public class MultipleChoiceQuestion extends Question {
     public MultipleChoiceQuestion asMultipleChoiceQuestion() {
         return this;
     }
+
+    @Override
+    public boolean isAnswerCorrect(@Nonnull String answerByTeam) {
+        return Optional.ofNullable(getCorrectAnswer().asTextAnswer())
+            .map(TextAnswer::getAnswerText)
+            .filter(text -> text.equals(answerByTeam))
+            .isPresent();
+    }
+
+    
 }

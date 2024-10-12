@@ -1,6 +1,5 @@
 package de.dreja.quiz.interfaces.rest;
 
-import de.dreja.quiz.model.persistence.game.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.dreja.quiz.model.game.IsGameMode;
+import de.dreja.quiz.model.persistence.game.Color;
+import de.dreja.quiz.model.persistence.game.Game;
+import de.dreja.quiz.model.persistence.game.GameId;
+import de.dreja.quiz.model.persistence.game.GameQuestion;
+import de.dreja.quiz.model.persistence.game.Team;
 import de.dreja.quiz.service.persistence.game.GameRepository;
 import jakarta.transaction.Transactional;
 
@@ -90,27 +94,4 @@ public class InteractionEndpoint {
         return ResponseEntity.ok().body(true);
     }
 
-    @PutMapping(value = "game/{gameId}/current-question/answer/{answerId}")
-    @Transactional
-    public ResponseEntity<Boolean> tryToAnswer(@PathVariable("gameId") String gameId,
-                                               @PathVariable("answerId") Long answerId) {
-        final Game game = gameRepository.findById(GameId.of(gameId).longValue()).orElse(null);
-        if (game == null) {
-            return ResponseEntity.notFound().build();
-        }
-        final GameQuestion question = game.getCurrentQuestion();
-        if (question == null) {
-            return ResponseEntity.notFound().build();
-        }
-        final IsGameMode gameMode = applicationContext.getBean(game.getGameMode());
-        if (!answerId.equals(question.getQuestion().getCorrectAnswer().getId())) {
-            gameMode.onWrongAnswer(game);
-            gameRepository.save(game);
-            return ResponseEntity.ok().body(false);
-        } else {
-            gameMode.onCorrectAnswer(game);
-            gameRepository.save(game);
-            return ResponseEntity.ok().body(true);
-        }
-    }
 }
