@@ -1,5 +1,6 @@
 package de.dreja.quiz.service.persistence.game;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import de.dreja.quiz.model.persistence.game.*;
@@ -56,7 +57,10 @@ public class GameSetupService {
     @Nonnull
     @Transactional
     public Game newGame(@Nonnull Quiz quiz) {
-        final Game game = new Game().setQuiz(entityManager.merge(quiz)).setLocale(quiz.getLocale());
+        final Game game = new Game()
+                .setQuiz(entityManager.merge(quiz))
+                .setLocale(quiz.getLocale())
+                .setStart(LocalDateTime.now());
         gameRepository.save(game);
         return game;
     }

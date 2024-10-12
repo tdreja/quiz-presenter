@@ -6,7 +6,6 @@ import de.dreja.quiz.model.persistence.quiz.Quiz;
 import de.dreja.quiz.model.persistence.quiz.Section;
 import de.dreja.quiz.service.persistence.game.GameSetupService;
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -78,6 +77,7 @@ public class ModeGrosserPreis implements IsGameMode {
         // Prepare for next question
         game.setCurrentQuestion(null);
         game.setActiveTeam(teams.getNextInOrder(game));
+        game.setWaitForTeamInput(false);
     }
 
     @Override
@@ -94,6 +94,7 @@ public class ModeGrosserPreis implements IsGameMode {
         // Prepare for next question
         game.setCurrentQuestion(null);
         game.setActiveTeam(teams.getNextInOrder(game));
+        game.setWaitForTeamInput(false);
     }
 
     @Override
@@ -102,7 +103,7 @@ public class ModeGrosserPreis implements IsGameMode {
         game.setCurrentQuestion(question);
         game.setActiveTeam(null);
         game.setActivePlayer(null);
-        game.setInteractive(false);
+        game.setWaitForTeamInput(false);
         return true;
     }
 }

@@ -8,6 +8,7 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -55,8 +56,14 @@ public class Game extends LocalizedEntity {
     @JoinColumn(name = "current_question_id")
     private GameQuestion currentQuestion;
 
-    @Column(nullable = false)
-    private boolean interactive = false;
+    @Column(name = "wait_for_team_input", nullable = false)
+    private boolean waitForTeamInput = false;
+
+    @Column(name = "game_start", nullable = false)
+    private LocalDateTime start = LocalDateTime.now();
+
+    @Column(name = "game_end")
+    private LocalDateTime end;
 
     @Nonnull
     @JsonIgnore
@@ -249,13 +256,33 @@ public class Game extends LocalizedEntity {
         return Collections.unmodifiableMap(settingsMap);
     }
 
-    public boolean isInteractive() {
-        return interactive;
+    public boolean isWaitForTeamInput() {
+        return waitForTeamInput;
     }
 
     @Nonnull
-    public Game setInteractive(boolean interactive) {
-        this.interactive = interactive;
+    public Game setWaitForTeamInput(boolean interactive) {
+        this.waitForTeamInput = interactive;
+        return this;
+    }
+
+    @Nonnull
+    public LocalDateTime getStart() {
+        return start;
+    }
+
+    public Game setStart(@Nonnull LocalDateTime start) {
+        this.start = start;
+        return this;
+    }
+
+    @Nullable
+    public LocalDateTime getEnd() {
+        return end;
+    }
+
+    public Game setEnd(@Nullable LocalDateTime end) {
+        this.end = end;
         return this;
     }
 }

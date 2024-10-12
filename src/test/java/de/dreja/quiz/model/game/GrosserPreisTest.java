@@ -38,29 +38,73 @@ class GrosserPreisTest {
 
     private Long gameId;
 
+    private Game game;
+    private GameQuestion firstQuestion;
+    private GameQuestion secondQuestion;
+    private Team firstTeam;
+    private Team secondTeam;
+
     @Test
     @Transactional
     void testGame() {
         assertThat(gameId).isNotNull();
-        final Game game = gameRepository.findById(gameId).orElse(null);
+        game = gameRepository.findById(gameId).orElse(null);
         assertThat(game).isNotNull();
         assertThat(game.getSections()).isNotNull().isNotEmpty().hasSize(1);
         final GameSection section = game.getSections().getFirst();
         assertThat(section).isNotNull();
         assertThat(section.getQuestions()).isNotNull().isNotEmpty().hasSize(2);
 
-        final GameQuestion firstQuestion = game.getSections().getFirst().getQuestions().getFirst();
-        assertThat(firstQuestion).isNotNull();
+        firstQuestion = game.getSections().getFirst().getQuestions().getFirst();
+        assertThat(firstQuestion).isNotNull().hasFieldOrPropertyWithValue("answered", false);
 
-        final GameQuestion secondQuestion = game.getSections().getFirst().getQuestions().get(1);
-        assertThat(secondQuestion).isNotNull();
+        secondQuestion = game.getSections().getFirst().getQuestions().get(1);
+        assertThat(secondQuestion).isNotNull().hasFieldOrPropertyWithValue("answered", false);
 
         assertThat(game.getOrderedTeams()).isNotNull().isNotEmpty().hasSize(2);
-        final Team firstTeam = game.getOrderedTeams().findFirst().orElse(null);
+        firstTeam = game.getOrderedTeams().findFirst().orElse(null);
         assertThat(firstTeam).isNotNull();
 
-        final Team secondTeam = game.getOrderedTeams().skip(1).findFirst().orElse(null);
+        secondTeam = game.getOrderedTeams().skip(1).findFirst().orElse(null);
         assertThat(secondTeam).isNotNull();
+
+        runFirstQuestion();
+        runSecondQuestion();
+    }
+
+    private void runFirstQuestion() {
+        grosserPreis.onQuestionSelected(game, firstQuestion);
+        assertThat(game.isWaitForTeamInput()).isFalse();
+        assertThat(game.getCurrentQuestion()).isEqualTo(firstQuestion);
+
+        game.setWaitForTeamInput(true);
+        game.setActiveTeam(firstTeam);
+
+        grosserPreis.onCorrectAnswer(game);
+
+
+        assertThat(game.getCurrentQuestion()).as("Current Question").isNull();
+        assertThat(game.getActiveTeam()).as("Active Team").isEqualTo(secondTeam);
+        assertThat(firstQuestion.getAnsweredBy()).as("Answered By").isEqualTo(firstTeam);
+        assertThat(firstQuestion.isAnswered()).isTrue();
+        assertThat(game.isWaitForTeamInput()).isFalse();
+    }
+
+    private void runSecondQuestion() {
+        grosserPreis.onQuestionSelected(game, secondQuestion);
+        assertThat(game.isWaitForTeamInput()).isFalse();
+        assertThat(game.getCurrentQuestion()).isEqualTo(secondQuestion);
+
+        game.setWaitForTeamInput(true);
+        game.setActiveTeam(secondTeam);
+
+        grosserPreis.onWrongAnswer(game);
+
+        assertThat(game.getCurrentQuestion()).as("Current Question").isNull();
+        assertThat(game.getActiveTeam()).as("Active Team").isEqualTo(firstTeam);
+        assertThat(secondQuestion.getAnsweredBy()).as("Answered By").isNull();
+        assertThat(secondQuestion.isAnswered()).isTrue();
+        assertThat(game.isWaitForTeamInput()).isFalse();
     }
 
     @BeforeEach

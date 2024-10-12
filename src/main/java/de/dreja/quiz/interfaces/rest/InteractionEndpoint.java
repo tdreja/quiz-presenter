@@ -65,7 +65,7 @@ public class InteractionEndpoint {
         if (game == null) {
             return ResponseEntity.notFound().build();
         }
-        game.setInteractive(true);
+        game.setWaitForTeamInput(true);
         gameRepository.save(game);
         return ResponseEntity.ok().body(true);
     }

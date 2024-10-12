@@ -7,10 +7,12 @@ create table
     quiz_id             INTEGER not null,
     locale              TEXT    not null,
     game_mode           TEXT    not null,
-    interactive         INTEGER not null,
+    wait_for_team_input INTEGER not null,
     active_team_id      INTEGER null,
     active_player_id    INTEGER null,
     current_question_id INTEGER null,
+    game_start          TEXT    not null,
+    game_end            TEXT    null,
     primary key (id)
 );
 -- changeset tdreja:002-create-settings-table
