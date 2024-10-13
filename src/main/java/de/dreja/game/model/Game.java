@@ -1,20 +1,20 @@
 package de.dreja.game.model;
 
-import de.dreja.common.model.Base64Id;
 import de.dreja.common.model.HasId;
+import de.dreja.common.model.IdBase64;
 import jakarta.annotation.Nonnull;
 
-public class Game implements HasId<Base64Id> {
+public class Game implements HasId<IdBase64> {
     
-    private Base64Id id;
+    private IdBase64 id;
 
     @Override
     @Nonnull
-    public Base64Id getId() {
+    public IdBase64 getId() {
         return id;
     }
 
-    public void setId(Base64Id id) {
+    public void setId(IdBase64 id) {
         this.id = id;
     }
     
