@@ -20,7 +20,7 @@ public class Storage {
     private final EmbeddedStorageManager storageManager;
 
     @Autowired
-    Storage(@Value("") String storageFile) {
+    Storage(@Value("${dreja.quiz.storage}") String storageFile) {
         this.storageManager = EmbeddedStorage.start(null, Paths.get(storageFile));
     }
     

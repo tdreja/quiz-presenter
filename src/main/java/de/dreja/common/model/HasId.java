@@ -1,5 +1,6 @@
 package de.dreja.common.model;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,5 +25,23 @@ public interface HasId<ID extends Comparable<?>> {
             return;
         }
         map.put(item.getId(), item);
+    }
+
+    @Nonnull
+    static <ID extends Comparable<ID>, ITEM extends HasId<ID>> Comparator<ITEM> compareById() {
+        return (i1, i2) -> {
+            final ID id1 = i1 == null ? null : i1.getId();
+            final ID id2 = i2 == null ? null : i2.getId();
+            if(id1 == null) {
+                if(id2 == null) {
+                    return 0;
+                }
+                return -1;
+            }
+            if(id2 == null) {
+                return 1;
+            }
+            return id1.compareTo(id2);
+        };
     }
 }
