@@ -1,7 +1,8 @@
 package de.dreja.common.model;
 
 import java.math.BigInteger;
-import java.util.Base64;
+
+import org.apache.commons.codec.binary.Base32;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,39 +11,38 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-public final class IdBase64 extends Number implements Comparable<IdBase64> {
+public final class IdBase32 extends Number implements Comparable<IdBase32> {
 
-    private static final Base64.Encoder ENCODER = Base64.getUrlEncoder().withoutPadding();
-    private static final Base64.Decoder DECODER = Base64.getUrlDecoder();
+    private static final Base32 base32 = Base32.builder().setLineLength(0).get();
 
     private final long numberValue;
     private final String base64Value;
 
-    private IdBase64(@Nonnull String base64Value, long numberValue) {
+    private IdBase32(@Nonnull String base64Value, long numberValue) {
         this.base64Value = base64Value;
         this.numberValue = numberValue;
     }
 
     @Nonnull
-    public static IdBase64 of(long value) {
-        return new IdBase64(ENCODER.encodeToString(BigInteger.valueOf(value).toByteArray()), value);
+    public static IdBase32 of(long value) {
+        return new IdBase32(base32.encodeAsString(BigInteger.valueOf(value).toByteArray()).replace("=", ""), value);
     }
 
     @Nonnull
     @JsonCreator
-    public static IdBase64 of(@Nullable String base64) {
+    public static IdBase32 of(@Nullable String base64) {
         if(base64 == null) {
             return of(1L);
         }
         try {
-            return new IdBase64(base64, new BigInteger(DECODER.decode(base64)).longValue());
+            return new IdBase32(base64, new BigInteger(base32.decode(base64)).longValue());
         } catch (IllegalArgumentException ex) {
             return of(1L);
         }
     }
 
     @Override
-    public int compareTo(@Nonnull IdBase64 o) {
+    public int compareTo(@Nonnull IdBase32 o) {
         return Long.compare(numberValue, o.numberValue);
     }
 
@@ -89,12 +89,12 @@ public final class IdBase64 extends Number implements Comparable<IdBase64> {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        IdBase64 other = (IdBase64) obj;
+        IdBase32 other = (IdBase32) obj;
         return numberValue == other.numberValue;
     }
     
     @Nonnull
-    public IdBase64 next() {
-        return IdBase64.of(numberValue+1);
+    public IdBase32 next() {
+        return IdBase32.of(numberValue+1);
     }
 }

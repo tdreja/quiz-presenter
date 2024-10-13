@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.dreja.common.model.DbRoot;
-import de.dreja.common.model.IdBase64;
+import de.dreja.common.model.IdBase32;
 import de.dreja.common.service.Storage;
 import de.dreja.game.model.Game;
 
@@ -29,7 +29,7 @@ public class RestDebugApi {
     
     @GetMapping("/game/{gameId}")
     public ResponseEntity<Game> getGame(@PathVariable("gameId") String param) {
-        final IdBase64 id = IdBase64.of(param);
+        final IdBase32 id = IdBase32.of(param);
         final var existing = storage.getRoot().getGame(id);
         if(existing.isPresent()) {
             return ResponseEntity.ok(existing.get());
@@ -39,7 +39,7 @@ public class RestDebugApi {
     
     @PostMapping("/game")
     public ResponseEntity<String> postGame(@RequestBody Game game) {
-        final IdBase64 nextId = storage.getNextId();
+        final IdBase32 nextId = storage.getNextId();
         game.setId(nextId);
         final DbRoot root = storage.getRoot();
         root.getGames().put(nextId, game);

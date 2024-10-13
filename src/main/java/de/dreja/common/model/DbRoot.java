@@ -13,36 +13,36 @@ import jakarta.annotation.Nullable;
 
 public class DbRoot {
     
-    private final Map<IdBase64, Quiz> quizzes = new LazyHashMap<>();
+    private final Map<IdBase32, Quiz> quizzes = new LazyHashMap<>();
 
-    private final Map<IdBase64, Game> games = new LazyHashMap<>();
+    private final Map<IdBase32, Game> games = new LazyHashMap<>();
 
-    private IdBase64 lastId = null;
+    private IdBase32 lastId = null;
     
     @Nonnull
-    public Map<IdBase64, Quiz> getQuizzes() {
+    public Map<IdBase32, Quiz> getQuizzes() {
         return quizzes;
     }
 
     @Nonnull
-    public Optional<Quiz> getQuiz(@Nullable IdBase64 id) {
+    public Optional<Quiz> getQuiz(@Nullable IdBase32 id) {
         return HasId.get(quizzes, id);
     }
 
     @Nonnull
-    public Map<IdBase64, Game> getGames() {
+    public Map<IdBase32, Game> getGames() {
         return games;
     }
 
     @Nonnull
-    public Optional<Game> getGame(@Nullable IdBase64 id) {
+    public Optional<Game> getGame(@Nullable IdBase32 id) {
         return HasId.get(games, id);
     }
 
     @Nonnull
-    public IdBase64 nextId() {
+    public IdBase32 nextId() {
         if(lastId == null) {
-            lastId = IdBase64.of(Instant.now().getEpochSecond());
+            lastId = IdBase32.of(Instant.now().getEpochSecond());
         }
         lastId = lastId.next();
         return lastId;

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import de.dreja.common.model.DbRoot;
-import de.dreja.common.model.IdBase64;
+import de.dreja.common.model.IdBase32;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.PreDestroy;
 
@@ -41,9 +41,9 @@ public class Storage {
     }
 
     @Nonnull
-    public IdBase64 getNextId() {
+    public IdBase32 getNextId() {
         final DbRoot root = getRoot();
-        final IdBase64 next = root.nextId();
+        final IdBase32 next = root.nextId();
         storageManager.storeRoot();
         return next;
     }

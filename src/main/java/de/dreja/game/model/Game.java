@@ -7,22 +7,22 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import de.dreja.common.model.HasId;
 import de.dreja.common.model.HasTimestamp;
-import de.dreja.common.model.IdBase64;
+import de.dreja.common.model.IdBase32;
 import jakarta.annotation.Nonnull;
 
-public class Game implements HasId<IdBase64>, HasTimestamp {
+public class Game implements HasId<IdBase32>, HasTimestamp {
     
-    private IdBase64 id;
+    private IdBase32 id;
     private LocalDateTime createDate = LocalDateTime.now();
 
     @Override
     @Nonnull
     @JsonInclude(Include.NON_NULL)
-    public IdBase64 getId() {
+    public IdBase32 getId() {
         return id;
     }
 
-    public void setId(IdBase64 id) {
+    public void setId(IdBase32 id) {
         this.id = id;
     }
 
