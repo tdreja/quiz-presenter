@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.eclipse.serializer.collections.lazy.LazyHashMap;
 
+import de.dreja.game.model.Game;
 import de.dreja.quiz.model.Quiz;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -14,7 +15,7 @@ public class DbRoot {
     
     private final Map<Base64Id, Quiz> quizzes = new LazyHashMap<>();
 
-    private final Map<Base64Id, Object> games = new LazyHashMap<>();
+    private final Map<Base64Id, Game> games = new LazyHashMap<>();
 
     private Base64Id lastId = null;
     
@@ -25,17 +26,17 @@ public class DbRoot {
 
     @Nonnull
     public Optional<Quiz> getQuiz(@Nullable Base64Id id) {
-        return get(id, quizzes);
+        return HasId.get(quizzes, id);
     }
 
     @Nonnull
-    public Map<Base64Id, Object> getGames() {
+    public Map<Base64Id, Game> getGames() {
         return games;
     }
 
     @Nonnull
-    public Optional<Object> getGame(@Nullable Base64Id id) {
-        return get(id, games);
+    public Optional<Game> getGame(@Nullable Base64Id id) {
+        return HasId.get(games, id);
     }
 
     @Nonnull
@@ -45,19 +46,11 @@ public class DbRoot {
             if(lastId.getDate().equals(today)) {
                 lastId = Base64Id.of(today, lastId.getIndex()+1);
             } else {
-                lastId = Base64Id.of(today, 1L);
+                lastId = Base64Id.of(today, 1);
             }
             return lastId;
         }
-        lastId = Base64Id.of(today, 1L);
+        lastId = Base64Id.of(today, 1);
         return lastId;
-    }
-    
-    @Nonnull
-    protected <TYPE> Optional<TYPE> get(@Nullable Base64Id id, @Nullable Map<Base64Id, TYPE> map) {
-        if(id == null || map == null) {
-            return Optional.empty();
-        }
-        return Optional.ofNullable(map.get(id));
     }
 }

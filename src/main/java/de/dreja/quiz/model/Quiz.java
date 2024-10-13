@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import de.dreja.common.model.Base64Id;
 import de.dreja.common.model.HasId;
 
-public class Quiz implements HasId {
+public class Quiz implements HasId<Base64Id> {
     
     private Base64Id id;
     private String name;
