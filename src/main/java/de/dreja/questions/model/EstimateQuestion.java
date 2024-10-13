@@ -1,5 +1,9 @@
 package de.dreja.questions.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -9,11 +13,17 @@ public class EstimateQuestion implements Question {
 
     protected static final String TYPE_NAME = "estimate";
 
-    private String id;
-    private String text;
+    private final String id;
+    private final String text;
 
     private BigInteger answer = BigInteger.ZERO;
     private String answerUnit = "";
+
+    @JsonCreator
+    public EstimateQuestion(String text) {
+        this.text = text == null ? "" : text;
+        this.id = Question.buildId(TYPE_NAME, this.text);
+    }
 
     @Nonnull
     @Override
@@ -27,21 +37,25 @@ public class EstimateQuestion implements Question {
     }
 
     @Nonnull
-    public EstimateQuestion setText(@Nullable String text) {
-        this.text = text == null ? "" : text;
-        this.id = Question.buildId(TYPE_NAME, this.text);
-        return this;
-    }
-
-    @Nonnull
+    @JsonIgnore
     public BigInteger getAnswer() {
         return answer;
+    }
+
+    @JsonGetter("answer")
+    protected long getAnswerAsLong() {
+        return answer.longValue();
     }
 
     @Nonnull
     public EstimateQuestion setAnswer(@Nullable BigInteger answer) {
         this.answer = answer == null ? BigInteger.ZERO : answer;
         return this;
+    }
+
+    @JsonSetter("answer")
+    protected void setAnswerLong(long value) {
+        this.answer = BigInteger.valueOf(value);
     }
 
     @Nonnull

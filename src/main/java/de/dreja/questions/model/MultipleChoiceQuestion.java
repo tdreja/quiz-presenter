@@ -1,8 +1,6 @@
 package de.dreja.questions.model;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.*;
 import de.dreja.common.model.HasId;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -12,10 +10,16 @@ import java.util.*;
 public class MultipleChoiceQuestion implements Question {
     protected static final String TYPE_NAME = "multiple-choice";
 
-    private String id;
-    private String text;
+    private final String id;
+    private final String text;
     private final NavigableMap<String, AnswerOption> options = new TreeMap<>();
     private String correctAnswerId;
+
+    @JsonCreator
+    public MultipleChoiceQuestion(@JsonProperty("text") String text) {
+        this.text = text == null ? "" : text;
+        this.id = Question.buildId(TYPE_NAME, this.text);
+    }
 
     @Nonnull
     @Override
@@ -26,13 +30,6 @@ public class MultipleChoiceQuestion implements Question {
     @Nonnull
     public String getText() {
         return text;
-    }
-
-    @Nonnull
-    public MultipleChoiceQuestion setText(@Nullable String text) {
-        this.text = text == null ? "" : text;
-        this.id = Question.buildId(TYPE_NAME, this.text);
-        return this;
     }
 
     @Nonnull
@@ -49,7 +46,7 @@ public class MultipleChoiceQuestion implements Question {
 
     @Nonnull
     @JsonSetter("options")
-    public MultipleChoiceQuestion setOptions(@Nullable Collection<AnswerOption> options) {
+    public MultipleChoiceQuestion setOptions(@Nullable List<AnswerOption> options) {
         this.options.clear();
         if(options != null) {
             options.forEach(opt -> HasId.put(this.options, opt));

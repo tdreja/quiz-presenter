@@ -18,10 +18,10 @@ import de.dreja.game.model.Game;
 
 @RestController
 @RequestMapping("debug")
-public class RestDebugApi {
+public class GameDebugApi {
 
     @Autowired
-    RestDebugApi(Storage storage) {
+    GameDebugApi(Storage storage) {
         this.storage = storage;
     }
 
