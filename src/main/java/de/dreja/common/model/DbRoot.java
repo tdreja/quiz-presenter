@@ -1,7 +1,6 @@
 package de.dreja.common.model;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Map;
 import java.util.Optional;
 
@@ -48,4 +47,5 @@ public class DbRoot {
         lastId = lastId.next();
         return lastId;
     }
+
 }

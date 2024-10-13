@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import de.dreja.common.model.DbRoot;
+import de.dreja.common.model.IdBase64;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.PreDestroy;
 
@@ -33,6 +34,18 @@ public class Storage {
 
     public void storeRoot() {
         storageManager.storeRoot();
+    }
+
+    public void store(@Nonnull Object object) {
+        storageManager.store(object);
+    }
+
+    @Nonnull
+    public IdBase64 getNextId() {
+        final DbRoot root = getRoot();
+        final IdBase64 next = root.nextId();
+        storageManager.storeRoot();
+        return next;
     }
 
     @PreDestroy

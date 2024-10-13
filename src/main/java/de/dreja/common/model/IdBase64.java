@@ -3,6 +3,10 @@ package de.dreja.common.model;
 import java.math.BigInteger;
 import java.util.Base64;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -25,11 +29,16 @@ public final class IdBase64 extends Number implements Comparable<IdBase64> {
     }
 
     @Nonnull
+    @JsonCreator
     public static IdBase64 of(@Nullable String base64) {
         if(base64 == null) {
             return of(1L);
         }
-        return new IdBase64(base64, new BigInteger(DECODER.decode(base64)).longValue());
+        try {
+            return new IdBase64(base64, new BigInteger(DECODER.decode(base64)).longValue());
+        } catch (IllegalArgumentException ex) {
+            return of(1L);
+        }
     }
 
     @Override
@@ -38,26 +47,31 @@ public final class IdBase64 extends Number implements Comparable<IdBase64> {
     }
 
     @Override
+    @JsonIgnore
     public int intValue() {
         return (int) numberValue;
     }
 
     @Override
+    @JsonIgnore
     public long longValue() {
         return numberValue;
     }
 
     @Override
+    @JsonIgnore
     public float floatValue() {
         return numberValue;
     }
 
     @Override
+    @JsonIgnore
     public double doubleValue() {
         return numberValue;
     }
 
     @Override
+    @JsonValue
     public String toString() {
         return base64Value;
     }
