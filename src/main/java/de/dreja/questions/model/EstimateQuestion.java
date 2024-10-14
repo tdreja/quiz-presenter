@@ -8,6 +8,7 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
 import java.math.BigInteger;
+import java.util.Objects;
 
 public class EstimateQuestion implements Question {
 
@@ -18,6 +19,7 @@ public class EstimateQuestion implements Question {
 
     private BigInteger answer = BigInteger.ZERO;
     private String answerUnit = "";
+    private int difficulty;
 
     @JsonCreator
     public EstimateQuestion(String text) {
@@ -67,5 +69,33 @@ public class EstimateQuestion implements Question {
     public EstimateQuestion setAnswerUnit(@Nullable String answerUnit) {
         this.answerUnit = answerUnit == null ? "" : answerUnit;
         return this;
+    }
+
+    @Override
+    public int getDifficulty() {
+        return difficulty;
+    }
+
+    @Nonnull
+    public EstimateQuestion setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
+        return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        EstimateQuestion that = (EstimateQuestion) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

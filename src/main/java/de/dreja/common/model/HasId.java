@@ -1,11 +1,10 @@
 package de.dreja.common.model;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Stream;
 
-import io.micrometer.common.lang.Nullable;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 public interface HasId<ID extends Comparable<?>> {
     
@@ -13,14 +12,16 @@ public interface HasId<ID extends Comparable<?>> {
     public ID getId();
 
     @Nonnull
-    static <ID extends Comparable<?>, ITEM extends HasId<ID>> Optional<ITEM> get(@Nullable Map<ID, ITEM> map, @Nullable ID id) {
+    static <ID extends Comparable<?>, ITEM extends HasId<ID>> Optional<ITEM> get(@Nullable Map<ID, ITEM> map,
+                                                                                 @Nullable ID id) {
         if(id == null || map == null) {
             return Optional.empty();
         }
         return Optional.ofNullable(map.get(id));
     }
 
-    static <ID extends Comparable<?>, ITEM extends HasId<ID>> void put(@Nullable Map<ID, ITEM> map, @Nullable ITEM item) {
+    static <ID extends Comparable<?>, ITEM extends HasId<ID>> void put(@Nullable Map<ID, ITEM> map,
+                                                                       @Nullable ITEM item) {
         if(map == null || item == null) {
             return;
         }
@@ -43,5 +44,17 @@ public interface HasId<ID extends Comparable<?>> {
             }
             return id1.compareTo(id2);
         };
+    }
+
+    @Nonnull
+    static <ID extends Comparable<?>, ITEM extends HasId<ID>> Stream<ITEM> stream(@Nullable Map<ID, ITEM> map,
+                                                                                  @Nullable Collection<ID> ids) {
+        if(ids == null || map == null) {
+            return Stream.empty();
+        }
+        return ids.stream()
+                .filter(Objects::nonNull)
+                .map(map::get)
+                .filter(Objects::nonNull);
     }
 }

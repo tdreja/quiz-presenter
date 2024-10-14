@@ -14,6 +14,7 @@ public class MultipleChoiceQuestion implements Question {
     private final String text;
     private final NavigableMap<String, AnswerOption> options = new TreeMap<>();
     private String correctAnswerId;
+    private int difficulty;
 
     @JsonCreator
     public MultipleChoiceQuestion(@JsonProperty("text") String text) {
@@ -71,6 +72,34 @@ public class MultipleChoiceQuestion implements Question {
         return this;
     }
 
+    @Override
+    public int getDifficulty() {
+        return difficulty;
+    }
+
+    @Nonnull
+    public MultipleChoiceQuestion setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
+        return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MultipleChoiceQuestion that = (MultipleChoiceQuestion) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
     public static class AnswerOption implements HasId<String> {
 
         private String id;
@@ -92,6 +121,23 @@ public class MultipleChoiceQuestion implements Question {
             this.text = text == null ? "" : text;
             this.id = Question.buildId("answer", this.text);
             return this;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            AnswerOption that = (AnswerOption) o;
+            return Objects.equals(id, that.id);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(id);
         }
     }
 }

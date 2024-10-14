@@ -19,6 +19,8 @@ public interface Question extends HasId<String> {
     Pattern SPACES = Pattern.compile("[\s]+");
     Pattern NOT_LETTERS_OR_NUMBERS = Pattern.compile("[^a-z0-9-]+");
 
+    int getDifficulty();
+
 
     @Nonnull
     static String buildId(final @Nonnull String typeName, final @Nonnull String text) {
