@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id 'com.github.node-gradle.node' version '7.1.0'
 }
 
 group = 'de.dreja'
@@ -37,6 +38,37 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
+
+node {
+	version = '20.18.0'
+	npmInstallCommand = 'install'
+	distBaseUrl = 'https://nodejs.org/dist'
+	download = true
+}
+
+tasks.register('compileTypescript', NpxTask) {
+	group = 'build'
+	dependsOn tasks.named('npmInstall')
+	command = 'tsc'
+	inputs.files(project.fileTree('src/main/typescript'))
+	outputs.dir(layout.buildDirectory.dir('resources/static/js'))
+	/*onlyIf {
+		inputs.hasSourceFiles
+	}*/
+}
+
+tasks.named('compileJava') {
+	dependsOn(tasks.named('compileTypescript'))
+}
+tasks.named('processResources') {
+	dependsOn(tasks.named('compileTypescript'))
+}
+
+javadoc {
+	options.encoding = 'UTF-8'
+}
+
+
 
 tasks.named('test') {
 	useJUnitPlatform()

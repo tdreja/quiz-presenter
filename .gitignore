@@ -38,3 +38,6 @@ out/
 
 ### Local Run ###
 **/application.properties
+
+### NodeJS ###
+node_modules
