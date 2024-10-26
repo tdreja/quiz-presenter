@@ -7,6 +7,7 @@ export interface GamepadState {
 const gamepads: Array<GamepadState> = [];
 
 window.addEventListener('gamepadconnected', event => {
+    console.log("Gamepad connected", event.gamepad);
     gamepads[event.gamepad.index] = {
         gamepad: event.gamepad,
         buttonsPressed: checkButtonsPressed(event.gamepad),

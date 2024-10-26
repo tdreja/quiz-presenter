@@ -46,22 +46,39 @@ node {
 	download = true
 }
 
+tasks.register('cleanJavascript', Copy) {
+	group = 'build'
+	from layout.buildDirectory.dir('typescript/compiled')
+	include '**/*.js'
+	into layout.buildDirectory.dir('resources/static/js')
+	filter {
+		String line -> line.startsWith('export {};') ? null : line
+	}
+	filter {
+		String line -> line.startsWith('export var') ? line.replaceFirst('export var', 'var') : line
+	}
+	filter {
+		String line -> line.startsWith('export function') ? line.replaceFirst('export function', 'function') : line
+	}
+}
+
 tasks.register('compileTypescript', NpxTask) {
 	group = 'build'
 	dependsOn tasks.named('npmInstall')
 	command = 'tsc'
-	inputs.files(project.fileTree('src/main/typescript'))
-	outputs.dir(layout.buildDirectory.dir('resources/static/js'))
-	/*onlyIf {
-		inputs.hasSourceFiles
-	}*/
+	inputs.files(project.fileTree('src/main/typescript').filter {
+		File f -> f.name.endsWith('.ts')
+	})
+	outputs.dir(layout.buildDirectory.dir('typescript/compiled'))
+	finalizedBy(tasks.named('cleanJavascript'))
 }
 
+
 tasks.named('compileJava') {
-	dependsOn(tasks.named('compileTypescript'))
+	dependsOn(tasks.named('compileTypescript'), tasks.named('cleanJavascript'))
 }
 tasks.named('processResources') {
-	dependsOn(tasks.named('compileTypescript'))
+	dependsOn(tasks.named('compileTypescript'), tasks.named('cleanJavascript'))
 }
 
 javadoc {
