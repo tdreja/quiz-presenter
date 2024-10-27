@@ -50,7 +50,7 @@ tasks.register('cleanJavascript', Copy) {
 	group = 'build'
 	from layout.buildDirectory.dir('typescript/compiled')
 	include '**/*.js'
-	into layout.buildDirectory.dir('resources/static/js')
+	into layout.buildDirectory.dir('resources/main/static/js')
 	filter {
 		String line -> line.startsWith('export {};') ? null : line
 	}
