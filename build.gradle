@@ -55,6 +55,9 @@ tasks.register('cleanJavascript', Copy) {
 		String line -> line.startsWith('export {};') ? null : line
 	}
 	filter {
+		String line -> line.startsWith('import') ? null : line
+	}
+	filter {
 		String line -> line.startsWith('export var') ? line.replaceFirst('export var', 'var') : line
 	}
 	filter {
