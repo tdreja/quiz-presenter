@@ -15,7 +15,7 @@ export interface Team {
     color: TeamColor,
     points: number,
     players: Array<Player>,
-    controller?: number
+    gamepad?: number
 }
 
 export function alterTeamPoints(team: Team, points: number) {
