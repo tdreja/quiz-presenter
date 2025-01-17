@@ -1,4 +1,4 @@
-import {alterTeamPoints, Team} from "./team";
+import {Team, TeamUpdate, updateTeams} from "./team";
 import {Player} from "./player";
 
 export interface Game {
@@ -29,63 +29,7 @@ export interface GameSection {
     complete: boolean
 }
 
-export function startRound(round: GameRound): boolean {
-    if(round.complete) {
-        return false;
-    }
-    if(round.currentAction !== RoundAction.NONE) {
-        return false;
-    }
-    round.currentAction = RoundAction.READING_QUESTION;
-    return true;
-}
-
-export function activateBuzzer(round: GameRound): boolean {
-    if(round.complete) {
-        return false;
-    }
-    if(round.currentAction === RoundAction.READING_QUESTION || round.currentAction === RoundAction.TEAM_CAN_ANSWER) {
-        round.currentAction = RoundAction.BUZZER_ACTIVE;
-        round.teamWantsToAnswer = undefined;
-        return true;
-    }
-    return false;
-}
-
-export function teamWantsToAnswer(round: GameRound, team: Team) {
-    if(round.complete) {
-        return false;
-    }
-    if(round.currentAction !== RoundAction.BUZZER_ACTIVE) {
-        return false;
-    }
-    if(round.teamTriedToAnswer.includes(team)) {
-        return false;
-    }
-    round.teamTriedToAnswer.push(team);
-    round.teamWantsToAnswer = team;
-    round.currentAction = RoundAction.TEAM_CAN_ANSWER;
-    return true;
-}
-
-export function answerReceived(round: GameRound, answer: boolean) {
-    if(round.complete) {
-        return false;
-    }
-    if(round.currentAction !== RoundAction.TEAM_CAN_ANSWER) {
-        return false;
-    }
-    if(answer) {
-        round.complete = true;
-        round.currentAction = RoundAction.NONE;
-        const team = round.teamWantsToAnswer;
-        if(team) {
-            round.completedBy.push(team);
-            alterTeamPoints(team, round.points);
-        }
-    } else {
-        round.teamWantsToAnswer = undefined;
-        round.currentAction = RoundAction.BUZZER_ACTIVE;
-        return true;
-    }
+export function updateGame(game: Game, teamUpdates: Array<TeamUpdate>, playerUpdates: Array<Player>) {
+    game.allPlayers = playerUpdates;
+    game.teams = updateTeams(game.teams, game.allPlayers, teamUpdates);
 }

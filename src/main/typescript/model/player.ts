@@ -77,7 +77,3 @@ export function getEmojiCharacter(emoji: Emoji): string {
     const character = emojiCharacters.get(emoji);
     return character ? character : '';
 }
-
-export function alterPlayerPoints(player: Player, points: number) {
-    player.points = player.points + points;
-}
