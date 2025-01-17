@@ -12,9 +12,9 @@ export enum TeamColor {
 }
 
 export interface TeamUpdate {
-    color: TeamColor,
-    points: number,
-    players: Array<Emoji>
+    forTeam: TeamColor,
+    newPoints: number,
+    updatedPlayers: Array<Emoji>
 }
 
 
@@ -28,16 +28,16 @@ export interface Team {
 export function updateTeams(teams: Array<Team>, allPlayers: Array<Player>, updates: Array<TeamUpdate>): Array<Team> {
     const result: Array<Team> = [];
     for(const update of updates) {
-        const team = teams.find(t => t.color === update.color);
+        const team = teams.find(t => t.color === update.forTeam);
         if(team) {
-            team.points = update.points;
-            team.players = allPlayers.filter(p => update.players.includes(p.emoji));
+            team.points = update.newPoints;
+            team.players = allPlayers.filter(p => update.updatedPlayers.includes(p.emoji));
             result.push(team);
         } else {
             result.push({
-                color: update.color,
-                points: update.points,
-                players: allPlayers.filter(p => update.players.includes(p.emoji))
+                color: update.forTeam,
+                points: update.newPoints,
+                players: allPlayers.filter(p => update.updatedPlayers.includes(p.emoji))
             });
         }
     }
