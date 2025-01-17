@@ -1,6 +1,7 @@
 import {Team, TeamColor, TeamUpdate, updateTeams} from "./team";
-import {Player} from "./player";
+import {Emoji, Player} from "./player";
 import { GameRound, RoundState } from "./round";
+import { Options } from "./options";
 
 
 
@@ -25,9 +26,11 @@ export class GameSection {
 
 export class Game {
     private readonly _sections: Array<GameSection>;
+    private readonly _emojis: Options<Emoji>;
+    private readonly _colors: Options<TeamColor>;
     private _players: Array<Player>;
     private _teams: Array<Team>;
-    private _selectingTeam: TeamColor | null;
+    private _selectingTeam: Team | null;
     private _round: GameRound | null;
 
     
@@ -47,11 +50,13 @@ export class Game {
         return this._round;
     }
 
-    public get selectingTeam() : TeamColor | null {
+    public get selectingTeam() : Team | null {
         return this._selectingTeam;
     }
 
     public constructor(sections: Array<GameSection>) {
+        this._emojis = new Options(Object.keys(Emoji).map(key => key as unknown as Emoji));
+        this._colors = new Options(Object.keys(TeamColor).map(key => key as unknown as TeamColor));
         this._players = [];
         this._teams = [];
         this._sections = sections;

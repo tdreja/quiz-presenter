@@ -33,10 +33,35 @@ export enum Emoji {
     DOG = 'DOG',
 }
 
-export interface Player {
-    name: string,
-    emoji: Emoji,
-    points: number
+export class Player {
+
+    private _name: string;
+    public get name(): string {
+        return this._name;
+    }
+    public set name(value: string) {
+        this._name = value;
+    }
+    private _emoji: Emoji;
+    public get emoji(): Emoji {
+        return this._emoji;
+    }
+    public set emoji(value: Emoji) {
+        this._emoji = value;
+    }
+    private _points: number;
+    public get points(): number {
+        return this._points;
+    }
+    public set points(value: number) {
+        this._points = value;
+    }
+    
+    public constructor(name: string, emoji: Emoji) {
+        this._name = name;
+        this._emoji = emoji;
+        this._points = 0;
+    }
 }
 
 const emojiCharacters = new Map<Emoji, string>();

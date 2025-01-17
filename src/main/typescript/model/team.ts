@@ -1,14 +1,14 @@
 import {Emoji, Player} from "./player";
 
 export enum TeamColor {
-    RED,
-    BLUE,
-    GREEN,
-    YELLOW,
-    ORANGE,
-    PURPLE,
-    TURQUOISE,
-    WHITE
+    RED = 'RED',
+    BLUE = 'BLUE',
+    GREEN = 'GREEN',
+    YELLOW = 'YELLOW',
+    ORANGE = 'ORANGE',
+    PURPLE = 'PURPLE',
+    TURQUOISE = 'TURQUOISE',
+    WHITE = 'WHITE'
 }
 
 export interface TeamUpdate {

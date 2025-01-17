@@ -1,5 +1,5 @@
 import { AnswerId, Question } from "./question";
-import { TeamColor } from "./team";
+import { Team, TeamColor } from "./team";
 
 /**
  * Describes how the attempt went for the team 
@@ -38,9 +38,9 @@ export class GameRound {
     private readonly _pointsForCompletion: number;
     private readonly _question: Question;
     private _state: RoundState;
-    private _currentlyAttempting: TeamColor | null;
-    private _completedBy: TeamColor | null;
-    private readonly _attemptsBy: Array<TeamColor>;
+    private _currentlyAttempting: Team | null;
+    private _completedBy: Team | null;
+    private readonly _attemptsBy: Array<Team>;
     private readonly _usedAnswers: Array<AnswerId>;
 
     public get pointsForCompletion(): number {
@@ -51,15 +51,15 @@ export class GameRound {
         return this._state;
     }
     
-    public get attemptsBy() : Array<TeamColor> {
+    public get attemptsBy() : Array<Team> {
         return this._attemptsBy;
     }
 
-    public get completedBy(): TeamColor | null {
+    public get completedBy(): Team | null {
         return this._completedBy;
     }
 
-    public get currentlyAttempting(): TeamColor | null {
+    public get currentlyAttempting(): Team | null {
         return this._currentlyAttempting;
     }
 
@@ -93,7 +93,7 @@ export class GameRound {
         return false;
     }
 
-    public requestAttempt(team: TeamColor): boolean {
+    public requestAttempt(team: Team): boolean {
         if(this._state !== RoundState.BUZZER_ACTIVE) {
             return false;
         }
