@@ -50,6 +50,10 @@ export class Game {
         return this._round;
     }
 
+    public set round(v : GameRound | null) {
+        this._round = v;
+    }
+
     public get selectingTeam() : Team | null {
         return this._selectingTeam;
     }
@@ -62,35 +66,6 @@ export class Game {
         this._sections = sections;
         this._round = null;
         this._selectingTeam = null;
-    }
-
-    public startNextRound(sectionName: string, roundPoints: number): boolean {
-        // Find the relevant round
-        const section = this._sections.find(s => s.name === sectionName);
-        if(!section) {
-            return false;
-        }
-        const round = section.rounds.find(r => r.pointsForCompletion === roundPoints);
-        if(!round) {
-            return false;
-        }
-
-        let changes = false;
-
-        // Complete the old round
-        if(this._round) {
-            changes = true;
-            this._round.forceComplete();
-        }
-        this._round = null;
-
-        // Try to start the new round
-        if(round.startRound()) {
-            changes = true;
-            this._round = round;
-        }
-
-        return changes;
     }
 
     public selectNextRound(): boolean {

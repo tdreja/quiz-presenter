@@ -43,12 +43,20 @@ export class GameRound {
     private readonly _attemptsBy: Array<Team>;
     private readonly _usedAnswers: Array<AnswerId>;
 
+    public get usedAnswers(): Array<AnswerId> {
+        return this._usedAnswers;
+    }
+
     public get pointsForCompletion(): number {
         return this._pointsForCompletion;
     }
     
     public get state() : RoundState {
         return this._state;
+    }
+
+    public set state(v : RoundState) {
+        this._state = v;
     }
     
     public get attemptsBy() : Array<Team> {
@@ -58,10 +66,20 @@ export class GameRound {
     public get completedBy(): Team | null {
         return this._completedBy;
     }
-
+    
+    public set completedBy(v : Team | null) {
+        this._completedBy = v;
+    }
+    
     public get currentlyAttempting(): Team | null {
         return this._currentlyAttempting;
     }
+
+    
+    public set currentlyAttempting(v : Team | null) {
+        this._currentlyAttempting = v;
+    }
+    
 
     public get question(): Question {
         return this._question;
@@ -75,22 +93,6 @@ export class GameRound {
         this._usedAnswers = [];
         this._completedBy = null;
         this._currentlyAttempting = null;
-    }
-
-    public startRound(): boolean {
-        if(this._state === RoundState.WAIT_ON_REVEAL) {
-            this._state = RoundState.SHOWING_TEXT;
-            return true;
-        }
-        return false;
-    }
-
-    public activateBuzzer(): boolean {
-        if(this._state === RoundState.SHOWING_TEXT || this._state === RoundState.TEAM_CAN_ATTEMPT) {
-            this._state = RoundState.BUZZER_ACTIVE;
-            return true;
-        }
-        return false;
     }
 
     public requestAttempt(team: Team): boolean {
