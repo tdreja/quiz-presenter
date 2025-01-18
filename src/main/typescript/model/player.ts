@@ -1,3 +1,5 @@
+import { TeamColor } from "./team";
+
 export enum Emoji {
     DUCK = 'DUCK',
     SHARK = 'SHARK',
@@ -37,6 +39,7 @@ export interface Player {
     name: string;
     emoji: Emoji;
     points: number;
+    team: TeamColor | null;
 }
 
 const emojiCharacters = new Map<Emoji, string>();

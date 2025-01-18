@@ -1,4 +1,4 @@
-import {Player} from "./player";
+import {Emoji, Player} from "./player";
 
 export enum TeamColor {
     RED = 'RED',
@@ -12,8 +12,8 @@ export enum TeamColor {
 }
 
 export interface Team {
-    color: TeamColor,
+    readonly color: TeamColor,
     points: number,
-    players: Array<Player>,
+    readonly players: Map<Emoji, Player>,
     gamepad?: number
 }

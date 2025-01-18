@@ -1,6 +1,5 @@
 import {Team, TeamColor} from "./team";
 import {Emoji, Player} from "./player";
-import { Options } from "./options";
 import { AnswerId, Question } from "./question";
 
 /**
@@ -60,10 +59,10 @@ export interface GameSection {
  */
 export interface Game {
     readonly sections: Array<GameSection>;
-    readonly availableEmojis: Options<Emoji>;
-    readonly availableColors: Options<TeamColor>;
-    readonly players: Array<Player>;
-    readonly teams: Array<Team>;
+    readonly availableEmojis: Set<Emoji>;
+    readonly availableColors: Set<TeamColor>;
+    readonly players: Map<Emoji, Player>;
+    readonly teams: Map<TeamColor, Team>;
     selectingTeam: Team | null;
     currentRound: GameRound | null;
 }

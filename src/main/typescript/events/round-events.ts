@@ -32,6 +32,7 @@ export class StartRoundEvent extends GameEvent {
         }
         round.state = RoundState.SHOWING_TEXT;
         game.currentRound = round;
+        return true;
     }
 }
 
@@ -83,7 +84,7 @@ export class RequestAttemptEvent extends GameRoundEvent {
         if(round.state !== RoundState.BUZZER_ACTIVE) {
             return false;
         }
-        const team = game.teams.find(t => t.color === this._team);
+        const team = game.teams.get(this._team);
         if(!team) {
             return false;
         }
