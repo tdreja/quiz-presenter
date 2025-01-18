@@ -71,6 +71,7 @@ export class RemovePlayerEvent extends GameEvent {
             return false;
         }
         game.players.delete(this._emoji);
+        game.availableEmojis.add(this._emoji);
         const team = player.team ? game.teams.get(player.team) : null;
         if(team) {
             team.players.delete(this._emoji);
@@ -79,24 +80,84 @@ export class RemovePlayerEvent extends GameEvent {
     }
   }
 
-  export class AddTeamEvent extends GameEvent {
+  export class RenamePlayerEvent extends GameEvent {
+    private readonly _emoji: Emoji;
+    private readonly _newName: string;
   
-    public constructor(eventInitDict?: EventInit) {
-      super(EventType.ADD_TEAM, eventInitDict);
+    public constructor(emoji: string, newName: string, eventInitDict?: EventInit) {
+      super(EventType.RENAME_PLAYER, eventInitDict);
+      this._emoji = emoji as Emoji;
+      this._newName = newName;
     }
   
     public updateGame(game: Game): boolean {
-        const color = nextRandom(game.availableColors);
-        if(!color) {
+        const player = game.players.get(this._emoji);
+        if(!player) {
             return false;
         }
-        game.availableColors.delete(color);
+        player.name = this._newName;
+        return true;
+    }
+  }
+
+  export class ReRollEmojiEvent extends GameEvent {
+    private readonly _oldEmoji: Emoji;
+  
+    public constructor(oldEmoji: string, eventInitDict?: EventInit) {
+      super(EventType.RENAME_PLAYER, eventInitDict);
+      this._oldEmoji = oldEmoji as Emoji;
+    }
+  
+    public updateGame(game: Game): boolean {
+        const player = game.players.get(this._oldEmoji);
+        if(!player) {
+            return false;
+        }
+        // Find new available emoji
+        const newEmoji = nextRandom(game.availableEmojis);
+        if(!newEmoji || newEmoji === this._oldEmoji) {
+            return false;
+        }
+        game.availableEmojis.delete(newEmoji);
+        game.availableEmojis.add(this._oldEmoji);
+
+        // Update player and teams
+        player.emoji = newEmoji;
+        game.players.delete(this._oldEmoji);
+        game.players.set(newEmoji, player);
+        const team = player.team ? game.teams.get(player.team) : null;
+        if(team) {
+            team.players.delete(this._oldEmoji);
+            team.players.set(newEmoji, player);
+        }
+        return true;
+    }
+  }
+
+  export class AddTeamEvent extends GameEvent {
+  
+    private readonly _color?: string | null;
+
+    public constructor(color?: string | null, eventInitDict?: EventInit) {
+      super(EventType.ADD_TEAM, eventInitDict);
+      this._color = color;
+    }
+  
+    public updateGame(game: Game): boolean {
+        let newColor: TeamColor | null = this._color ? this._color as TeamColor : null;
+        if(!newColor || !game.availableColors.has(newColor)) {
+            newColor = nextRandom(game.availableColors);
+        }
+        if(!newColor) {
+            return false;
+        }
+        game.availableColors.delete(newColor);
         const team: Team = {
-            color: color,
+            color: newColor,
             points: 0,
             players: new Map()
         };
-        game.teams.set(color, team);
+        game.teams.set(newColor, team);
         return true;
     }
   }
@@ -116,6 +177,8 @@ export class RemovePlayerEvent extends GameEvent {
             return false;
         }
         game.teams.delete(this._color);
+        game.availableColors.add(this._color);
+
         for(let [emoji, player] of team.players) {
             const smallest = findSmallestTeam(game.teams);
             if(smallest) {

@@ -7,9 +7,13 @@ export enum EventType {
     REQUEST_ATTEMPT = 'request-attempt',
     COMPLETE_ATTEMPT = 'complete-attempt',
 
-    // Events to setup the game
+    // Events for player setup
     ADD_PLAYER = 'add-player',
     REMOVE_PLAYER = 'remove-player',
+    RENAME_PLAYER = 'rename-player',
+    REROLL_EMOJI = 'reroll-emoji',
+
+    // Events for team setup
     ADD_TEAM = 'add-team',
     REMOVE_TEAM = 'remove-team'
 }
