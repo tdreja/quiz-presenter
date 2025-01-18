@@ -43,6 +43,7 @@ export interface GameRound {
     completedBy: Team | null;
     readonly attemptsBy: Array<Team>;
     readonly usedAnswers: Array<AnswerId>;
+    readonly inSection: string;
 
 }
 

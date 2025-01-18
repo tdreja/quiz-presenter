@@ -17,6 +17,11 @@ export class StartRoundEvent extends GameEvent {
     public updateGame(game: Game): boolean {
         // Force complete the old round
         if(game.currentRound) {
+            // We're already active?
+            if(game.currentRound.pointsForCompletion === this._roundPoints 
+                && game.currentRound.inSection === this._sectionName) {
+                return false;
+            }
             const oldRound = game.currentRound;
             game.currentRound = null;
             oldRound.state = RoundState.COMPLETED;
@@ -61,7 +66,7 @@ export class ActivateBuzzerEvent extends GameRoundEvent {
 
     public updateRound(game: Game, round: GameRound): boolean {
         // Skip non-relevant states
-        if(round.state === RoundState.SHOWING_TEXT || round.state === RoundState.TEAM_CAN_ATTEMPT) {
+        if(round.state === RoundState.SHOWING_TEXT) {
             round.state = RoundState.BUZZER_ACTIVE;
             return true;
         }
@@ -132,32 +137,33 @@ export class CompleteAttemptEvent extends GameRoundEvent {
             return true;
         }
 
-        // Otherwise we move on
+        // Round completed by nobody
         if(this._success) {
-            this.nobodySuccessful(game, round);
+            return this.nobodySuccessful(game, round);
         }
-        // Without success we just mark the answer!
+        // Otherwise we move on
+        round.state = RoundState.SHOWING_TEXT;
+        round.currentlyAttempting = null;
         return true;
     }
 
-    protected nobodySuccessful(game: Game, round: GameRound) {
+    protected nobodySuccessful(game: Game, round: GameRound): boolean {
         // Complete round
         round.completedBy = null;
         round.state = RoundState.COMPLETED;
         game.currentRound = null;
+        return true;
     }
 
 
     protected teamNotSuccessful(round: GameRound, team: Team) {
         round.state = RoundState.SHOWING_TEXT;
-        round.attemptsBy.push(team);
         round.currentlyAttempting = null;
     }
 
     protected teamSuccessful(game: Game, round: GameRound, team: Team) {
         // Complete round
         round.state = RoundState.COMPLETED;
-        round.attemptsBy.push(team);
         round.completedBy = team;
         round.currentlyAttempting = null;
 
