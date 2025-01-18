@@ -1,23 +1,7 @@
-import { Game } from "./game";
-import { AnswerId } from "./question";
-import { GameRound, RoundState } from "./round";
-import { TeamColor } from "./team";
-
-export enum EventType {
-    START_ROUND = 'start-round',
-    ACTIVATE_BUZZER = 'activate-buzzer',
-    REQUEST_ATTEMPT = 'request-attempt',
-    COMPLETE_ATTEMPT = 'complete-attempt'
-}
-
-export abstract class GameEvent extends Event {
-
-    protected constructor(type: EventType, eventInitDict?: EventInit) {
-        super(type, eventInitDict);
-    }
-
-    public abstract updateGame(game: Game): boolean
-}
+import { Game, GameRound, RoundState } from "../model/game";
+import { AnswerId } from "../model/question";
+import { Team, TeamColor } from "../model/team";
+import { EventType, GameEvent } from "./common-events";
 
 export class StartRoundEvent extends GameEvent {
 
@@ -32,9 +16,9 @@ export class StartRoundEvent extends GameEvent {
 
     public updateGame(game: Game): boolean {
         // Force complete the old round
-        if(game.round) {
-            const oldRound = game.round;
-            game.round = null;
+        if(game.currentRound) {
+            const oldRound = game.currentRound;
+            game.currentRound = null;
             oldRound.state = RoundState.COMPLETED;
         }
 
@@ -47,7 +31,7 @@ export class StartRoundEvent extends GameEvent {
             return false;
         }
         round.state = RoundState.SHOWING_TEXT;
-        game.round = round;
+        game.currentRound = round;
     }
 }
 
@@ -58,7 +42,7 @@ abstract class GameRoundEvent extends GameEvent {
     }
 
     public updateGame(game: Game): boolean {
-        const round = game.round;
+        const round = game.currentRound;
         if(round) {
             return this.updateRound(game, round);
         }
@@ -75,6 +59,7 @@ export class ActivateBuzzerEvent extends GameRoundEvent {
     }
 
     public updateRound(game: Game, round: GameRound): boolean {
+        // Skip non-relevant states
         if(round.state === RoundState.SHOWING_TEXT || round.state === RoundState.TEAM_CAN_ATTEMPT) {
             round.state = RoundState.BUZZER_ACTIVE;
             return true;
@@ -94,6 +79,7 @@ export class RequestAttemptEvent extends GameRoundEvent {
     }
 
     public updateRound(game: Game, round: GameRound): boolean {
+        // Skip non-relevant states
         if(round.state !== RoundState.BUZZER_ACTIVE) {
             return false;
         }
@@ -112,6 +98,7 @@ export class RequestAttemptEvent extends GameRoundEvent {
 
 }
 
+
 export class CompleteAttemptEvent extends GameRoundEvent {
 
     private readonly _success: boolean; 
@@ -124,29 +111,60 @@ export class CompleteAttemptEvent extends GameRoundEvent {
     }
 
     public updateRound(game: Game, round: GameRound): boolean {
-        if(round.state !== RoundState.TEAM_CAN_ATTEMPT) {
+        // Skip non-relevant states
+        if(round.state === RoundState.WAIT_ON_REVEAL || round.state === RoundState.COMPLETED) {
             return false;
         }
+        // Always mark the answer, if possible
         if(this._answerId) {
             round.usedAnswers.push(this._answerId);
         }
+
+        // Do we have an active team?
         const team = round.currentlyAttempting;
-        if(!team) {
-            return false;
-        }
-        round.currentlyAttempting = null;
-        if(!this._success) {
-            round.state = RoundState.SHOWING_TEXT;
+        if(team) {
+            if(this._success) {
+                this.teamSuccessful(game, round, team);
+            } else {
+                this.teamNotSuccessful(round, team);
+            }
             return true;
         }
 
-
-        round.state = RoundState.COMPLETED;
-        round.completedBy = team;
-        game.round = null;
-        
-        team.points = team.points + round.pointsForCompletion;
-
+        // Otherwise we move on
+        if(this._success) {
+            this.nobodySuccessful(game, round);
+        }
+        // Without success we just mark the answer!
         return true;
+    }
+
+    protected nobodySuccessful(game: Game, round: GameRound) {
+        // Complete round
+        round.completedBy = null;
+        round.state = RoundState.COMPLETED;
+        game.currentRound = null;
+    }
+
+
+    protected teamNotSuccessful(round: GameRound, team: Team) {
+        round.state = RoundState.SHOWING_TEXT;
+        round.attemptsBy.push(team);
+        round.currentlyAttempting = null;
+    }
+
+    protected teamSuccessful(game: Game, round: GameRound, team: Team) {
+        // Complete round
+        round.state = RoundState.COMPLETED;
+        round.attemptsBy.push(team);
+        round.completedBy = team;
+        round.currentlyAttempting = null;
+
+        // Give points to team and players
+        team.points += round.pointsForCompletion;
+        team.players.forEach(p => p.points += round.pointsForCompletion);
+
+        // Prepare game for next round
+        game.currentRound = null;
     }
 }

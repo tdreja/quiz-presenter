@@ -1,79 +1,69 @@
-import {Team, TeamColor, TeamUpdate, updateTeams} from "./team";
+import {Team, TeamColor} from "./team";
 import {Emoji, Player} from "./player";
-import { GameRound, RoundState } from "./round";
 import { Options } from "./options";
+import { AnswerId, Question } from "./question";
 
-
-
-export class GameSection {
-
-    private readonly _name: string;
-    private readonly _rounds: Array<GameRound>;
-    
-    public get rounds() : Array<GameRound> {
-        return this._rounds;
-    }
-    
-    public get name() : string {
-        return this._name;
-    }
-    
-    public constructor(name: string, rounds: Array<GameRound>) {
-        this._name = name;
-        this._rounds = rounds;
-    }
+/**
+ * Describes how the attempt went for the team 
+ */
+export enum AttemptState {
+    CURRENTLY_ATTEMPTING,
+    SUCCESSFUL,
+    FAILURE
 }
 
-export class Game {
-    private readonly _sections: Array<GameSection>;
-    private readonly _emojis: Options<Emoji>;
-    private readonly _colors: Options<TeamColor>;
-    private _players: Array<Player>;
-    private _teams: Array<Team>;
-    private _selectingTeam: Team | null;
-    private _round: GameRound | null;
+/**
+ * Describes the actions of a team trying to complete the round
+ */
+export interface TeamAttempt {
+    attemptBy: TeamColor,
+    state: AttemptState,
+    answerId?: AnswerId
+}
 
-    
-    public get players() : Array<Player> {
-        return this._players;
-    }
-    
-    public get teams() : Array<Team> {
-        return this._teams;
-    }
-    
-    public get sections() : Array<GameSection> {
-        return this._sections;
-    }
+/**
+ * Describes at which point of the current round we are
+ */
+export enum RoundState {
+    WAIT_ON_REVEAL,
+    SHOWING_TEXT,
+    BUZZER_ACTIVE,
+    TEAM_CAN_ATTEMPT,
+    COMPLETED
+}
 
-    public get round(): GameRound | null {
-        return this._round;
-    }
+/**
+ * Contains all relevant data for one round of the quiz (i.e. one question)
+ */
+export interface GameRound {
 
-    public set round(v : GameRound | null) {
-        this._round = v;
-    }
+    readonly pointsForCompletion: number;
+    readonly question: Question;
+    state: RoundState;
+    currentlyAttempting: Team | null;
+    completedBy: Team | null;
+    readonly attemptsBy: Array<Team>;
+    readonly usedAnswers: Array<AnswerId>;
 
-    public get selectingTeam() : Team | null {
-        return this._selectingTeam;
-    }
+}
 
-    public constructor(sections: Array<GameSection>) {
-        this._emojis = new Options(Object.keys(Emoji).map(key => key as unknown as Emoji));
-        this._colors = new Options(Object.keys(TeamColor).map(key => key as unknown as TeamColor));
-        this._players = [];
-        this._teams = [];
-        this._sections = sections;
-        this._round = null;
-        this._selectingTeam = null;
-    }
+/**
+ * Group of rounds with a name associated (e.g. category of questions)
+ */
+export interface GameSection {
+    readonly name: string;
+    readonly rounds: Array<GameRound>;
+}
 
-    public selectNextRound(): boolean {
-        if(this._round) {
-            this._round.forceComplete();
-            this._round = null;
-            return true;
-        }
-        return false;
-    }
+/**
+ * Container with all game data
+ */
+export interface Game {
+    readonly sections: Array<GameSection>;
+    readonly availableEmojis: Options<Emoji>;
+    readonly availableColors: Options<TeamColor>;
+    readonly players: Array<Player>;
+    readonly teams: Array<Team>;
+    selectingTeam: Team | null;
+    currentRound: GameRound | null;
 }
