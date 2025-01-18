@@ -50,6 +50,7 @@ tasks.register('cleanJavascript', Copy) {
 	group = 'build'
 	from layout.buildDirectory.dir('typescript/compiled')
 	include '**/*.js'
+	exclude '**/*.test.js'
 	into layout.buildDirectory.dir('resources/main/static/js')
 	filter {
 		String line -> line.startsWith('export {};') ? null : line
@@ -76,12 +77,24 @@ tasks.register('compileTypescript', NpxTask) {
 	finalizedBy(tasks.named('cleanJavascript'))
 }
 
+tasks.register('testTypescript', NpxTask) {
+	group = 'verification'
+	dependsOn tasks.named('npmInstall')
+	command = 'jest'
+	inputs.files(project.fileTree('src/main/typescript').filter {
+		File f -> f.name.endsWith('.ts')
+	})
+}
+
 
 tasks.named('compileJava') {
 	dependsOn(tasks.named('compileTypescript'), tasks.named('cleanJavascript'))
 }
 tasks.named('processResources') {
 	dependsOn(tasks.named('compileTypescript'), tasks.named('cleanJavascript'))
+}
+tasks.named('test') {
+	dependsOn(tasks.named('testTypescript'))
 }
 
 javadoc {
