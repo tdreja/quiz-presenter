@@ -1,7 +1,6 @@
 import { Game, GameRound, RoundState } from "../model/game";
-import { AnswerId } from "../model/question";
-import { Team, TeamColor } from "../model/team";
-import { EventType, GameEvent } from "./common-events";
+import { TeamColor } from "../model/team";
+import { EventType, GameEvent, GameRoundEvent } from "./common-events";
 
 /**
  * Admin selects a new question to play
@@ -42,23 +41,6 @@ export class StartRoundEvent extends GameEvent {
         game.currentRound = round;
         return true;
     }
-}
-
-abstract class GameRoundEvent extends GameEvent {
-
-    protected constructor(type: EventType, eventInitDict?: EventInit) {
-        super(type, eventInitDict);
-    }
-
-    public updateGame(game: Game): boolean {
-        const round = game.currentRound;
-        if(round) {
-            return this.updateRound(game, round);
-        }
-        return false;
-    }
-
-    public abstract updateRound(game: Game, round: GameRound): boolean
 }
 
 /**

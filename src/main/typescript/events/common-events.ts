@@ -1,11 +1,14 @@
-import { Game } from "../model/game";
+import { Game, GameRound } from "../model/game";
 
 export enum EventType {
     // Events for each round
     START_ROUND = 'start-round',
     ACTIVATE_BUZZER = 'activate-buzzer',
     REQUEST_ATTEMPT = 'request-attempt',
-    COMPLETE_ATTEMPT = 'complete-attempt',
+
+    // Events for question types
+    SELECT_FROM_MULTIPLE_CHOICE = 'select-from-multiple-choice',
+    SUBMIT_ESTIMATE = 'submit-estimate',
 
     // Events for player setup
     ADD_PLAYER = 'add-player',
@@ -25,4 +28,21 @@ export abstract class GameEvent extends Event {
     }
 
     public abstract updateGame(game: Game): boolean
+}
+
+export abstract class GameRoundEvent extends GameEvent {
+
+    protected constructor(type: EventType, eventInitDict?: EventInit) {
+        super(type, eventInitDict);
+    }
+
+    public updateGame(game: Game): boolean {
+        const round = game.currentRound;
+        if(round) {
+            return this.updateRound(game, round);
+        }
+        return false;
+    }
+
+    public abstract updateRound(game: Game, round: GameRound): boolean
 }
