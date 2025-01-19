@@ -1,81 +1,11 @@
-import { Game, GameRound, GameSection, RoundState } from "../model/game";
 import { Emoji, Player } from "../model/player";
-import { AnswerId, Question } from "../model/question";
-import { Team, TeamColor } from "../model/team";
+import { TeamColor } from "../model/team";
+import { game, newTestSetup, playerBlueDuck, playerRedCamel, teamBlue, teamRed } from "./data.test";
 import { AddPlayerEvent, AddTeamEvent, findSmallestTeam, nextRandom, RemovePlayerEvent, RemoveTeamEvent, RenamePlayerEvent, ReRollEmojiEvent } from "./setup-events";
 
-const answerA: AnswerId = 'A';
-const answerB: AnswerId = 'B';
-const question: Question = {
-    questionId: "1",
-    questionText: "Test",
-    pointsForCompletion: 100
-}
-let playerBlue: Player;
-let playerRed: Player
-let teamBlue: Team;
-let teamRed: Team;
-let round: GameRound;
-let section: GameSection;
-let game: Game;
 
 beforeEach(() => {
-    // Team Blue
-    playerBlue = {
-        name: 'Duck',
-        emoji: Emoji.DUCK,
-        points: 0,
-        team: TeamColor.BLUE
-    }
-    teamBlue = {
-        color: TeamColor.BLUE,
-        points: 0,
-        players: new Map()
-    }
-    teamBlue.players.set(Emoji.DUCK, playerBlue);
-
-    // Team Red
-    playerRed = {
-        name: 'Camel',
-        emoji: Emoji.CAMEL,
-        points: 0,
-        team: TeamColor.RED
-    }
-    teamRed = {
-        color: TeamColor.RED,
-        points: 0,
-        players: new Map()
-    }
-    teamRed.players.set(Emoji.CAMEL, playerRed);
-
-    // Question, Round and Section
-    round = {
-        question: question,
-        state: RoundState.WAIT_ON_REVEAL,
-        currentlyAttempting: new Set(),
-        completedBy: new Set(),
-        alreadyAttempted: new Set(),
-        inSection: 'Section'
-    }
-    section = {
-        name: 'Section',
-        rounds: [round]
-    }
-
-    // Game
-    game = {
-        sections: [section],
-        availableEmojis: new Set(),
-        availableColors: new Set(),
-        players: new Map(),
-        teams: new Map(),
-        selectingTeam: null,
-        currentRound: null
-    }
-    game.teams.set(TeamColor.BLUE, teamBlue);
-    game.players.set(Emoji.DUCK, playerBlue);
-    game.teams.set(TeamColor.RED, teamRed);
-    game.players.set(Emoji.CAMEL, playerRed);
+    newTestSetup();
 });
 
 test('nextRandom', () => {
@@ -141,9 +71,9 @@ test('removePlayer', () => {
 test('renamePlayer', () => {
     expect(new RenamePlayerEvent(Emoji.CROCODILE, 'Croc').updateGame(game)).toBe(false);
 
-    expect(playerRed.name).toBe('Camel');
+    expect(playerRedCamel.name).toBe('Camel');
     expect(new RenamePlayerEvent(Emoji.CAMEL, 'RedCamel').updateGame(game)).toBe(true);
-    expect(playerRed.name).toBe('RedCamel');
+    expect(playerRedCamel.name).toBe('RedCamel');
 });
 
 test('reRollEmoji', () => {
@@ -154,9 +84,9 @@ test('reRollEmoji', () => {
     expect(new ReRollEmojiEvent(Emoji.DUCK).updateGame(game)).toBe(true);
 
     expect(game.players.get(Emoji.DUCK)).toBeUndefined();
-    expect(game.players.get(Emoji.CROCODILE)).toBe(playerBlue);
+    expect(game.players.get(Emoji.CROCODILE)).toBe(playerBlueDuck);
     expect(teamBlue.players.get(Emoji.DUCK)).toBeUndefined();
-    expect(teamBlue.players.get(Emoji.CROCODILE)).toBe(playerBlue);
+    expect(teamBlue.players.get(Emoji.CROCODILE)).toBe(playerBlueDuck);
     expect(game.availableEmojis.size).toBe(1);
     expect(game.availableEmojis).toContain(Emoji.DUCK);
 
@@ -197,6 +127,6 @@ test('removeTeam', () => {
     expect(game.teams.get(TeamColor.ORANGE)).toBe(teamOrange);
 
     expect(teamOrange.players.size).toBe(1);
-    expect(teamOrange.players.get(Emoji.DUCK)).toBe(playerBlue);
-    expect(playerBlue.team).toBe(TeamColor.ORANGE);
+    expect(teamOrange.players.get(Emoji.DUCK)).toBe(playerBlueDuck);
+    expect(playerBlueDuck.team).toBe(TeamColor.ORANGE);
 });
