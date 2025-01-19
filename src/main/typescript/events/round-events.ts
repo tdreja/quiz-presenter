@@ -26,7 +26,7 @@ export class StartRoundEvent extends GameEvent {
             }
             const oldRound = game.currentRound;
             game.currentRound = null;
-            oldRound.state = RoundState.COMPLETED;
+            oldRound.state = RoundState.CLOSED;
         }
 
         const section = game.sections.find(s => s.name === this._sectionName);
@@ -37,7 +37,7 @@ export class StartRoundEvent extends GameEvent {
         if(!round || round.state !== RoundState.WAIT_ON_REVEAL) {
             return false;
         }
-        round.state = RoundState.SHOWING_TEXT;
+        round.state = RoundState.SHOW_QUESTION;
         game.currentRound = round;
         return true;
     }
@@ -54,7 +54,7 @@ export class ActivateBuzzerEvent extends GameRoundEvent {
 
     public updateRound(game: Game, round: GameRound): boolean {
         // Skip non-relevant states
-        if(round.state === RoundState.SHOWING_TEXT) {
+        if(round.state === RoundState.SHOW_QUESTION) {
             round.state = RoundState.BUZZER_ACTIVE;
             return true;
         }
@@ -90,6 +90,47 @@ export class RequestAttemptEvent extends GameRoundEvent {
         round.currentlyAttempting.add(this._team);
         round.alreadyAttempted.add(this._team);
         round.state = RoundState.TEAM_CAN_ATTEMPT;
+        return true;
+    }
+}
+
+/**
+ * Nobody can answer? Skip to the results
+ */
+export class SkipRoundEvent extends GameRoundEvent {
+
+    public constructor(eventInitDict?: EventInit) {
+        super(EventType.SKIP_ROUND, eventInitDict);
+    }
+
+    public updateRound(game: Game, round: GameRound): boolean {
+        if(round.state === RoundState.WAIT_ON_REVEAL 
+            || round.state === RoundState.CLOSED 
+            || round.state === RoundState.COMPLETE_WITH_RESULTS) {
+            return false;
+        }
+        round.state = RoundState.COMPLETE_WITH_RESULTS;
+        round.currentlyAttempting.clear();
+        return true;
+    }
+}
+
+/**
+ * Everybody has seen the result? Close the question and start the next round 
+ */
+export class CloseRoundEvent extends GameRoundEvent {
+
+    public constructor(eventInitDict?: EventInit) {
+        super(EventType.CLOSE_ROUND, eventInitDict);
+    }
+
+    public updateRound(game: Game, round: GameRound): boolean {
+        if(round.state !== RoundState.COMPLETE_WITH_RESULTS) {
+            return false;
+        }
+        round.state = RoundState.CLOSED;
+        round.currentlyAttempting.clear();
+        game.currentRound = null;
         return true;
     }
 }

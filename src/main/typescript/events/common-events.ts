@@ -5,6 +5,8 @@ export enum EventType {
     START_ROUND = 'start-round',
     ACTIVATE_BUZZER = 'activate-buzzer',
     REQUEST_ATTEMPT = 'request-attempt',
+    SKIP_ROUND = 'skip-round',
+    CLOSE_ROUND = 'close-round',
 
     // Events for question types
     SELECT_FROM_MULTIPLE_CHOICE = 'select-from-multiple-choice',

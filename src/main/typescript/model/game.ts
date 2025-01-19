@@ -7,10 +7,11 @@ import { Question } from "./question";
  */
 export enum RoundState {
     WAIT_ON_REVEAL,
-    SHOWING_TEXT,
+    SHOW_QUESTION,
     BUZZER_ACTIVE,
     TEAM_CAN_ATTEMPT,
-    COMPLETED
+    COMPLETE_WITH_RESULTS,
+    CLOSED
 }
 
 /**
@@ -65,8 +66,7 @@ export function completeRound(game: Game, teams: Array<TeamColor>): boolean {
         team.players.forEach(player => player.points += points);
     }
 
-    game.currentRound.state = RoundState.COMPLETED;
+    game.currentRound.state = RoundState.COMPLETE_WITH_RESULTS;
     game.currentRound.currentlyAttempting.clear();
-    game.currentRound = null;
     return true;
 }

@@ -47,7 +47,7 @@ export class SelectFromMultipleChoiceEvent extends GameRoundEvent {
             return completeRound(game, [currentColor]);
         }
         // Otherwise wait for another attempt
-        round.state = RoundState.SHOWING_TEXT;
+        round.state = RoundState.SHOW_QUESTION;
         return true;
     }
 
