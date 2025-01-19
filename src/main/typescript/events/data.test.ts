@@ -71,7 +71,8 @@ export function newTestSetup() {
         currentlyAttempting: new Set(),
         completedBy: new Set(),
         alreadyAttempted: new Set(),
-        inSection: sectionId
+        inSection: sectionId,
+        timerStart: null
     }
     estimateRound = {
         question: questionEstimate,
@@ -79,7 +80,8 @@ export function newTestSetup() {
         currentlyAttempting: new Set(),
         completedBy: new Set(),
         alreadyAttempted: new Set(),
-        inSection: sectionId
+        inSection: sectionId,
+        timerStart: null
     }
     section = {
         name: sectionId,
@@ -94,7 +96,8 @@ export function newTestSetup() {
         players: new Map(),
         teams: new Map(),
         selectingTeam: null,
-        currentRound: null
+        currentRound: null,
+        roundCounter: 0
     }
     game.teams.set(TeamColor.BLUE, teamBlue);
     game.players.set(Emoji.DUCK, playerBlueDuck);

@@ -56,6 +56,7 @@ export class ActivateBuzzerEvent extends GameRoundEvent {
         // Skip non-relevant states
         if(round.state === RoundState.SHOW_QUESTION) {
             round.state = RoundState.BUZZER_ACTIVE;
+            round.timerStart = new Date();
             return true;
         }
         return false;
@@ -90,6 +91,7 @@ export class RequestAttemptEvent extends GameRoundEvent {
         round.currentlyAttempting.add(this._team);
         round.alreadyAttempted.add(this._team);
         round.state = RoundState.TEAM_CAN_ATTEMPT;
+        round.timerStart = new Date();
         return true;
     }
 }
@@ -111,6 +113,7 @@ export class SkipRoundEvent extends GameRoundEvent {
         }
         round.state = RoundState.COMPLETE_WITH_RESULTS;
         round.currentlyAttempting.clear();
+        round.timerStart = null;
         return true;
     }
 }
@@ -131,6 +134,8 @@ export class CloseRoundEvent extends GameRoundEvent {
         round.state = RoundState.CLOSED;
         round.currentlyAttempting.clear();
         game.currentRound = null;
+        game.roundCounter += 1;
+        round.timerStart = null;
         return true;
     }
 }

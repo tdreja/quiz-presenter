@@ -23,6 +23,7 @@ test("startRound", () => {
   expect(startRound.updateGame(game)).toBe(true);
   expect(game.currentRound).toBe(round);
   expect(round.state).toBe(RoundState.SHOW_QUESTION);
+  expect(round.timerStart).toBeNull();
   expect(startRound.updateGame(game)).toBe(false);
 
   // Ignore invalid IDs
@@ -36,6 +37,7 @@ test("activateBuzzer", () => {
   expect(startRound.updateGame(game)).toBe(true);
   expect(activateBuzzer.updateGame(game)).toBe(true);
   expect(round.state).toBe(RoundState.BUZZER_ACTIVE);
+  expect(round.timerStart).toBeTruthy();
 
   // Only once!
   expect(activateBuzzer.updateGame(game)).toBe(false);
@@ -60,12 +62,17 @@ test("requestAttempt", () => {
 
   // Activate Buzzer
   expect(activateBuzzer.updateGame(game)).toBe(true);
+  const s1 = round.timerStart;
+  expect(s1).toBeTruthy();
   expect(requestAttemptBlue.updateGame(game)).toBe(true);
   expect(round.state).toBe(RoundState.TEAM_CAN_ATTEMPT);
   expect(round.currentlyAttempting).toContain(TeamColor.BLUE);
   expect(round.currentlyAttempting.size).toBe(1);
   expect(round.alreadyAttempted).toContain(TeamColor.BLUE);
   expect(round.alreadyAttempted.size).toBe(1);
+  const s2 = round.timerStart;
+  expect(s2).toBeTruthy();
+  expect(s1 !== s2).toBeTruthy();
 
   // Not during attempt
   expect(requestAttemptBlue.updateGame(game)).toBe(false);
@@ -83,6 +90,8 @@ test("requestAttempt", () => {
   expect(round.alreadyAttempted).toContain(TeamColor.BLUE);
   expect(round.alreadyAttempted).toContain(TeamColor.RED);
   expect(round.alreadyAttempted.size).toBe(2);
+  expect(round.timerStart).toBeTruthy();
+  expect(s2 !== round.timerStart).toBeTruthy();
 
   // Now no team can
   round.state = RoundState.BUZZER_ACTIVE;
@@ -98,6 +107,7 @@ test('skipRound', () => {
     expect(round.alreadyAttempted.size).toBe(0);
     expect(round.completedBy.size).toBe(0);
     expect(round.currentlyAttempting.size).toBe(0);
+    expect(round.timerStart).toBeNull();
 
     expect(skipRound.updateGame(game)).toBe(false);
 });
@@ -109,9 +119,11 @@ test('closeRound', () => {
     expect(closeRound.updateGame(game)).toBe(false);
     expect(skipRound.updateGame(game)).toBe(true);
     expect(round.state).toBe(RoundState.COMPLETE_WITH_RESULTS);
+    expect(round.timerStart).toBeNull();
 
     expect(closeRound.updateGame(game)).toBe(true);
     expect(round.state).toBe(RoundState.CLOSED);
     expect(game.currentRound).toBeNull();
+    expect(game.roundCounter).toBe(1);
     expect(closeRound.updateGame(game)).toBe(false);
 });

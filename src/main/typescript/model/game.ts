@@ -25,7 +25,7 @@ export interface GameRound {
     readonly alreadyAttempted: Set<TeamColor>;
     readonly completedBy: Set<TeamColor>;
     readonly inSection: string;
-
+    timerStart: Date | null;
 }
 
 /**
@@ -47,6 +47,7 @@ export interface Game {
     readonly teams: Map<TeamColor, Team>;
     selectingTeam: Team | null;
     currentRound: GameRound | null;
+    roundCounter: number;
 }
 
 export function completeRound(game: Game, teams: Array<TeamColor>): boolean {
@@ -68,5 +69,6 @@ export function completeRound(game: Game, teams: Array<TeamColor>): boolean {
 
     game.currentRound.state = RoundState.COMPLETE_WITH_RESULTS;
     game.currentRound.currentlyAttempting.clear();
+    game.currentRound.timerStart = null;
     return true;
 }
