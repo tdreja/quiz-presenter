@@ -20,7 +20,8 @@ export enum EventType {
 
     // Events for team setup
     ADD_TEAM = 'add-team',
-    REMOVE_TEAM = 'remove-team'
+    REMOVE_TEAM = 'remove-team',
+    SHUFFLE_TEAMS = 'shuffle-teams'
 }
 
 export abstract class GameEvent extends Event {

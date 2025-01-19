@@ -1,7 +1,7 @@
 import { Emoji, Player } from "../model/player";
-import { TeamColor } from "../model/team";
+import { Team, TeamColor } from "../model/team";
 import { game, newTestSetup, playerBlueDuck, playerRedCamel, teamBlue, teamRed } from "./data.test";
-import { AddPlayerEvent, AddTeamEvent, findSmallestTeam, nextRandom, RemovePlayerEvent, RemoveTeamEvent, RenamePlayerEvent, ReRollEmojiEvent } from "./setup-events";
+import { AddPlayerEvent, AddTeamEvent, findSmallestTeam, nextRandom, RemovePlayerEvent, RemoveTeamEvent, RenamePlayerEvent, ReRollEmojiEvent, ShuffleTeamsEvent } from "./setup-events";
 
 
 beforeEach(() => {
@@ -129,4 +129,32 @@ test('removeTeam', () => {
     expect(teamOrange.players.size).toBe(1);
     expect(teamOrange.players.get(Emoji.DUCK)).toBe(playerBlueDuck);
     expect(playerBlueDuck.team).toBe(TeamColor.ORANGE);
+});
+
+test('shuffleTeams', () => {
+    expect(game.teams.size).toBe(2);
+
+    expect(new ShuffleTeamsEvent(2).updateGame(game)).toBe(true);
+    expect(game.teams.size).toBe(2);
+
+    expect(playerBlueDuck.team).toBeTruthy();
+    const duckTeam: Team | undefined = playerBlueDuck.team ? game.teams.get(playerBlueDuck.team) : undefined;
+    expect(duckTeam).toBeTruthy();
+    if(!duckTeam) {
+        return;
+    }
+    expect(duckTeam.players.get(Emoji.DUCK)).toBe(playerBlueDuck);
+    expect(duckTeam.players.size).toBe(1);
+    expect(duckTeam !== teamBlue).toBeTruthy();
+
+    expect(playerRedCamel.team).toBeTruthy();
+    const camelTeam: Team | undefined = playerRedCamel.team ? game.teams.get(playerRedCamel.team) : undefined;
+    expect(camelTeam).toBeTruthy();
+    if(!camelTeam) {
+        return;
+    }
+    expect(camelTeam.players.get(Emoji.CAMEL)).toBe(playerRedCamel);
+    expect(camelTeam.players.size).toBe(1);
+    expect(camelTeam !== teamRed).toBeTruthy();
+    expect(duckTeam !== camelTeam).toBeTruthy();
 });

@@ -28,6 +28,14 @@ export function findSmallestTeam(teams: Map<TeamColor, Team>): Team | null {
     return smallestTeam;
 }
 
+function addPlayerSmallestToTeam(player: Player, teams: Map<TeamColor, Team>) {
+    const smallestTeam = findSmallestTeam(teams);
+    if(smallestTeam) {
+        player.team = smallestTeam.color;
+        smallestTeam.players.set(player.emoji, player);
+    }
+}
+
 export class AddPlayerEvent extends GameEvent {
   private readonly _name: string;
 
@@ -42,17 +50,14 @@ export class AddPlayerEvent extends GameEvent {
         return false;
     }
     game.availableEmojis.delete(emoji);
-    const smallestTeam = findSmallestTeam(game.teams);
     const player: Player = {
         name: this._name,
         emoji: emoji,
         points: 0,
-        team: smallestTeam ? smallestTeam.color : null
+        team: null
     };
     game.players.set(emoji, player);
-    if(smallestTeam) {
-        smallestTeam.players.set(emoji, player);
-    }
+    addPlayerSmallestToTeam(player, game.teams);
     return true;
   }
 }
@@ -179,16 +184,69 @@ export class RemovePlayerEvent extends GameEvent {
         game.teams.delete(this._color);
         game.availableColors.add(this._color);
 
-        for(let [emoji, player] of team.players) {
-            const smallest = findSmallestTeam(game.teams);
-            if(smallest) {
-                player.team = smallest.color;
-                smallest.players.set(emoji, player);
-            } else {
-                player.team = null;
-            }
+        for(let [_, player] of team.players) {
+            addPlayerSmallestToTeam(player, game.teams);
         }
         return true;
     }
 
+  }
+
+  function shuffleArray<TYPE>(array: Array<TYPE>) {
+    for (let i = array.length - 1; i >= 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+  export class ShuffleTeamsEvent extends GameEvent {
+
+    private readonly _teamCount: number;
+
+    public constructor(teamCount: any, eventInitDict?: EventInit) {
+        super(EventType.SHUFFLE_TEAMS, eventInitDict);
+        this._teamCount = Number(teamCount);
+    }
+
+    public updateGame(game: Game): boolean {
+        // Ensure that we have enough teams
+        const targetCount: number = Math.max(this._teamCount, 2);
+        this.makeColorsAvailable(game);
+
+        // Clear the previous teams and add empty ones
+        game.teams.clear();
+        this.prepareEmptyTeams(game, Math.min(targetCount, game.availableColors.size, game.players.size));
+
+        // Shuffle players
+        const randomPlayers: Array<Player> = Array.from(game.players.values());
+        shuffleArray(randomPlayers);
+
+        // Take each player and add to the smallest team
+        for(let player of randomPlayers) {
+            addPlayerSmallestToTeam(player, game.teams);
+        }
+        return true;
+    }
+
+    protected makeColorsAvailable(game: Game): void {
+        for(const color of game.teams.keys()) {
+            game.availableColors.add(color);
+        }
+    }
+
+    protected prepareEmptyTeams(game: Game, targetCount: number): void {
+        for(let index = 0; index < targetCount; index++) {
+            const color = game.availableColors.keys().next().value;
+            if(!color) {
+                return;
+            }
+            game.availableColors.delete(color);
+            const team: Team = {
+                color: color,
+                points: 0,
+                players: new Map()
+            };
+            game.teams.set(color, team);
+        }
+    }
   }
