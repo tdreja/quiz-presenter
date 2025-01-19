@@ -3,7 +3,7 @@ import { Emoji, Player } from "../model/player";
 import { Team, TeamColor } from "../model/team";
 import { EventType, GameEvent } from "./common-events";
 
-function nextRandom<VALUE>(values: Set<VALUE>): VALUE | null {
+export function nextRandom<VALUE>(values: Set<VALUE>): VALUE | null {
     if(values.size === 0) {
         return null;
     }
@@ -18,7 +18,7 @@ function nextRandom<VALUE>(values: Set<VALUE>): VALUE | null {
     return null;
 }
 
-function findSmallestTeam(teams: Map<TeamColor, Team>): Team | null {
+export function findSmallestTeam(teams: Map<TeamColor, Team>): Team | null {
     let smallestTeam: Team | null = null;
     teams.forEach((team) => {
         if(!smallestTeam || smallestTeam.players.size > team.players.size) {
@@ -115,7 +115,7 @@ export class RemovePlayerEvent extends GameEvent {
         }
         // Find new available emoji
         const newEmoji = nextRandom(game.availableEmojis);
-        if(!newEmoji || newEmoji === this._oldEmoji) {
+        if(!newEmoji) {
             return false;
         }
         game.availableEmojis.delete(newEmoji);
