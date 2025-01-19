@@ -1,6 +1,7 @@
 export interface Question {
     questionId: string,
-    questionText: string
+    questionText: string,
+    pointsForCompletion: number
 }
 
 export type AnswerId = string;

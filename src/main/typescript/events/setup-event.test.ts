@@ -8,7 +8,8 @@ const answerA: AnswerId = 'A';
 const answerB: AnswerId = 'B';
 const question: Question = {
     questionId: "1",
-    questionText: "Test"
+    questionText: "Test",
+    pointsForCompletion: 100
 }
 let playerBlue: Player;
 let playerRed: Player
@@ -49,14 +50,12 @@ beforeEach(() => {
 
     // Question, Round and Section
     round = {
-        pointsForCompletion: 100,
         question: question,
         state: RoundState.WAIT_ON_REVEAL,
-        currentlyAttempting: null,
-        completedBy: null,
-        inSection: 'Section',
-        attemptsBy: [],
-        usedAnswers: []
+        currentlyAttempting: new Set(),
+        completedBy: new Set(),
+        alreadyAttempted: new Set(),
+        inSection: 'Section'
     }
     section = {
         name: 'Section',

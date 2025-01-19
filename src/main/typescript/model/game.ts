@@ -35,14 +35,12 @@ export enum RoundState {
  * Contains all relevant data for one round of the quiz (i.e. one question)
  */
 export interface GameRound {
-
-    readonly pointsForCompletion: number;
+    
     readonly question: Question;
     state: RoundState;
-    currentlyAttempting: Team | null;
-    completedBy: Team | null;
-    readonly attemptsBy: Array<Team>;
-    readonly usedAnswers: Array<AnswerId>;
+    readonly currentlyAttempting: Set<TeamColor>;
+    readonly alreadyAttempted: Set<TeamColor>;
+    readonly completedBy: Set<TeamColor>;
     readonly inSection: string;
 
 }
