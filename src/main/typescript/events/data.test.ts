@@ -1,20 +1,23 @@
 import { Game, GameRound, GameSection, RoundState } from "../model/game";
 import { Emoji, Player } from "../model/player";
-import { Choice, TextMultipleChoiceQuestion } from "../model/question";
+import { Choice, EstimateQuestion, TextMultipleChoiceQuestion } from "../model/question";
 import { Team, TeamColor } from "../model/team";
 
 export const questionId: string = 'quest';
+export const questionEstimateId: string = 'estimate';
 export const questionPoints: number = 100;
 export const sectionId: string = 'section';
 
 export let choiceAWrong: Choice;
 export let choiceBCorrect: Choice;
 export let questionMultiChoice: TextMultipleChoiceQuestion;
+export let questionEstimate: EstimateQuestion;
 export let playerBlueDuck: Player;
 export let playerRedCamel: Player
 export let teamBlue: Team;
 export let teamRed: Team;
 export let round: GameRound;
+export let estimateRound: GameRound;
 export let section: GameSection;
 export let game: Game;
 
@@ -31,7 +34,7 @@ export function newTestSetup() {
         selectedBy: new Set()
     };
     questionMultiChoice = new TextMultipleChoiceQuestion(questionId, questionPoints, "Question?", [choiceAWrong, choiceBCorrect]);
-
+    questionEstimate = new EstimateQuestion(questionEstimateId, 200, 'Estimate', 1000);
 
 // Team Blue
     playerBlueDuck = {
@@ -70,9 +73,17 @@ export function newTestSetup() {
         alreadyAttempted: new Set(),
         inSection: sectionId
     }
+    estimateRound = {
+        question: questionEstimate,
+        state: RoundState.WAIT_ON_REVEAL,
+        currentlyAttempting: new Set(),
+        completedBy: new Set(),
+        alreadyAttempted: new Set(),
+        inSection: sectionId
+    }
     section = {
         name: sectionId,
-        rounds: [round]
+        rounds: [round, estimateRound]
     }
 
     // Game

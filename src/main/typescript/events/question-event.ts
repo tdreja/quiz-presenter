@@ -90,6 +90,7 @@ export class SubmitEstimateEvent extends GameRoundEvent {
             return false;
         }
         question.estimates.set(this._team, this._estimate);
+        round.alreadyAttempted.add(this._team);
 
         // Not everyone has estimated? Wait further
         if(question.estimates.size !== game.teams.size) {
