@@ -1,27 +1,62 @@
-import { Game } from "../model/game";
-import { Team } from "../model/team";
+import { Game } from '../model/game';
+import { Emoji, Player } from '../model/player';
+import { Team, TeamColor } from '../model/team';
+import { updateFromMap } from './render-utils';
 
 export function renderTeams(game: Game) {
     const teamsContainer = document.getElementById('teams-container');
-    if(!teamsContainer) {
-        console.error('Could not render teams! No container with ID teams-container found!');
+    if (!teamsContainer) {
+        console.error(
+            'Could not render teams! No container with ID teams-container found!'
+        );
         return;
     }
+    updateFromMap(teamsContainer, 'team', game.teams, (element, color, team) =>
+        updateTeam(element as HTMLElement, color, team)
+    );
+}
 
-    for(let [_, team] of game.teams) {
-        renderTeam(game, teamsContainer, team);
+function updateTeam(element: HTMLElement, color: TeamColor, team: Team) {
+    element.style.setProperty('--team-color', color);
+    element.style.setProperty('--team-points', `${team.points}`);
+
+    const teamName = element.querySelector('[part=team-name]');
+    if (teamName) {
+        teamName.innerHTML = color;
+    }
+
+    const points = element.querySelector('[part=team-points]');
+    if (points) {
+        points.innerHTML = `${team.points}`;
+    }
+
+    const players = element.querySelector('[part=player-list]');
+    if (players) {
+        updateFromMap(
+            players as HTMLElement,
+            'player',
+            team.players,
+            (element, emoji, player) =>
+                updatePlayer(element as HTMLElement, emoji, player)
+        );
     }
 }
 
-function renderTeam(game: Game, teamContainer: HTMLElement, team: Team) {
-    // Reuse or create the team DIV
-    let container: HTMLElement | null = teamContainer.querySelector(`[team=${team.color}]`);
-    if(!container) {
-        container = document.createElement('div');
-        container.setAttribute('team', team.color);
-        container.style.setProperty('--team-color', team.color);
-        teamContainer.append(container);
+function updatePlayer(element: HTMLElement, emoji: Emoji, player: Player) {
+    element.style.setProperty('--player-points', `${player.points}`);
+
+    const emojiContainer = element.querySelector('[part=emoji-container]');
+    if (emojiContainer) {
+        emojiContainer.innerHTML = emoji;
     }
 
-    container.innerText = `Team ${team.color}: ${team.points}`;
+    const name = element.querySelector('[part=player-name]');
+    if (name) {
+        name.innerHTML = player.name;
+    }
+
+    const points = element.querySelector('[part=player-points]');
+    if (points) {
+        points.innerHTML = `${player.points}`;
+    }
 }
