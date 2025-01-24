@@ -1,19 +1,42 @@
 <!DOCTYPE html>
 <html lang="de">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website</title>
-    <script type="text/javascript" src="./js/gamepad/gamepad.js"></script>
-    <script type="text/javascript" src="./js/model/game.js"></script>
-    <script type="text/javascript" src="./js/model/player.js"></script>
-    <script type="text/javascript" src="./js/model/team.js"></script>
-    <!--<link rel="stylesheet" href="./style.css">-->
-    <!--<link rel="icon" href="./favicon.ico" type="image/x-icon">-->
-  </head>
-  <body>
-    <main>
-      <h1>Experimental offline mode</h1>
-    </main>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>My Website</title>
+        <link rel="stylesheet" href="./bootstrap.css" />
+        <!--<link rel="icon" href="./favicon.ico" type="image/x-icon">-->
+    </head>
+    <body>
+        <nav class="navbar bg-body-secondary">Test</nav>
+        <main class="container-fluid d-flex flex-row flex-nowrap gap-2">
+            <aside
+                id="teams-container"
+                class="d-flex flex-column flex-shrink-0"
+            >
+                <article team="template" class="card">
+                    <hgroup class="card-header bg-primary-subtle d-flex flex-row gap-2 justify-content-between" part="team-name">
+                      <span class="badge p-2 rounded-pill bg-primary">Blau</span>
+                      <span>500</span>
+                    </hgroup>
+                    <ul
+                        part="player-list"
+                        class="card-body list-group list-group-flush p-0"
+                    >
+                        <li
+                            player="template"
+                            class="list-group-item d-inline-flex flex-row gap-2"
+                        >
+                            <span part="emoji-container">🐱</span>
+                            <span part="player-name" class="flex-grow-1">Thomas</span>
+                            <span part="player-points">500</span>
+                        </li>
+                    </ul>
+                </article>
+            </aside>
+            <div class="col">
+                <h1>Experimental offline mode</h1>
+            </div>
+        </main>
+    </body>
 </html>
