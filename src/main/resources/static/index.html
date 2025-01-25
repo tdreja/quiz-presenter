@@ -6,13 +6,25 @@
         <title>My Website</title>
         <link rel="stylesheet" href="./bootstrap.css" />
         <!--<link rel="icon" href="./favicon.ico" type="image/x-icon">-->
+
+        <style>
+            .answers-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .answer {
+                display: grid;
+                grid-template-columns: auto 1fr;
+            }
+        </style>
     </head>
     <body>
         <nav class="navbar bg-body-secondary">Test</nav>
-        <main class="container-fluid d-flex flex-row flex-nowrap gap-2">
+        <main class="container-fluid d-flex flex-row flex-nowrap gap-2 pt-2">
             <aside
                 id="teams-container"
-                class="d-flex flex-column flex-shrink-0"
+                class="d-flex flex-column flex-shrink-0 gap-2"
             >
                 <article team="template" class="card">
                     <hgroup class="card-header bg-primary-subtle d-flex flex-row gap-2 justify-content-between" part="team-name">
@@ -35,7 +47,21 @@
                 </article>
             </aside>
             <div class="col">
-                <h1>Experimental offline mode</h1>
+                <article class="card">
+                    <div class="card-header">Category 100</div>
+                    <section class="card-body">
+                        <h3 class="card-title mb-4">Question?</h3>
+                        <div class="answers-grid gap-2">
+                            <div class="answer align-items-baseline gap-2">
+                                <button type="button" class="btn btn-primary btn-lg">A</button>
+                                <span>Test</span>
+                            </div>
+                            <div>Test</div>
+                            <div>Test</div>
+                            <div>Test</div>
+                        </div>
+                    </section>
+                </article>
             </div>
         </main>
     </body>
