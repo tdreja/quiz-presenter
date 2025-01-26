@@ -1,0 +1,35 @@
+html {
+    --color-blue: blue;
+    --color-red: red;
+}
+
+/* Make templates invisible */
+[team=template],
+[player=template] {
+    display: none !important;
+}
+
+/* Teams */
+.bg-team-color {
+    background-color: var(--team-color, unset);
+}
+
+[team] {
+    order: var(--team-order, unset);
+}
+
+[player] {
+    order: var(--player-order, unset);
+}
+
+
+/* Multiple choice question */
+.answers-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.answer {
+    display: grid;
+    grid-template-columns: auto 1fr;
+}

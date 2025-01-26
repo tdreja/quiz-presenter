@@ -62,7 +62,16 @@ tasks.register('cleanJavascript', Copy) {
 		String line -> line.startsWith('export var') ? line.replaceFirst('export var', 'var') : line
 	}
 	filter {
+		String line -> line.startsWith('export const') ? line.replaceFirst('export const', 'const') : line
+	}
+	filter {
 		String line -> line.startsWith('export function') ? line.replaceFirst('export function', 'function') : line
+	}
+	filter {
+		String line -> line.startsWith('export interface') ? line.replaceFirst('export interface', 'interface') : line
+	}
+	filter {
+		String line -> line.startsWith('export class') ? line.replaceFirst('export class', 'class') : line
 	}
 }
 

@@ -5,21 +5,20 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>My Website</title>
         <link rel="stylesheet" href="./bootstrap.css" />
+        <link rel="stylesheet" href="./game.css" />
         <!--<link rel="icon" href="./favicon.ico" type="image/x-icon">-->
 
-        <style>
-            .answers-grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-            }
 
-            .answer {
-                display: grid;
-                grid-template-columns: auto 1fr;
-            }
-        </style>
+        <script type="text/javascript" src="./js/model/game.js"></script>
+        <script type="text/javascript" src="./js/model/player.js"></script>
+        <script type="text/javascript" src="./js/model/question.js"></script>
+        <script type="text/javascript" src="./js/model/team.js"></script>
+
+        <script type="text/javascript" src="./js/renderer/render-utils.js"></script>
+        <script type="text/javascript" src="./js/renderer/teams-renderer.js"></script>
+        <script type="text/javascript" src="./js/setup.js"></script>
     </head>
-    <body>
+    <body onload="renderTeams(game)">
         <nav class="navbar bg-body-secondary">Test</nav>
         <main class="container-fluid d-flex flex-row flex-nowrap gap-2 pt-2">
             <aside
@@ -27,13 +26,13 @@
                 class="d-flex flex-column flex-shrink-0 gap-2"
             >
                 <article team="template" class="card">
-                    <hgroup class="card-header bg-primary-subtle d-flex flex-row gap-2 justify-content-between" part="team-name">
-                      <span class="badge p-2 rounded-pill bg-primary">Blau</span>
-                      <span>500</span>
+                    <hgroup class="card-header d-flex flex-row gap-2 justify-content-between">
+                      <span class="badge p-2 rounded-pill bg-team-color" part="team-name">Blau</span>
+                      <span part="team-points">500</span>
                     </hgroup>
                     <ul
                         part="player-list"
-                        class="card-body list-group list-group-flush p-0"
+                        class="card-body list-group list-group-flush p-0 d-flex flex-column"
                     >
                         <li
                             player="template"

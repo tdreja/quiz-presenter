@@ -1,5 +1,5 @@
 import { Game } from '../model/game';
-import { Emoji, Player } from '../model/player';
+import { Emoji, getEmojiCharacter, Player } from '../model/player';
 import { Team, TeamColor } from '../model/team';
 import { updateFromMap } from './render-utils';
 
@@ -17,8 +17,8 @@ export function renderTeams(game: Game) {
 }
 
 function updateTeam(element: HTMLElement, color: TeamColor, team: Team) {
-    element.style.setProperty('--team-color', color);
-    element.style.setProperty('--team-points', `${team.points}`);
+    element.style.setProperty('--team-color', `var(--color-${color.toLowerCase()})`);
+    element.style.setProperty('--team-order', `${-team.points}`);
 
     const teamName = element.querySelector('[part=team-name]');
     if (teamName) {
@@ -43,11 +43,11 @@ function updateTeam(element: HTMLElement, color: TeamColor, team: Team) {
 }
 
 function updatePlayer(element: HTMLElement, emoji: Emoji, player: Player) {
-    element.style.setProperty('--player-points', `${player.points}`);
+    element.style.setProperty('--player-order', `${-player.points}`);
 
     const emojiContainer = element.querySelector('[part=emoji-container]');
     if (emojiContainer) {
-        emojiContainer.innerHTML = emoji;
+        emojiContainer.innerHTML = getEmojiCharacter(emoji);
     }
 
     const name = element.querySelector('[part=player-name]');
