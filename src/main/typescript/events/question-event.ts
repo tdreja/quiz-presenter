@@ -1,5 +1,5 @@
 import { completeRound, Game, GameRound, RoundState } from "../model/game";
-import { EstimateQuestion, MultipleChoiceQuestion, TextMultipleChoiceQuestion } from "../model/question";
+import { Choice, EstimateQuestion, MultipleChoiceQuestion, TextMultipleChoiceQuestion } from "../model/question";
 import { TeamColor } from "../model/team";
 import { EventType, GameRoundEvent } from "./common-events";
 
@@ -26,13 +26,13 @@ export class SelectFromMultipleChoiceEvent extends GameRoundEvent {
         }
         
         // Find the correct question
-        const question: MultipleChoiceQuestion | null = this.findQuestion(round);
+        const question: MultipleChoiceQuestion<Choice> | null = this.findQuestion(round);
         if(!question) {
             return false;
         }
 
         // Find the choice
-        const choice = question.choices.find(c => c.choiceId === this._choiceId);
+        const choice = question.choices.get(this._choiceId);
         if(!choice) {
             return false;
         }
@@ -61,7 +61,7 @@ export class SelectFromMultipleChoiceEvent extends GameRoundEvent {
         return null;
     }
 
-    protected findQuestion(round: GameRound): MultipleChoiceQuestion | null {
+    protected findQuestion(round: GameRound): MultipleChoiceQuestion<Choice> | null {
         if(round.question instanceof TextMultipleChoiceQuestion) {
             return round.question;
         }

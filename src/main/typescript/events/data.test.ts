@@ -1,6 +1,6 @@
 import { Game, GameRound, GameSection, RoundState } from "../model/game";
 import { Emoji, Player } from "../model/player";
-import { Choice, EstimateQuestion, TextMultipleChoiceQuestion } from "../model/question";
+import { Choice, EstimateQuestion, TextChoice, TextMultipleChoiceQuestion } from "../model/question";
 import { Team, TeamColor } from "../model/team";
 
 export const questionId: string = 'quest';
@@ -8,8 +8,8 @@ export const questionEstimateId: string = 'estimate';
 export const questionPoints: number = 100;
 export const sectionId: string = 'section';
 
-export let choiceAWrong: Choice;
-export let choiceBCorrect: Choice;
+export let choiceAWrong: TextChoice;
+export let choiceBCorrect: TextChoice;
 export let questionMultiChoice: TextMultipleChoiceQuestion;
 export let questionEstimate: EstimateQuestion;
 export let playerBlueDuck: Player;
@@ -26,12 +26,14 @@ export function newTestSetup() {
     choiceAWrong = {
         choiceId: 'a',
         correct: false,
-        selectedBy: new Set()
+        selectedBy: new Set(),
+        text: 'a'
     };
     choiceBCorrect = {
         choiceId: 'b',
         correct: true,
-        selectedBy: new Set()
+        selectedBy: new Set(),
+        text: 'b'
     };
     questionMultiChoice = new TextMultipleChoiceQuestion(questionId, questionPoints, "Question?", [choiceAWrong, choiceBCorrect]);
     questionEstimate = new EstimateQuestion(questionEstimateId, 200, 'Estimate', 1000);

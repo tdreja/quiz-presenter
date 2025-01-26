@@ -5,7 +5,8 @@ html {
 
 /* Make templates invisible */
 [team=template],
-[player=template] {
+[player=template],
+[choice=template] {
     display: none !important;
 }
 
@@ -24,6 +25,10 @@ html {
 
 
 /* Multiple choice question */
+body:not([current-question=text-multiple-choice]) #text-multiple-choice {
+    display: none !important;
+} 
+
 .answers-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;

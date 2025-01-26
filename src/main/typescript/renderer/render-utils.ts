@@ -35,7 +35,7 @@ function checkElementForChanges<KEY, VALUE>(
 }
 
 function checkRequiredChanges<KEY,VALUE>(
-    html: HTMLElement, 
+    html: Element, 
     attribute: string,
     map: Map<KEY, VALUE>
 ): Changes<KEY> {
@@ -67,7 +67,7 @@ function updateElement<KEY,VALUE>(key: KEY, element: Element, map: Map<KEY,VALUE
 }
 
 export function updateFromMap<KEY, VALUE>(
-    html: HTMLElement,
+    html: Element,
     attribute: string,
     map: Map<KEY, VALUE>,
     updater: (html: Element, key: KEY, value: VALUE) => void
@@ -79,6 +79,7 @@ export function updateFromMap<KEY, VALUE>(
         console.warn('No template found!', html);
         return;
     }
+    console.log('changes for', map, 'changes:', changes);
 
     // Delete unused first
     for(const item of changes.toDelete) {
@@ -96,5 +97,12 @@ export function updateFromMap<KEY, VALUE>(
         element.setAttribute(attribute, `${key}`);
         html.appendChild(element);
         updateElement(key, element, map, updater);
+    }
+}
+
+export function updatePart(html: Element, partName: string, innerHtml: string) {
+    const part = html.querySelector(`[part=${partName}]`);
+    if(part) {
+        part.innerHTML = innerHtml;
     }
 }

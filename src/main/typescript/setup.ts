@@ -1,6 +1,8 @@
-import { Game } from "./model/game";
+import { Game, GameRound, GameSection, RoundState } from "./model/game";
 import { Emoji, Player } from "./model/player";
+import { Choice, TextChoice, TextMultipleChoiceQuestion } from "./model/question";
 import { Team, TeamColor } from "./model/team";
+import { renderQuestion } from "./renderer/question-renderer";
 import { renderTeams } from "./renderer/teams-renderer";
 
 export const game: Game = {
@@ -64,3 +66,55 @@ game.players.set(Emoji.EAGLE, playerRedEagle);
 game.teams.set(TeamColor.RED, teamRed);
 
 // endregion Teams & Players
+
+// region Questions
+
+export const choiceA: TextChoice = {
+    choiceId: "A",
+    correct: false,
+    selectedBy: new Set(),
+    text: 'Alpha'
+}
+export const choiceB: TextChoice = {
+    choiceId: "B",
+    correct: false,
+    selectedBy: new Set(),
+    text: 'Beta'
+}
+export const choiceC: TextChoice = {
+    choiceId: "C",
+    correct: true,
+    selectedBy: new Set(),
+    text: 'Gamma'
+}
+export const choiceD: TextChoice = {
+    choiceId: "D",
+    correct: false,
+    selectedBy: new Set(),
+    text: 'Delta'
+}
+
+export const textQuestion: TextMultipleChoiceQuestion = new TextMultipleChoiceQuestion('q1', 101, 'How much is the fish?', [choiceA, choiceB, choiceC, choiceD]);
+export const round: GameRound = {
+    question: textQuestion,
+    state: RoundState.WAIT_ON_REVEAL,
+    currentlyAttempting: new Set(),
+    alreadyAttempted: new Set(),
+    completedBy: new Set(),
+    inSection: "common",
+    timerStart: null
+}
+export const section: GameSection = {
+    name: "common",
+    rounds: [round]
+}
+
+game.sections.push(section);
+game.currentRound = round;
+
+// endregion Questions
+
+function setupDemo() {
+    renderTeams(game);
+    renderQuestion(game);
+}

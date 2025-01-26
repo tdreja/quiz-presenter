@@ -27,28 +27,35 @@ export interface Choice {
 /**
  * Base API for multiple choice questions 
  */
-export interface MultipleChoiceQuestion extends Question {
-    readonly choices: Array<Choice>;
+export interface MultipleChoiceQuestion<CHOICE extends Choice> extends Question {
+    readonly choices: Map<string, CHOICE>;
+}
+
+export interface TextChoice extends Choice {
+    readonly text: string
 }
 
 /**
  * Multiple choice question as text question 
  */
-export class TextMultipleChoiceQuestion implements MultipleChoiceQuestion, TextQuestion {
+export class TextMultipleChoiceQuestion implements MultipleChoiceQuestion<TextChoice>, TextQuestion {
 
-    private readonly _choices: Array<Choice>;
+    private readonly _choices: Map<string, TextChoice>;
     private readonly _questionId: string;
     private readonly _pointsForCompletion: number;
     private readonly _text: string;
 
-    public constructor(questionId: string, pointsForCompletion: number, text: string, choices: Array<Choice>) {
+    public constructor(questionId: string, pointsForCompletion: number, text: string, choices: Array<TextChoice>) {
         this._questionId = questionId;
         this._pointsForCompletion = pointsForCompletion;
         this._text = text;
-        this._choices = choices;
+        this._choices = new Map();
+        for(const choice of choices) {
+            this._choices.set(choice.choiceId, choice);
+        }
     }
     
-    public get choices(): Array<Choice> {
+    public get choices(): Map<string, TextChoice> {
         return this._choices;
     }
     
