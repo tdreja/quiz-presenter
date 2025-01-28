@@ -1,6 +1,6 @@
 import { Game, GameRound } from "../model/game";
 import { EstimateQuestion, TextMultipleChoiceQuestion } from "../model/question";
-import { updateFromMap, updatePart } from "./render-utils";
+import { updateFromMap, updatePartInnerHtml } from "./render-utils";
 
 export function renderQuestion(game: Game) {
     if(!game.currentRound) {
@@ -28,18 +28,18 @@ function renderTextMultipleChoiceQuestion(game: Game, round: GameRound, question
         return;
     }
 
-    updatePart(html, 'section', round.inSection);
-    updatePart(html, 'points', `${question.pointsForCompletion}`);
-    updatePart(html, 'question-text', question.text);
+    updatePartInnerHtml(html, 'section', round.inSection);
+    updatePartInnerHtml(html, 'points', `${question.pointsForCompletion}`);
+    updatePartInnerHtml(html, 'question-text', question.text);
 
     const choicesContainer = html.querySelector('[part=answer-choices]');
     if(!choicesContainer) {
         return;
     }
 
-    updateFromMap(choicesContainer, 'choice', question.choices, (element, choiceId, choice) => {
-        updatePart(element, 'choice-id', choiceId);
-        updatePart(element, 'choice-text', choice.text);
+    updateFromMap(choicesContainer, 'choice', question.choices, (element, choiceId, choice, newElement) => {
+        updatePartInnerHtml(element, 'choice-id', choiceId);
+        updatePartInnerHtml(element, 'choice-text', choice.text);
     });
 }
 

@@ -58,19 +58,24 @@ function checkRequiredChanges<KEY,VALUE>(
     return changes;
 }
 
-function updateElement<KEY,VALUE>(key: KEY, element: Element, map: Map<KEY,VALUE>, updater: (html: Element, key: KEY, value: VALUE) => void) {
+function updateElement<KEY,VALUE>(
+    key: KEY,
+    element: Element,
+    map: Map<KEY,VALUE>,
+    updater: (html: Element, key: KEY, value: VALUE, newElement: boolean) => void,
+    newElement: boolean) {
     const value = map.get(key);
     if(!value) {
         return;
     }
-    updater(element, key, value);
+    updater(element, key, value, newElement);
 }
 
 export function updateFromMap<KEY, VALUE>(
     html: Element,
     attribute: string,
     map: Map<KEY, VALUE>,
-    updater: (html: Element, key: KEY, value: VALUE) => void
+    updater: (html: Element, key: KEY, value: VALUE, newElement: boolean) => void
 ) {
     // Find all changes
     const changes: Changes<KEY> = checkRequiredChanges(html, attribute, map);
@@ -89,20 +94,46 @@ export function updateFromMap<KEY, VALUE>(
     }
 
     // Update existing next
-    changes.toUpdate.forEach((item,key) => updateElement(key, item, map, updater));
+    changes.toUpdate.forEach((item,key) => updateElement(key, item, map, updater, false));
 
     // Create the missing ones
     for(const key of changes.toCreate) {
         const element = template.cloneNode(true) as Element;
         element.setAttribute(attribute, `${key}`);
         html.appendChild(element);
-        updateElement(key, element, map, updater);
+        updateElement(key, element, map, updater, true);
     }
 }
 
-export function updatePart(html: Element, partName: string, innerHtml: string) {
-    const part = html.querySelector(`[part=${partName}]`);
+export function getPart(html: Element, partName: string): Element | null {
+    return html.querySelector(`[part=${partName}]`);
+}
+
+export function updatePartInnerHtml(html: Element, partName: string, innerHtml: string) {
+    const part = getPart(html, partName);
     if(part) {
         part.innerHTML = innerHtml;
+    }
+}
+
+export function updateAttributeAtPart(
+    html: Element,
+    partName: string,
+    attributeName: string,
+    value: string | null | undefined) {
+    const part = getPart(html, partName);
+    if(part) {
+        if(value === null || value === undefined) {
+            part.removeAttribute(attributeName);
+        } else {
+            part.setAttribute(attributeName, value);
+        }
+    }
+}
+
+export function addClickListenerToPart(html: Element, partName: string, listener: EventListener) {
+    const part = getPart(html, partName);
+    if(part) {
+        part.addEventListener('click', listener);
     }
 }

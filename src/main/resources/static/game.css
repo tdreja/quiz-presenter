@@ -38,3 +38,22 @@ body:not([current-question=text-multiple-choice]) #text-multiple-choice {
     display: grid;
     grid-template-columns: auto 1fr;
 }
+
+/* region BootStrap Adjustments */
+
+.card > .list-group {
+    border-bottom: none;
+}
+
+.card > .list-group > .list-group-item {
+    border-bottom: var(--bs-list-group-border-width) solid var(--bs-list-group-border-color);
+}
+
+.btn-group > .btn[disabled] {
+    width: 1em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+}
+
+/* endregion BootStrap Adjustments */

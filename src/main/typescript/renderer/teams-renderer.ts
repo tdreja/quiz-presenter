@@ -1,7 +1,13 @@
 import { Game } from '../model/game';
 import { Emoji, getEmojiCharacter, Player } from '../model/player';
 import { Team, TeamColor } from '../model/team';
-import { updateFromMap, updatePart } from './render-utils';
+import {
+    addClickListenerToPart,
+    getPart,
+    updateAttributeAtPart,
+    updateFromMap,
+    updatePartInnerHtml
+} from './render-utils';
 
 export function renderTeams(game: Game) {
     const teamsContainer = document.getElementById('teams-container');
@@ -11,41 +17,46 @@ export function renderTeams(game: Game) {
         );
         return;
     }
-    updateFromMap(teamsContainer, 'team', game.teams, (element, color, team) =>
-        updateTeam(element as HTMLElement, color, team)
+    updateFromMap(teamsContainer, 'team', game.teams, (element, color, team, newElement) =>
+        updateTeam(element as HTMLElement, color, team, newElement)
     );
 }
 
-function updateTeam(element: HTMLElement, color: TeamColor, team: Team) {
+function updateTeam(element: HTMLElement, color: TeamColor, team: Team, newElement: boolean) {
     element.style.setProperty('--team-color', `var(--color-${color.toLowerCase()})`);
     element.style.setProperty('--team-order', `${-team.points}`);
 
-    const teamName = element.querySelector('[part=team-name]');
-    if (teamName) {
-        teamName.innerHTML = color;
-    }
+    updatePartInnerHtml(element, 'team-name', color);
+    updatePartInnerHtml(element, 'team-points', `${team.points}`);
 
-    const points = element.querySelector('[part=team-points]');
-    if (points) {
-        points.innerHTML = `${team.points}`;
-    }
-
-    const players = element.querySelector('[part=player-list]');
+    const players = getPart(element, 'player-list');
     if (players) {
         updateFromMap(
             players as HTMLElement,
             'player',
             team.players,
-            (element, emoji, player) =>
-                updatePlayer(element as HTMLElement, emoji, player)
+            (element, emoji, player, newElement) =>
+                updatePlayer(element as HTMLElement, emoji, player, newElement)
         );
+    }
+
+    const hasGamepad = team.gamepad !== undefined;
+    updateAttributeAtPart(element, 'add-controller-btn', 'disabled', hasGamepad ? '' : null);
+    updateAttributeAtPart(element, 'remove-controller-btn', 'disabled', hasGamepad ? null : '');
+    //updateAttributeAtPart(element, 'add-controller-btn', 'hidden', hasGamepad ? '' : null);
+    //updateAttributeAtPart(element, 'remove-controller-btn', 'hidden', hasGamepad ? null : '');
+
+    if(newElement) {
+        addClickListenerToPart(element, 'answer-btn', ev => console.log('Answer', ev.target));
+        addClickListenerToPart(element, 'add-controller-btn', ev => console.log('Add Controller', ev.target));
+        addClickListenerToPart(element, 'remove-controller-btn', ev => console.log('Remove Controller', ev.target));
     }
 }
 
-function updatePlayer(element: HTMLElement, emoji: Emoji, player: Player) {
+function updatePlayer(element: HTMLElement, emoji: Emoji, player: Player, newElement: boolean) {
     element.style.setProperty('--player-order', `${-player.points}`);
 
-    updatePart(element, 'emoji-container', getEmojiCharacter(emoji));
-    updatePart(element, 'player-name', player.name);
-    updatePart(element, 'player-points', `${player.points}`);
+    updatePartInnerHtml(element, 'emoji-container', getEmojiCharacter(emoji));
+    updatePartInnerHtml(element, 'player-name', player.name);
+    updatePartInnerHtml(element, 'player-points', `${player.points}`);
 }

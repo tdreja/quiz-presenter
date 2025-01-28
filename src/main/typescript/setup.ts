@@ -33,7 +33,8 @@ export const playerBlueCamel: Player = {
 export const teamBlue: Team = {
     color: TeamColor.BLUE,
     points: 20,
-    players: new Map()
+    players: new Map(),
+    gamepad: 0
 }
 teamBlue.players.set(Emoji.DUCK, playerBlueDuck);
 teamBlue.players.set(Emoji.CAMEL, playerBlueCamel);
