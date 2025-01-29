@@ -1,7 +1,7 @@
-import { Game, GameRound, GameSection, RoundState } from "../model/game";
-import { Emoji, Player } from "../model/player";
-import { Choice, EstimateQuestion, TextChoice, TextMultipleChoiceQuestion } from "../model/question";
-import { Team, TeamColor } from "../model/team";
+import {Game, GameRound, GameSection, GameState, RoundState} from "../model/game";
+import {Emoji, Player} from "../model/player";
+import {EstimateQuestion, TextChoice, TextMultipleChoiceQuestion} from "../model/question";
+import {Team, TeamColor} from "../model/team";
 
 export const questionId: string = 'quest';
 export const questionEstimateId: string = 'estimate';
@@ -99,7 +99,8 @@ export function newTestSetup() {
         teams: new Map(),
         selectingTeam: null,
         currentRound: null,
-        roundCounter: 0
+        roundCounter: 0,
+        state: GameState.GAME_ACTIVE,
     }
     game.teams.set(TeamColor.BLUE, teamBlue);
     game.players.set(Emoji.DUCK, playerBlueDuck);

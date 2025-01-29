@@ -2,6 +2,13 @@ import {Team, TeamColor} from "./team";
 import {Emoji, Player} from "./player";
 import { Question } from "./question";
 
+export enum GameState {
+    TEAM_SETUP,
+    PLAYER_SETUP,
+    CONTROLLER_SETUP,
+    GAME_ACTIVE
+}
+
 /**
  * Describes at which point of the current round we are
  */
@@ -48,10 +55,11 @@ export interface Game {
     selectingTeam: Team | null;
     currentRound: GameRound | null;
     roundCounter: number;
+    state: GameState;
 }
 
 export function completeRound(game: Game, teams: Array<TeamColor>): boolean {
-    if(!game.currentRound) {
+    if(!game.currentRound || game.state !== GameState.GAME_ACTIVE) {
         return false;
     }
     

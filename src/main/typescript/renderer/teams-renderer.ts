@@ -8,6 +8,7 @@ import {
     updateFromMap,
     updatePartInnerHtml
 } from './render-utils';
+import {RequestAttemptEvent} from "../events/round-events";
 
 export function renderTeams(game: Game) {
     const teamsContainer = document.getElementById('teams-container');
@@ -18,11 +19,11 @@ export function renderTeams(game: Game) {
         return;
     }
     updateFromMap(teamsContainer, 'team', game.teams, (element, color, team, newElement) =>
-        updateTeam(element as HTMLElement, color, team, newElement)
+        updateTeam(game, element as HTMLElement, color, team, newElement)
     );
 }
 
-function updateTeam(element: HTMLElement, color: TeamColor, team: Team, newElement: boolean) {
+function updateTeam(game: Game, element: HTMLElement, color: TeamColor, team: Team, newElement: boolean) {
     element.style.setProperty('--team-color', `var(--color-${color.toLowerCase()})`);
     element.style.setProperty('--team-order', `${-team.points}`);
 
@@ -41,13 +42,14 @@ function updateTeam(element: HTMLElement, color: TeamColor, team: Team, newEleme
     }
 
     const hasGamepad = team.gamepad !== undefined;
-    updateAttributeAtPart(element, 'add-controller-btn', 'disabled', hasGamepad ? '' : null);
-    updateAttributeAtPart(element, 'remove-controller-btn', 'disabled', hasGamepad ? null : '');
-    //updateAttributeAtPart(element, 'add-controller-btn', 'hidden', hasGamepad ? '' : null);
-    //updateAttributeAtPart(element, 'remove-controller-btn', 'hidden', hasGamepad ? null : '');
+    updateAttributeAtPart(element, 'add-controller-btn', 'hidden', hasGamepad ? '' : null);
+    updateAttributeAtPart(element, 'remove-controller-btn', 'hidden', hasGamepad ? null : '');
+
+    const canAnswer = game.currentRound && !game.currentRound.alreadyAttempted.has(color);
+    updateAttributeAtPart(element, 'answer-btn', 'hidden', canAnswer ? null : '');
 
     if(newElement) {
-        addClickListenerToPart(element, 'answer-btn', ev => console.log('Answer', ev.target));
+        addClickListenerToPart(element, 'answer-btn', () => document.dispatchEvent(new RequestAttemptEvent(color)));
         addClickListenerToPart(element, 'add-controller-btn', ev => console.log('Add Controller', ev.target));
         addClickListenerToPart(element, 'remove-controller-btn', ev => console.log('Remove Controller', ev.target));
     }

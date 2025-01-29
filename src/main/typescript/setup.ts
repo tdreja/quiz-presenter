@@ -1,9 +1,10 @@
-import { Game, GameRound, GameSection, RoundState } from "./model/game";
-import { Emoji, Player } from "./model/player";
-import { Choice, TextChoice, TextMultipleChoiceQuestion } from "./model/question";
-import { Team, TeamColor } from "./model/team";
-import { renderQuestion } from "./renderer/question-renderer";
-import { renderTeams } from "./renderer/teams-renderer";
+import {Game, GameRound, GameSection, GameState, RoundState} from "./model/game";
+import {Emoji, Player} from "./model/player";
+import {TextChoice, TextMultipleChoiceQuestion} from "./model/question";
+import {Team, TeamColor} from "./model/team";
+import {renderQuestion} from "./renderer/question-renderer";
+import {renderTeams} from "./renderer/teams-renderer";
+import {EventType, GameEvent} from "./events/common-events";
 
 export const game: Game = {
     sections: [],
@@ -13,7 +14,8 @@ export const game: Game = {
     teams: new Map(),
     selectingTeam: null,
     currentRound: null,
-    roundCounter: 0
+    roundCounter: 0,
+    state: GameState.GAME_ACTIVE
 }
 
 // region Teams & Players
@@ -98,7 +100,7 @@ export const choiceD: TextChoice = {
 export const textQuestion: TextMultipleChoiceQuestion = new TextMultipleChoiceQuestion('q1', 101, 'How much is the fish?', [choiceA, choiceB, choiceC, choiceD]);
 export const round: GameRound = {
     question: textQuestion,
-    state: RoundState.WAIT_ON_REVEAL,
+    state: RoundState.BUZZER_ACTIVE,
     currentlyAttempting: new Set(),
     alreadyAttempted: new Set(),
     completedBy: new Set(),
@@ -116,6 +118,13 @@ game.currentRound = round;
 // endregion Questions
 
 function setupDemo() {
+    document.addEventListener(EventType.REQUEST_ATTEMPT, (ev) => {
+        if(ev instanceof GameEvent && ev.updateGame(game)) {
+            renderTeams(game);
+            renderQuestion(game);
+        }
+    });
+
     renderTeams(game);
     renderQuestion(game);
 }

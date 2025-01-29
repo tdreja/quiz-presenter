@@ -14,6 +14,11 @@
         <script type="text/javascript" src="./js/model/question.js"></script>
         <script type="text/javascript" src="./js/model/team.js"></script>
 
+        <script type="text/javascript" src="./js/events/common-events.js"></script>
+        <script type="text/javascript" src="./js/events/question-event.js"></script>
+        <script type="text/javascript" src="./js/events/round-events.js"></script>
+        <script type="text/javascript" src="./js/events/setup-events.js"></script>
+
         <script type="text/javascript" src="./js/renderer/render-utils.js"></script>
         <script type="text/javascript" src="./js/renderer/teams-renderer.js"></script>
         <script type="text/javascript" src="./js/renderer/question-renderer.js"></script>
@@ -45,11 +50,9 @@
                         </li>
                     </ul>
                     <div class="card-body">
-                        <div class="btn-group" role="group">
-                            <button type="button" part="answer-btn" class="btn btn-outline-secondary">Answer</button>
-                            <button type="button" part="add-controller-btn" class="btn btn-outline-secondary">Add controller</button>
-                            <button type="button" part="remove-controller-btn" class="btn btn-outline-secondary">Remove controller</button>
-                        </div>
+                        <button type="button" part="answer-btn" class="btn btn-outline-primary">Answer</button>
+                        <button type="button" part="add-controller-btn" class="btn btn-outline-secondary">Add controller</button>
+                        <button type="button" part="remove-controller-btn" class="btn btn-outline-secondary">Remove controller</button>
                     </div>
                     <div class="card-footer text-body-secondary">
                         2 days ago

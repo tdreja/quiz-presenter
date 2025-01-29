@@ -1,22 +1,35 @@
-import { RoundState } from "../model/game";
-import { EstimateQuestion } from "../model/question";
-import { TeamColor } from "../model/team";
-import { choiceAWrong, choiceBCorrect, estimateRound, game, newTestSetup, playerRedCamel, questionEstimate, questionEstimateId, questionId, round, sectionId, teamBlue, teamRed } from "./data.test";
-import { SelectFromMultipleChoiceEvent, SubmitEstimateEvent } from "./question-event";
-import { ActivateBuzzerEvent, RequestAttemptEvent, StartRoundEvent } from "./round-events";
+import {RoundState} from "../model/game";
+import {TeamColor} from "../model/team";
+import {
+    choiceAWrong,
+    choiceBCorrect,
+    estimateRound,
+    game,
+    newTestSetup,
+    playerRedCamel,
+    questionEstimate,
+    questionEstimateId,
+    questionId,
+    round,
+    sectionId,
+    teamBlue,
+    teamRed
+} from "./data.test";
+import {SelectFromMultipleChoiceEvent, SubmitEstimateEvent} from "./question-event";
+import {ActivateBuzzerEvent, RequestAttemptEvent, StartRoundEvent} from "./round-events";
 
 beforeEach(() => {
-  newTestSetup();
+    newTestSetup();
 });
 
 test('selectMultipleChoice', () => {
     expect(new StartRoundEvent(sectionId, questionId).updateGame(game)).toBe(true);
     expect(game.currentRound).toBe(round);
     expect(round.state).toBe(RoundState.SHOW_QUESTION);
-    
+
     // No team selected
     expect(new SelectFromMultipleChoiceEvent(choiceAWrong.choiceId).updateGame(game)).toBe(false);
-    
+
     // Team blue tries
     expect(new ActivateBuzzerEvent().updateGame(game)).toBe(true);
     expect(new RequestAttemptEvent(TeamColor.BLUE).updateGame(game)).toBe(true);
@@ -45,7 +58,7 @@ test('selectEstimate', () => {
     expect(new StartRoundEvent(sectionId, questionEstimateId).updateGame(game)).toBe(true);
     expect(game.currentRound).toBe(estimateRound);
     expect(estimateRound.state).toBe(RoundState.SHOW_QUESTION);
-    
+
     // No valid team
     expect(new SubmitEstimateEvent(TeamColor.ORANGE, 100).updateGame(game)).toBe(false);
 

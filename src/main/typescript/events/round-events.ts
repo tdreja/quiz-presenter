@@ -1,6 +1,6 @@
-import { Game, GameRound, RoundState } from "../model/game";
-import { TeamColor } from "../model/team";
-import { EventType, GameEvent, GameRoundEvent } from "./common-events";
+import {Game, GameRound, GameState, RoundState} from "../model/game";
+import {TeamColor} from "../model/team";
+import {EventType, GameEvent, GameRoundEvent} from "./common-events";
 
 /**
  * Admin selects a new question to play
@@ -17,6 +17,10 @@ export class StartRoundEvent extends GameEvent {
     }
 
     public updateGame(game: Game): boolean {
+        if(game.state !== GameState.GAME_ACTIVE) {
+            return false;
+        }
+
         // Force complete the old round
         if(game.currentRound) {
             // We're already active?
@@ -71,9 +75,9 @@ export class RequestAttemptEvent extends GameRoundEvent {
 
     private readonly _team: TeamColor;
 
-    public constructor(team: string, eventInitDict?: EventInit) {
+    public constructor(team: TeamColor, eventInitDict?: EventInit) {
         super(EventType.REQUEST_ATTEMPT, eventInitDict);
-        this._team = team as TeamColor;
+        this._team = team;
     }
 
     public updateRound(game: Game, round: GameRound): boolean {

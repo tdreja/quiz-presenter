@@ -1,4 +1,4 @@
-import { Game, GameRound } from "../model/game";
+import {Game, GameRound, GameState} from "../model/game";
 
 export enum EventType {
     // Events for each round
@@ -40,8 +40,11 @@ export abstract class GameRoundEvent extends GameEvent {
     }
 
     public updateGame(game: Game): boolean {
+        if (game.state !== GameState.GAME_ACTIVE) {
+            return false;
+        }
         const round = game.currentRound;
-        if(round) {
+        if (round) {
             return this.updateRound(game, round);
         }
         return false;
