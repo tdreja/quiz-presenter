@@ -1,6 +1,8 @@
 html {
     --color-blue: blue;
+    --color-blue-shadow: rgba(13, 110, 253, 0.25);
     --color-red: red;
+    --color-red-shadow: rgba(13, 110, 253, 0.25);
 }
 
 /* Make templates invisible */
@@ -23,6 +25,9 @@ html {
     order: var(--player-order, unset);
 }
 
+.buzzer-shadow {
+    box-shadow: var(--team-color-shadow, gray) 0px 0px 0px 4px;
+}
 
 /* Multiple choice question */
 body:not([current-question=text-multiple-choice]) #text-multiple-choice {

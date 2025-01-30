@@ -117,13 +117,17 @@ game.currentRound = round;
 
 // endregion Questions
 
+const eventListener: EventListener = (ev: Event) => {
+    if(ev instanceof GameEvent && ev.updateGame(game)) {
+        renderTeams(game);
+        renderQuestion(game);
+    }
+}
+
 function setupDemo() {
-    document.addEventListener(EventType.REQUEST_ATTEMPT, (ev) => {
-        if(ev instanceof GameEvent && ev.updateGame(game)) {
-            renderTeams(game);
-            renderQuestion(game);
-        }
-    });
+    for(const type of Object.values(EventType)) {
+        document.addEventListener(type, eventListener);
+    }
 
     renderTeams(game);
     renderQuestion(game);

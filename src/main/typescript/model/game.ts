@@ -80,3 +80,10 @@ export function completeRound(game: Game, teams: Array<TeamColor>): boolean {
     game.currentRound.timerStart = null;
     return true;
 }
+
+export function checkCurrentRound(game: Game, checker: (round: GameRound) => boolean) {
+    if(game.currentRound) {
+        return checker(game.currentRound);
+    }
+    return false;
+}

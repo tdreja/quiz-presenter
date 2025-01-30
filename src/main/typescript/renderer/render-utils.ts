@@ -105,11 +105,14 @@ export function updateFromMap<KEY, VALUE>(
     }
 }
 
-export function getPart(html: Element, partName: string): Element | null {
-    return html.querySelector(`[part=${partName}]`);
+export function getPart(html: Element, partName: string | null): Element | null {
+    if(partName) {
+        return html.querySelector(`[part=${partName}]`);
+    }
+    return html;
 }
 
-export function updatePartInnerHtml(html: Element, partName: string, innerHtml: string) {
+export function updatePartInnerHtml(html: Element, partName: string | null, innerHtml: string) {
     const part = getPart(html, partName);
     if(part) {
         part.innerHTML = innerHtml;
@@ -118,7 +121,7 @@ export function updatePartInnerHtml(html: Element, partName: string, innerHtml: 
 
 export function updateAttributeAtPart(
     html: Element,
-    partName: string,
+    partName: string | null,
     attributeName: string,
     value: string | null | undefined) {
     const part = getPart(html, partName);
@@ -131,7 +134,18 @@ export function updateAttributeAtPart(
     }
 }
 
-export function addClickListenerToPart(html: Element, partName: string, listener: EventListener) {
+export function updateStyleAtPart(html: Element, partName: string | null, className: string, active: boolean) {
+    const part = getPart(html, partName);
+    if(part) {
+        if(active) {
+            part.classList.add(className);
+        } else {
+            part.classList.remove(className);
+        }
+    }
+}
+
+export function addClickListenerToPart(html: Element, partName: string | null, listener: EventListener) {
     const part = getPart(html, partName);
     if(part) {
         part.addEventListener('click', listener);

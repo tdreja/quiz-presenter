@@ -1,4 +1,4 @@
-import { Game } from '../model/game';
+import {checkCurrentRound, Game} from '../model/game';
 import { Emoji, getEmojiCharacter, Player } from '../model/player';
 import { Team, TeamColor } from '../model/team';
 import {
@@ -6,7 +6,7 @@ import {
     getPart,
     updateAttributeAtPart,
     updateFromMap,
-    updatePartInnerHtml
+    updatePartInnerHtml, updateStyleAtPart
 } from './render-utils';
 import {RequestAttemptEvent} from "../events/round-events";
 
@@ -25,7 +25,11 @@ export function renderTeams(game: Game) {
 
 function updateTeam(game: Game, element: HTMLElement, color: TeamColor, team: Team, newElement: boolean) {
     element.style.setProperty('--team-color', `var(--color-${color.toLowerCase()})`);
+    element.style.setProperty('--team-color-shadow', `var(--color-${color.toLowerCase()}-shadow)`);
     element.style.setProperty('--team-order', `${-team.points}`);
+
+    const isCurrentlyAttempting = checkCurrentRound(game, round => round.currentlyAttempting.has(color));
+    updateStyleAtPart(element, null, 'buzzer-shadow', isCurrentlyAttempting);
 
     updatePartInnerHtml(element, 'team-name', color);
     updatePartInnerHtml(element, 'team-points', `${team.points}`);
@@ -41,12 +45,11 @@ function updateTeam(game: Game, element: HTMLElement, color: TeamColor, team: Te
         );
     }
 
+    const hasAnswered = checkCurrentRound(game, round => round.alreadyAttempted.has(color));
     const hasGamepad = team.gamepad !== undefined;
     updateAttributeAtPart(element, 'add-controller-btn', 'hidden', hasGamepad ? '' : null);
     updateAttributeAtPart(element, 'remove-controller-btn', 'hidden', hasGamepad ? null : '');
-
-    const canAnswer = game.currentRound && !game.currentRound.alreadyAttempted.has(color);
-    updateAttributeAtPart(element, 'answer-btn', 'hidden', canAnswer ? null : '');
+    updateAttributeAtPart(element, 'answer-btn', 'hidden', hasAnswered ? '' : null);
 
     if(newElement) {
         addClickListenerToPart(element, 'answer-btn', () => document.dispatchEvent(new RequestAttemptEvent(color)));
