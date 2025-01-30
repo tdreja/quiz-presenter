@@ -26,6 +26,7 @@ export function renderTeams(game: Game) {
 function updateTeam(game: Game, element: HTMLElement, color: TeamColor, team: Team, newElement: boolean) {
     element.style.setProperty('--team-color', `var(--color-${color.toLowerCase()})`);
     element.style.setProperty('--team-color-shadow', `var(--color-${color.toLowerCase()}-shadow)`);
+    element.style.setProperty('--team-color-text', `var(--color-${color.toLowerCase()}-text)`);
     element.style.setProperty('--team-order', `${-team.points}`);
 
     const isCurrentlyAttempting = checkCurrentRound(game, round => round.currentlyAttempting.has(color));
