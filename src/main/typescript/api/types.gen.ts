@@ -103,8 +103,8 @@ export type Team = {
 };
 
 export type AddPlayerEventDto = {
-    playerName: string;
-    eventType: EventType;
+    readonly playerName: string;
+    readonly eventType: EventType;
 };
 
 export enum EventType {
