@@ -103,8 +103,26 @@ export type Team = {
 };
 
 export type AddPlayerEventDto = {
-    name: string;
+    playerName: string;
+    eventType: EventType;
 };
+
+export enum EventType {
+    START_ROUND = 'START_ROUND',
+    ACTIVATE_BUZZER = 'ACTIVATE_BUZZER',
+    REQUEST_ATTEMPT = 'REQUEST_ATTEMPT',
+    SKIP_ROUND = 'SKIP_ROUND',
+    CLOSE_ROUND = 'CLOSE_ROUND',
+    SELECT_FROM_MULTIPLE_CHOICE = 'SELECT_FROM_MULTIPLE_CHOICE',
+    SUBMIT_ESTIMATE = 'SUBMIT_ESTIMATE',
+    ADD_PLAYER = 'ADD_PLAYER',
+    REMOVE_PLAYER = 'REMOVE_PLAYER',
+    RENAME_PLAYER = 'RENAME_PLAYER',
+    REROLL_EMOJI = 'REROLL_EMOJI',
+    ADD_TEAM = 'ADD_TEAM',
+    REMOVE_TEAM = 'REMOVE_TEAM',
+    SHUFFLE_TEAMS = 'SHUFFLE_TEAMS'
+}
 
 export type GetGameResponse = (GameDto);
 

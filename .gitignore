@@ -43,3 +43,4 @@ out/
 node_modules
 package-lock.json
 openapi-ts-error*.log
+/src/main/typescript/api/index.ts

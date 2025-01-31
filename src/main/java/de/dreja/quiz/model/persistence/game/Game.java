@@ -30,7 +30,7 @@ public class Game extends LocalizedEntity {
     private Map<String, String> settingsMap;
 
     /*@ManyToOne(targetEntity = Quiz.class, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "quiz_id")
+    @JoinColumn(playerName = "quiz_id")
     private Quiz quiz;*/
 
     @OneToOne(targetEntity = Team.class, fetch = FetchType.LAZY)

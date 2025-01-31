@@ -5,5 +5,10 @@ import jakarta.annotation.Nonnull;
 
 public record AddPlayerEventDto(@JsonProperty(required = true)
                                 @Nonnull
-                                String name) {
+                                String playerName) implements EventDto {
+    @Nonnull
+    @Override
+    public EventType getEventType() {
+        return EventType.ADD_PLAYER;
+    }
 }
