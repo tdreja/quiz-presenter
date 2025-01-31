@@ -5,7 +5,7 @@ import de.dreja.quiz.model.common.Color;
 import de.dreja.quiz.model.common.RoundState;
 import jakarta.annotation.Nonnull;
 
-import java.util.Set;
+import java.util.List;
 
 public record GameRoundDto(@Nonnull
                            @JsonProperty(required = true)
@@ -15,13 +15,13 @@ public record GameRoundDto(@Nonnull
                            RoundState state,
                            @Nonnull
                            @JsonProperty(required = true)
-                           Set<Color> currentlyAttempting,
+                           List<Color> currentlyAttempting,
                            @Nonnull
                            @JsonProperty(required = true)
-                           Set<Color> alreadyAttempted,
+                           List<Color> alreadyAttempted,
                            @Nonnull
                            @JsonProperty(required = true)
-                           Set<Color> completedBy,
+                           List<Color> completedBy,
                            @Nonnull
                            @JsonProperty(required = true)
                            String inSection) {

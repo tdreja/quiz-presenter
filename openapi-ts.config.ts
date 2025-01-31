@@ -1,3 +1,4 @@
+// @ts-ignore
 import { defineConfig } from '@hey-api/openapi-ts';
 
 export default defineConfig({
@@ -16,6 +17,6 @@ export default defineConfig({
     },
     types: {
         dates: 'types+transform',
-        enums: 'javascript',
+        enums: 'typescript',
     },
 });

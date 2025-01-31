@@ -7,27 +7,26 @@ import de.dreja.quiz.model.common.GameState;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 public record GameDto(@Nonnull
                       @JsonProperty(required = true)
                       GameState state,
                       @Nonnull
                       @JsonProperty(required = true)
-                      Map<String, GameSectionDto> sections,
+                      List<GameSectionDto> sections,
                       @Nonnull
                       @JsonProperty(required = true)
-                      Set<Emoji> availableEmoji,
+                      List<Emoji> availableEmoji,
                       @Nonnull
                       @JsonProperty(required = true)
-                      Set<Color> availableColors,
+                      List<Color> availableColors,
                       @Nonnull
                       @JsonProperty(required = true)
-                      Map<Emoji, PlayerDto> players,
+                      List<PlayerDto> players,
                       @Nonnull
                       @JsonProperty(required = true)
-                      Map<Color, TeamDto> teams,
+                      List<TeamDto> teams,
                       @JsonProperty(required = true)
                       long roundCounter,
                       @Nullable

@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import java.util.Set;
+import java.util.List;
 
 @Schema(name = "Team")
 public record TeamDto(@Nonnull
@@ -16,7 +16,8 @@ public record TeamDto(@Nonnull
                       @JsonProperty(required = true)
                       long points,
                       @JsonProperty(required = true)
-                      @Nonnull Set<Emoji> players,
+                      @Nonnull
+                      List<Emoji> players,
                       @Nullable
                       @JsonProperty
                       String gamepadId) {
