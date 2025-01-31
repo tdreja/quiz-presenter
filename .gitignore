@@ -38,3 +38,7 @@ out/
 
 ### Local Run ###
 **/application.properties
+
+### NodeJS ###
+node_modules
+package-lock.json
