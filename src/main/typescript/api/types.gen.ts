@@ -102,9 +102,17 @@ export type Team = {
     gamepadId?: string;
 };
 
+export type AddPlayerEventDto = {
+    name: string;
+};
+
 export type GetGameResponse = (GameDto);
 
 export type GetGameError = unknown;
+
+export type GetEventResponse = (AddPlayerEventDto);
+
+export type GetEventError = unknown;
 
 export type $OpenApiTs = {
     '/debug/game/': {
@@ -114,6 +122,16 @@ export type $OpenApiTs = {
                  * OK
                  */
                 '200': GameDto;
+            };
+        };
+    };
+    '/debug/event/': {
+        get: {
+            res: {
+                /**
+                 * OK
+                 */
+                '200': AddPlayerEventDto;
             };
         };
     };

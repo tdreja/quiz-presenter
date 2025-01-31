@@ -7,7 +7,7 @@ export default defineConfig({
         'http://localhost:8080/v3/api-docs',
     output: {
         format: 'prettier',
-        path: './src/main/typescript/api/types',
+        path: './src/main/typescript/api',
     },
     schemas: {
         export: false
