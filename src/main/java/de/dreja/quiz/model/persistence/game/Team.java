@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import de.dreja.quiz.model.common.Color;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 

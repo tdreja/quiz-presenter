@@ -1,6 +1,7 @@
 package de.dreja.quiz.model.persistence.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import de.dreja.quiz.model.common.Emoji;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 

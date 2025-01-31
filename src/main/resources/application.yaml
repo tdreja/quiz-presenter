@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: dev
   application:
         jpa:
             properties:
@@ -13,6 +15,10 @@ spring:
     password:
     username: sa
     url: jdbc:sqlite:./build/dev-db.db
+
+springdoc:
+  api-docs:
+    enabled: true
 
   dreja:
     quiz:

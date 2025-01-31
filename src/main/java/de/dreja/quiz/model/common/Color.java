@@ -1,7 +1,9 @@
-package de.dreja.quiz.model.persistence.game;
+package de.dreja.quiz.model.common;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nullable;
 
+@Schema(enumAsRef = true)
 public enum Color {
 
     RED,

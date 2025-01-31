@@ -1,9 +1,7 @@
 package de.dreja.quiz.model.persistence.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import de.dreja.quiz.model.game.IsGameMode;
 import de.dreja.quiz.model.persistence.LocalizedEntity;
-import de.dreja.quiz.model.persistence.quiz.Quiz;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -25,24 +23,15 @@ public class Game extends LocalizedEntity {
     @OneToMany(targetEntity = Team.class, mappedBy = "game")
     private final List<Team> teams = new ArrayList<>();
 
-    @OneToMany(targetEntity = GameSection.class, mappedBy = "game")
-    private final List<GameSection> sections = new ArrayList<>();
-
     @OneToMany(targetEntity = GameSetting.class, mappedBy = "game")
     private final List<GameSetting> settings = new ArrayList<>();
 
     @Transient
     private Map<String, String> settingsMap;
 
-    @ManyToOne(targetEntity = Quiz.class, optional = false, fetch = FetchType.LAZY)
+    /*@ManyToOne(targetEntity = Quiz.class, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id")
-    private Quiz quiz;
-
-    @Column(name = "game_mode", nullable = false)
-    private String gameModeType = IsGameMode.class.getCanonicalName();
-
-    @Transient
-    private Class<? extends IsGameMode> gameMode = IsGameMode.class;
+    private Quiz quiz;*/
 
     @OneToOne(targetEntity = Team.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "active_team_id")
@@ -51,10 +40,6 @@ public class Game extends LocalizedEntity {
     @OneToOne(targetEntity = Player.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "active_player_id")
     private Player activePlayer;
-
-    @OneToOne(targetEntity = GameQuestion.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "current_question_id")
-    private GameQuestion currentQuestion;
 
     @Column(name = "wait_for_team_input", nullable = false)
     private boolean waitForTeamInput = false;
@@ -127,61 +112,6 @@ public class Game extends LocalizedEntity {
         return this;
     }
 
-    @Nonnull
-    public List<GameSection> getSections() {
-        return sections;
-    }
-
-    @Nonnull
-    public Game addSection(@Nonnull GameSection section) {
-        section.setGame(this);
-        if (sections.contains(section)) {
-            return this;
-        }
-        sections.add(section);
-        return this;
-    }
-
-    @Nonnull
-    public Game removeSection(@Nonnull GameSection section) {
-        if (sections.remove(section)) {
-            section.setGame(null);
-        }
-        return this;
-    }
-
-    @Nonnull
-    @JsonIgnore
-    public Quiz getQuiz() {
-        return quiz;
-    }
-
-    @Nonnull
-    public Game setQuiz(@Nonnull Quiz quiz) {
-        this.quiz = quiz;
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Nonnull
-    public Class<? extends IsGameMode> getGameMode() {
-        if (gameMode == null) {
-            try {
-                gameMode = (Class<? extends IsGameMode>) Class.forName(gameModeType);
-            } catch (ClassNotFoundException e) {
-                throw new IllegalStateException("Could not load game mode type!", e);
-            }
-        }
-        return gameMode;
-    }
-
-    @Nonnull
-    public Game setGameMode(@Nonnull Class<? extends IsGameMode> gameMode) {
-        this.gameMode = gameMode;
-        this.gameModeType = this.gameMode.getCanonicalName();
-        return this;
-    }
-
     @Nullable
     public Team getActiveTeam() {
         return activeTeam;
@@ -201,17 +131,6 @@ public class Game extends LocalizedEntity {
     @Nonnull
     public Game setActivePlayer(@Nullable Player player) {
         this.activePlayer = player;
-        return this;
-    }
-
-    @Nullable
-    public GameQuestion getCurrentQuestion() {
-        return currentQuestion;
-    }
-
-    @Nonnull
-    public Game setCurrentQuestion(@Nullable GameQuestion question) {
-        this.currentQuestion = question;
         return this;
     }
 
