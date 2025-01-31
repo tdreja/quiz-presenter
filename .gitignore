@@ -42,3 +42,4 @@ out/
 ### NodeJS ###
 node_modules
 package-lock.json
+openapi-ts-error*.log
