@@ -3,6 +3,8 @@ package de.dreja.quiz.model.json.event;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.dreja.quiz.model.common.Color;
+import de.dreja.quiz.model.json.event.player.AddPlayerEventDto;
+import de.dreja.quiz.model.json.event.team.AddTeamEventDto;
 import jakarta.annotation.Nonnull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;

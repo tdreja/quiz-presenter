@@ -20,5 +20,7 @@ public record TeamDto(@Nonnull
                       List<Emoji> players,
                       @Nullable
                       @JsonProperty
-                      String gamepadId) {
+                      String gamepadId,
+                      @JsonProperty(required = true)
+                      boolean gamePadRequested) {
 }

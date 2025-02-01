@@ -115,27 +115,100 @@ export type Team = {
     points: number;
     players: Array<Emoji>;
     gamepadId?: string;
+    gamePadRequested: boolean;
 };
 
+/**
+ * Add a new player to the current game
+ */
 export type AddPlayerEventDto = GameEventDto & {
     playerName?: string;
 } & {
     playerName: string;
 };
 
+/**
+ * Adds a new, empty team to the game
+ */
 export type AddTeamEventDto = GameEventDto & {
     targetColor?: Color;
+};
+
+/**
+ * Assigns the current controller ID to the team
+ */
+export type AssignGamepadEventDto = GameEventDto & {
+    teamColor?: Color;
+    gamepadId?: string;
+} & {
+    teamColor: Color;
 };
 
 export type GameEventDto = {
     type: string;
 };
 
+/**
+ * Change the emoji of an existing player
+ */
+export type ReRollPlayerEmojiEventDto = GameEventDto & {
+    currentEmoji?: Emoji;
+} & {
+    currentEmoji: Emoji;
+};
+
+/**
+ * Remove a player from the current game
+ */
+export type RemovePlayerEventDto = GameEventDto & {
+    playerEmoji?: Emoji;
+} & {
+    playerEmoji: Emoji;
+};
+
+/**
+ * Remove a team from the current game
+ */
+export type RemoveTeamEventDto = GameEventDto & {
+    teamColor?: Color;
+} & {
+    teamColor: Color;
+};
+
+/**
+ * Rename a player
+ */
+export type RenamePlayerEventDto = GameEventDto & {
+    playerEmoji?: Emoji;
+    newName?: string;
+} & {
+    playerEmoji: Emoji;
+    newName: string;
+};
+
+/**
+ * Requests the assignment of a controller to the team
+ */
+export type RequestGamepadEventDto = GameEventDto & {
+    teamColor?: Color;
+} & {
+    teamColor: Color;
+};
+
+/**
+ * Shuffle all players into new teams
+ */
+export type ShuffleTeamsEventDto = GameEventDto & {
+    newTeams?: Array<Color>;
+} & {
+    newTeams: Array<Color>;
+};
+
 export type GetGameResponse = (Game);
 
 export type GetGameError = unknown;
 
-export type GetEventResponse = ((AddPlayerEventDto | AddTeamEventDto));
+export type GetEventResponse = ((AddPlayerEventDto | AddTeamEventDto | AssignGamepadEventDto | ReRollPlayerEmojiEventDto | RemovePlayerEventDto | RemoveTeamEventDto | RenamePlayerEventDto | RequestGamepadEventDto | ShuffleTeamsEventDto));
 
 export type GetEventError = unknown;
 
@@ -156,7 +229,7 @@ export type $OpenApiTs = {
                 /**
                  * OK
                  */
-                '200': (AddPlayerEventDto | AddTeamEventDto);
+                '200': (AddPlayerEventDto | AddTeamEventDto | AssignGamepadEventDto | ReRollPlayerEmojiEventDto | RemovePlayerEventDto | RemoveTeamEventDto | RenamePlayerEventDto | RequestGamepadEventDto | ShuffleTeamsEventDto);
             };
         };
     };

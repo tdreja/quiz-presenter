@@ -1,6 +1,18 @@
 import {GameEventDto} from "../api/types.gen";
 
-export type EventType = 'add-player' | 'add-team';
+export enum EventType {
+    // Player
+    ADD_PLAYER = 'add-player',
+    REMOVE_PLAYER = 'remove-player',
+    RENAME_PLAYER = 'rename-player',
+    RE_ROLL_PLAYER_EMOJI = 're-roll-player-emoji',
+    // Teams
+    ADD_TEAM = 'add-team',
+    REMOVE_TEAM = 'remove-team',
+    SHUFFLE_TEAMS = 'shuffle-teams',
+    ASSIGN_CONTROLLER = 'assign-controller',
+    REQUEST_CONTROLLER = 'request-controller',
+}
 
 export abstract class GameEvent extends Event implements GameEventDto {
 
