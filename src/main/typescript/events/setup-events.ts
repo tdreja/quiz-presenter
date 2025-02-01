@@ -1,12 +1,12 @@
-import {AddPlayerEventDto, EventType} from '../api/types.gen';
+import {GameEvent} from "./common-events";
+import {AddPlayerEventDto, AddTeamEventDto, Color} from "../api/types.gen";
 
+export class AddPlayerEvent extends GameEvent implements AddPlayerEventDto {
 
-export class AddPlayerEvent extends Event implements AddPlayerEventDto {
+    private readonly _playerName;
 
-    private readonly _playerName: string;
-
-    public constructor(playerName: string) {
-        super(EventType.ADD_PLAYER);
+    public constructor(playerName: string, eventInitDict?: EventInit) {
+        super('add-player', eventInitDict);
         this._playerName = playerName;
     }
 
@@ -14,7 +14,18 @@ export class AddPlayerEvent extends Event implements AddPlayerEventDto {
         return this._playerName;
     }
 
-    public get eventType(): EventType {
-        return EventType.ADD_PLAYER;
+}
+
+export class AddTeamEvent extends GameEvent implements AddTeamEventDto {
+
+    private readonly _targetColor: Color | undefined;
+
+    public constructor(targetColor?: Color, eventInitDict?: EventInit) {
+        super('add-team', eventInitDict);
+        this._targetColor = targetColor;
+    }
+
+    public get targetColor(): Color | undefined {
+        return this._targetColor;
     }
 }

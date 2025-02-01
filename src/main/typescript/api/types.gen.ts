@@ -46,9 +46,12 @@ export enum Emoji {
     DOG = 'DOG'
 }
 
-export type GameDto = {
+/**
+ * Overall container for the entire game setup and state
+ */
+export type Game = {
     state: GameState;
-    sections: Array<GameSectionDto>;
+    sections: Array<GameSection>;
     availableEmoji: Array<Emoji>;
     availableColors: Array<Color>;
     players: Array<Player>;
@@ -58,7 +61,10 @@ export type GameDto = {
     currentRound?: string;
 };
 
-export type GameRoundDto = {
+/**
+ * One round (aka question) in the quiz
+ */
+export type GameRound = {
     key: string;
     state: RoundState;
     currentlyAttempting: Array<Color>;
@@ -67,9 +73,12 @@ export type GameRoundDto = {
     inSection: string;
 };
 
-export type GameSectionDto = {
+/**
+ * A named group of rounds within the game (e.g. Category)
+ */
+export type GameSection = {
     name: string;
-    rounds: Array<GameRoundDto>;
+    rounds: Array<GameRound>;
 };
 
 export enum GameState {
@@ -79,6 +88,9 @@ export enum GameState {
     GAME_ACTIVE = 'GAME_ACTIVE'
 }
 
+/**
+ * One player within the game with a unique Emoji
+ */
 export type Player = {
     emoji: Emoji;
     name: string;
@@ -95,6 +107,9 @@ export enum RoundState {
     CLOSED = 'CLOSED'
 }
 
+/**
+ * One team of players within the game with a unique color
+ */
 export type Team = {
     color: Color;
     points: number;
@@ -102,33 +117,25 @@ export type Team = {
     gamepadId?: string;
 };
 
-export type AddPlayerEventDto = {
-    readonly playerName: string;
-    readonly eventType: EventType;
+export type AddPlayerEventDto = GameEventDto & {
+    playerName?: string;
+} & {
+    playerName: string;
 };
 
-export enum EventType {
-    START_ROUND = 'START_ROUND',
-    ACTIVATE_BUZZER = 'ACTIVATE_BUZZER',
-    REQUEST_ATTEMPT = 'REQUEST_ATTEMPT',
-    SKIP_ROUND = 'SKIP_ROUND',
-    CLOSE_ROUND = 'CLOSE_ROUND',
-    SELECT_FROM_MULTIPLE_CHOICE = 'SELECT_FROM_MULTIPLE_CHOICE',
-    SUBMIT_ESTIMATE = 'SUBMIT_ESTIMATE',
-    ADD_PLAYER = 'ADD_PLAYER',
-    REMOVE_PLAYER = 'REMOVE_PLAYER',
-    RENAME_PLAYER = 'RENAME_PLAYER',
-    REROLL_EMOJI = 'REROLL_EMOJI',
-    ADD_TEAM = 'ADD_TEAM',
-    REMOVE_TEAM = 'REMOVE_TEAM',
-    SHUFFLE_TEAMS = 'SHUFFLE_TEAMS'
-}
+export type AddTeamEventDto = GameEventDto & {
+    targetColor?: Color;
+};
 
-export type GetGameResponse = (GameDto);
+export type GameEventDto = {
+    type: string;
+};
+
+export type GetGameResponse = (Game);
 
 export type GetGameError = unknown;
 
-export type GetEventResponse = (AddPlayerEventDto);
+export type GetEventResponse = ((AddPlayerEventDto | AddTeamEventDto));
 
 export type GetEventError = unknown;
 
@@ -139,7 +146,7 @@ export type $OpenApiTs = {
                 /**
                  * OK
                  */
-                '200': GameDto;
+                '200': Game;
             };
         };
     };
@@ -149,7 +156,7 @@ export type $OpenApiTs = {
                 /**
                  * OK
                  */
-                '200': AddPlayerEventDto;
+                '200': (AddPlayerEventDto | AddTeamEventDto);
             };
         };
     };

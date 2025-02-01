@@ -1,6 +1,6 @@
 package de.dreja.quiz.interfaces.rest;
 
-import de.dreja.quiz.model.json.event.AddPlayerEventDto;
+import de.dreja.quiz.model.json.event.GameEventDto;
 import de.dreja.quiz.model.json.game.GameDto;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class DebugEndpoint {
     }
 
     @GetMapping("/event/")
-    public ResponseEntity<AddPlayerEventDto> getEvent() {
+    public ResponseEntity<GameEventDto> getEvent() {
         return ResponseEntity.notFound().build();
     }
 }
