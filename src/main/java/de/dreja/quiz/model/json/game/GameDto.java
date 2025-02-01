@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import de.dreja.quiz.model.common.Color;
 import de.dreja.quiz.model.common.Emoji;
 import de.dreja.quiz.model.common.GameState;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
 import java.util.List;
 
+@Schema(name = "Game", description = "Overall container for the entire game setup and state")
 public record GameDto(@Nonnull
                       @JsonProperty(required = true)
                       GameState state,

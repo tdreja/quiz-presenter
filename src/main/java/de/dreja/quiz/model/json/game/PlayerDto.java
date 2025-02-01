@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-@Schema(name = "Player")
+@Schema(name = "Player", description = "One player within the game with a unique Emoji")
 public record PlayerDto(@Nonnull
                         @JsonProperty(required = true)
                         Emoji emoji,

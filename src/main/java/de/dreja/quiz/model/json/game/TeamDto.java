@@ -9,7 +9,7 @@ import jakarta.annotation.Nullable;
 
 import java.util.List;
 
-@Schema(name = "Team")
+@Schema(name = "Team", description = "One team of players within the game with a unique color")
 public record TeamDto(@Nonnull
                       @JsonProperty(required = true)
                       Color color,
