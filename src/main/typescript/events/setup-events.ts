@@ -4,6 +4,7 @@ import {
     AddTeamEventDto, AssignGamepadEventDto,
     Color,
     Emoji,
+    Game,
     RemovePlayerEventDto,
     RemoveTeamEventDto,
     RenamePlayerEventDto, RequestGamepadEventDto,
@@ -24,6 +25,9 @@ export class AddPlayerEvent extends GameEvent implements AddPlayerEventDto {
         return this._playerName;
     }
 
+    public updateGame(game: Game): Game | null {
+        return null;
+    }
 }
 
 export class RemovePlayerEvent extends GameEvent implements RemovePlayerEventDto {
@@ -36,6 +40,10 @@ export class RemovePlayerEvent extends GameEvent implements RemovePlayerEventDto
 
     public get playerEmoji(): Emoji {
         return this._playerEmoji;
+    }
+
+    public updateGame(game: Game): Game | null {
+        return null;
     }
 }
 
@@ -56,6 +64,10 @@ export class RenamePlayerEvent extends GameEvent implements RenamePlayerEventDto
     public get playerEmoji(): Emoji {
         return this._playerEmoji;
     }
+
+    public updateGame(game: Game): Game | null {
+        return null;
+    }
 }
 
 export class ReRollPlayerEmojiEvent extends GameEvent implements ReRollPlayerEmojiEventDto {
@@ -68,6 +80,10 @@ export class ReRollPlayerEmojiEvent extends GameEvent implements ReRollPlayerEmo
 
     public get currentEmoji(): Emoji {
         return this._emoji;
+    }
+
+    public updateGame(game: Game): Game | null {
+        return null;
     }
 }
 
@@ -82,6 +98,10 @@ export class AddTeamEvent extends GameEvent implements AddTeamEventDto {
 
     public get targetColor(): Color | undefined {
         return this._targetColor;
+    }
+
+    public updateGame(game: Game): Game | null {
+        return null;
     }
 }
 
@@ -102,6 +122,10 @@ export class AssignGamepadEvent extends GameEvent implements AssignGamepadEventD
     public get gamepadId(): string | undefined {
         return this._gamepadId;
     }
+
+    public updateGame(game: Game): Game | null {
+        return null;
+    }
 }
 
 export class RemoveTeamEvent extends GameEvent implements RemoveTeamEventDto {
@@ -114,6 +138,10 @@ export class RemoveTeamEvent extends GameEvent implements RemoveTeamEventDto {
 
     public get teamColor(): Color {
         return this._teamColor;
+    }
+
+    public updateGame(game: Game): Game | null {
+        return null;
     }
 }
 
@@ -128,6 +156,10 @@ export class RequestGamepadEvent extends GameEvent implements RequestGamepadEven
     public get teamColor(): Color {
         return this._teamColor;
     }
+
+    public updateGame(game: Game): Game | null {
+        return null;
+    }
 }
 
 export class ShuffleTeamsEvent extends GameEvent implements ShuffleTeamsEventDto {
@@ -140,5 +172,9 @@ export class ShuffleTeamsEvent extends GameEvent implements ShuffleTeamsEventDto
 
     public get newTeams(): Array<Color> {
         return this._newTeams;
+    }
+
+    public updateGame(game: Game): Game | null {
+        return null;
     }
 }

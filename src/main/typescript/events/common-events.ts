@@ -1,4 +1,4 @@
-import {GameEventDto} from "../api/types.gen";
+import {Game, GameEventDto, GameRound} from "../api/types.gen";
 
 export enum EventType {
     // Player
@@ -23,6 +23,8 @@ export abstract class GameEvent extends Event implements GameEventDto {
     public get type(): EventType {
         return super.type as EventType;
     }
+
+    public abstract updateGame(game: Game): Game | null;
 }
 
 export abstract class GameRoundEvent extends GameEvent {
@@ -31,4 +33,16 @@ export abstract class GameRoundEvent extends GameEvent {
         super(type, eventInitDict);
     }
 
+    public updateGame(game: Game): Game | null {
+        if(game.currentSection && game.currentRound) {
+            const section = game.sections.find((sec) => sec.name === game.currentSection);
+            const round = section ? section.rounds.find((rnd) => rnd.key === game.currentRound) : undefined;
+            if(round) {
+                return this.updateGameRound(game, round);
+            }
+        }
+        return null;
+    }
+
+    public abstract updateGameRound(game: Game, round: GameRound): Game | null;
 }
