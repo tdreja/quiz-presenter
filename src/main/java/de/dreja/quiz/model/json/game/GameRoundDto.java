@@ -3,6 +3,7 @@ package de.dreja.quiz.model.json.game;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.dreja.quiz.model.common.Color;
 import de.dreja.quiz.model.common.RoundState;
+import de.dreja.quiz.model.json.quiz.QuestionDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nonnull;
 
@@ -26,5 +27,8 @@ public record GameRoundDto(@Nonnull
                            List<Color> completedBy,
                            @Nonnull
                            @JsonProperty(required = true)
-                           String inSection) {
+                           String inSection,
+                           @Nonnull
+                           @JsonProperty(required = true)
+                           QuestionDto question) {
 }
