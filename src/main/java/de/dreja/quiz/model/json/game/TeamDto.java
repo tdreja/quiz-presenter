@@ -22,5 +22,5 @@ public record TeamDto(@Nonnull
                       @JsonProperty
                       String gamepadId,
                       @JsonProperty(required = true)
-                      boolean gamePadRequested) {
+                      boolean gamepadRequested) {
 }

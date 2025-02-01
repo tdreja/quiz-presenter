@@ -115,7 +115,7 @@ export type Team = {
     points: number;
     players: Array<Emoji>;
     gamepadId?: string;
-    gamePadRequested: boolean;
+    gamepadRequested: boolean;
 };
 
 /**
