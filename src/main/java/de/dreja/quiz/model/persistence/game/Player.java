@@ -1,6 +1,5 @@
 package de.dreja.quiz.model.persistence.game;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.dreja.quiz.model.common.Emoji;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
@@ -28,6 +27,9 @@ public class Player {
     @ManyToOne(targetEntity = Game.class, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id")
     private Game game;
+
+    @Column(nullable = false)
+    private String name;
 
     public long getId() {
         return id;
@@ -59,22 +61,29 @@ public class Player {
     }
 
     @Nonnull
-    @JsonIgnore
     public Team getTeam() {
         return team;
     }
 
-    protected void setTeam(Team team) {
+    public void setTeam(@Nonnull Team team) {
         this.team = team;
     }
 
     @Nonnull
-    @JsonIgnore
     public Game getGame() {
         return game;
     }
 
-    protected void setGame(Game game) {
+    public void setGame(@Nonnull Game game) {
         this.game = game;
+    }
+
+    @Nonnull
+    public String getName() {
+        return name;
+    }
+
+    public void setName(@Nonnull String name) {
+        this.name = name;
     }
 }

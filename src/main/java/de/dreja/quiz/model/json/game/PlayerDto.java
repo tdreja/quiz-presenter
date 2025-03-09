@@ -5,7 +5,6 @@ import de.dreja.quiz.model.common.Color;
 import de.dreja.quiz.model.common.Emoji;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 @Schema(name = "Player", description = "One player within the game with a unique Emoji")
 public record PlayerDto(@Nonnull
@@ -16,7 +15,7 @@ public record PlayerDto(@Nonnull
                         String name,
                         @JsonProperty(required = true)
                         long points,
-                        @Nullable
-                        @JsonProperty
+                        @Nonnull
+                        @JsonProperty(required = true)
                         Color assignedToTeam) {
 }

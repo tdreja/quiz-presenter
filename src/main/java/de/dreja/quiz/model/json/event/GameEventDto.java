@@ -8,6 +8,10 @@ import de.dreja.quiz.model.json.event.player.ReRollPlayerEmojiEventDto;
 import de.dreja.quiz.model.json.event.player.RemovePlayerEventDto;
 import de.dreja.quiz.model.json.event.player.RenamePlayerEventDto;
 import de.dreja.quiz.model.json.event.team.*;
+import de.dreja.quiz.model.persistence.game.Game;
+import de.dreja.quiz.service.persistence.GameService;
+import jakarta.annotation.Nonnull;
+import org.springframework.transaction.annotation.Transactional;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -28,4 +32,14 @@ import de.dreja.quiz.model.json.event.team.*;
         @Type(value = RequestGamepadEventDto.class, name = "request-gamepad")
 })
 public interface GameEventDto {
+
+    /**
+     * Tries to update the game based on the input data from the event
+     * @param game Current game state
+     * @param service Service with utilities
+     * @return {@code true} Game was changed, {@code false} game remains unchanged
+     */
+    default boolean updateGame(@Nonnull Game game, @Nonnull GameService service) {
+        return false;
+    }
 }

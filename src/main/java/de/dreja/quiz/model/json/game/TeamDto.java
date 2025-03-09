@@ -16,6 +16,8 @@ public record TeamDto(@Nonnull
                       @JsonProperty(required = true)
                       long points,
                       @JsonProperty(required = true)
+                      long nextTurnNumber,
+                      @JsonProperty(required = true)
                       @Nonnull
                       List<Emoji> players,
                       @Nullable

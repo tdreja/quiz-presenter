@@ -9,3 +9,5 @@ create table
         game_id INTEGER not null,
         primary key (id)
     );
+-- changeset tdreja:002-alter-player-table
+alter table player add column name TEXT not null default '';

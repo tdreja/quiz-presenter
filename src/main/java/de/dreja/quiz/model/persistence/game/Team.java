@@ -1,16 +1,16 @@
 package de.dreja.quiz.model.persistence.game;
 
+import de.dreja.quiz.model.common.Color;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import de.dreja.quiz.model.common.Color;
-import jakarta.annotation.Nonnull;
-import jakarta.persistence.*;
-
 @Entity
 @Table(name = "team")
-public class Team implements Comparable<Team> {
+public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +31,14 @@ public class Team implements Comparable<Team> {
     @Column(nullable = false)
     private long points;
 
-    @Column(nullable = false)
-    private long orderNumber;
+    @Column(nullable = false, name = "next_turn_number")
+    private long nextTurnNumber;
+
+    @Column(name = "gamepad_id")
+    private String gamepadId;
+
+    @Column(name = "gamepad_requested", nullable = false)
+    private boolean gamepadRequested;
 
     public long getId() {
         return id;
@@ -69,47 +75,36 @@ public class Team implements Comparable<Team> {
     }
 
     @Nonnull
-    public Team addPlayer(@Nonnull Player player) {
-        player.setTeam(this);
-        if (players.contains(player)) {
-            return this;
-        }
-        players.add(player);
-        return this;
-    }
-
-    @Nonnull
-    public Team removePlayer(@Nonnull Player player) {
-        if (players.remove(player)) {
-            player.setTeam(null);
-        }
-        return this;
-    }
-
-    @Nonnull
-    @JsonIgnore
     public Game getGame() {
         return game;
     }
 
-    protected void setGame(Game game) {
+    public void setGame(@Nonnull Game game) {
         this.game = game;
     }
 
-    public long getOrderNumber() {
-        return orderNumber;
+    public long getNextTurnNumber() {
+        return nextTurnNumber;
     }
 
-    @Nonnull
-    public Team setOrderNumber(long orderNumber) {
-        this.orderNumber = orderNumber;
-        return this;
+    public void setNextTurnNumber(long nextTurnNumber) {
+        this.nextTurnNumber = nextTurnNumber;
     }
 
-    @Override
-    public int compareTo(@Nonnull Team o) {
-        return Long.compare(orderNumber, o.orderNumber);
+    @Nullable
+    public String getGamepadId() {
+        return gamepadId;
     }
 
-    
+    public void setGamepadId(@Nullable String gamepadId) {
+        this.gamepadId = gamepadId;
+    }
+
+    public boolean isGamepadRequested() {
+        return gamepadRequested;
+    }
+
+    public void setGamepadRequested(boolean gamepadRequested) {
+        this.gamepadRequested = gamepadRequested;
+    }
 }
