@@ -13,6 +13,8 @@ import de.dreja.quiz.service.persistence.GameService;
 import jakarta.annotation.Nonnull;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         property = "type",
@@ -37,9 +39,10 @@ public interface GameEventDto {
      * Tries to update the game based on the input data from the event
      * @param game Current game state
      * @param service Service with utilities
-     * @return {@code true} Game was changed, {@code false} game remains unchanged
+     * @return List of changed objects
      */
-    default boolean updateGame(@Nonnull Game game, @Nonnull GameService service) {
-        return false;
+    @Nonnull
+    default Changes updateGame(@Nonnull Game game, @Nonnull GameService service) {
+        return Changes.none();
     }
 }
