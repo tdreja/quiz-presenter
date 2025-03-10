@@ -1,70 +1,45 @@
 package de.dreja.quiz.model.persistence.game;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import de.dreja.quiz.model.common.Color;
+import de.dreja.quiz.model.common.Emoji;
+import de.dreja.quiz.model.common.GameState;
 import de.dreja.quiz.model.persistence.LocalizedEntity;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "game")
 public class Game extends LocalizedEntity {
 
-    @Transient
-    private GameId gameId;
-
     @OneToMany(targetEntity = Player.class, mappedBy = "game")
     private final List<Player> players = new ArrayList<>();
+
+    @ElementCollection(targetClass = Emoji.class, fetch = FetchType.EAGER)
+    @JoinTable(name = "game_available_emojis", joinColumns = @JoinColumn(name = "game_id"))
+    @Column(nullable = false, name = "emoji")
+    @Enumerated(value = EnumType.STRING)
+    private final List<Emoji> availableEmojis = new ArrayList<>();
+
+    @ElementCollection(targetClass = Color.class, fetch = FetchType.EAGER)
+    @JoinTable(name = "game_available_colors", joinColumns = @JoinColumn(name = "game_id"))
+    @Column(nullable = false, name = "color")
+    @Enumerated(value = EnumType.STRING)
+    private final List<Color> availableColors = new ArrayList<>();
 
     @OneToMany(targetEntity = Team.class, mappedBy = "game")
     private final List<Team> teams = new ArrayList<>();
 
-    @OneToMany(targetEntity = GameSetting.class, mappedBy = "game")
-    private final List<GameSetting> settings = new ArrayList<>();
+    @Column(name = "round_counter")
+    private long roundCounter;
 
-    @Transient
-    private Map<String, String> settingsMap;
-
-    /*@ManyToOne(targetEntity = Quiz.class, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(playerName = "quiz_id")
-    private Quiz quiz;*/
-
-    @OneToOne(targetEntity = Team.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "active_team_id")
-    private Team activeTeam;
-
-    @OneToOne(targetEntity = Player.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "active_player_id")
-    private Player activePlayer;
-
-    @Column(name = "wait_for_team_input", nullable = false)
-    private boolean waitForTeamInput = false;
-
-    @Column(name = "game_start", nullable = false)
-    private LocalDateTime start = LocalDateTime.now();
-
-    @Column(name = "game_end")
-    private LocalDateTime end;
-
-    @Nonnull
-    @JsonIgnore
-    public GameId getGameId() {
-        if (gameId == null) {
-            gameId = GameId.of(getId());
-        }
-        return gameId;
-    }
-
-    @Override
-    @Nonnull
-    public Game setLocale(@Nonnull Locale locale) {
-        super.setLocale(locale);
-        return this;
-    }
+    @Column(name = "state", nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private GameState state = GameState.TEAM_SETUP;
 
     @Nonnull
     public List<Player> getPlayers() {
@@ -72,136 +47,32 @@ public class Game extends LocalizedEntity {
     }
 
     @Nonnull
-    public Game addPlayer(@Nonnull Player player) {
-        player.setGame(this);
-        if (players.contains(player)) {
-            return this;
-        }
-        players.add(player);
-        return this;
-    }
-
-    @Nonnull
-    public Game removePlayer(@Nonnull Player player) {
-        if (players.remove(player)) {
-            player.setGame(null);
-        }
-        return this;
-    }
-
-    @Nonnull
     public List<Team> getTeams() {
         return teams;
     }
 
-    @Nonnull
-    public Game addTeam(@Nonnull Team team) {
-        team.setGame(this);
-        if (teams.contains(team)) {
-            return this;
-        }
-        teams.add(team);
-        return this;
+    public List<Color> getAvailableColors() {
+        return availableColors;
+    }
+
+    public List<Emoji> getAvailableEmojis() {
+        return availableEmojis;
+    }
+
+    public long getRoundCounter() {
+        return roundCounter;
+    }
+
+    public void setRoundCounter(long roundCounter) {
+        this.roundCounter = roundCounter;
     }
 
     @Nonnull
-    public Game removeTeam(@Nonnull Team team) {
-        if (teams.remove(team)) {
-            team.setGame(null);
-        }
-        return this;
+    public GameState getState() {
+        return state;
     }
 
-    @Nullable
-    public Team getActiveTeam() {
-        return activeTeam;
-    }
-
-    @Nonnull
-    public Game setActiveTeam(@Nullable Team team) {
-        this.activeTeam = team;
-        return this;
-    }
-
-    @Nullable
-    public Player getActivePlayer() {
-        return activePlayer;
-    }
-
-    @Nonnull
-    public Game setActivePlayer(@Nullable Player player) {
-        this.activePlayer = player;
-        return this;
-    }
-
-    @Nonnull
-    public Stream<Team> getOrderedTeams() {
-        return teams.stream().sorted();
-    }
-
-    @Nonnull
-    public List<GameSetting> getSettings() {
-        return settings;
-    }
-
-    @Nonnull
-    public Game addSetting(@Nonnull GameSetting setting) {
-        setting.setGame(this);
-        if (settings.contains(setting)) {
-            return this;
-        }
-        settingsMap = null;
-        settings.add(setting);
-        return this;
-    }
-
-    @Nonnull
-    public Game removeSetting(@Nonnull GameSetting setting) {
-        if (settings.remove(setting)) {
-            settingsMap = null;
-            setting.setGame(null);
-        }
-        return this;
-    }
-
-    @Nonnull
-    public Map<String, String> getSettingsMap() {
-        if (settingsMap == null) {
-            settingsMap = new TreeMap<>();
-            for (GameSetting setting : settings) {
-                settingsMap.put(setting.getKey(), setting.getValue());
-            }
-        }
-        return Collections.unmodifiableMap(settingsMap);
-    }
-
-    public boolean isWaitForTeamInput() {
-        return waitForTeamInput;
-    }
-
-    @Nonnull
-    public Game setWaitForTeamInput(boolean interactive) {
-        this.waitForTeamInput = interactive;
-        return this;
-    }
-
-    @Nonnull
-    public LocalDateTime getStart() {
-        return start;
-    }
-
-    public Game setStart(@Nonnull LocalDateTime start) {
-        this.start = start;
-        return this;
-    }
-
-    @Nullable
-    public LocalDateTime getEnd() {
-        return end;
-    }
-
-    public Game setEnd(@Nullable LocalDateTime end) {
-        this.end = end;
-        return this;
+    public void setState(@Nonnull GameState state) {
+        this.state = state;
     }
 }

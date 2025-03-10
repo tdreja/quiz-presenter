@@ -43,9 +43,7 @@ public class LocalizedEntity {
         return locale;
     }
 
-    @Nonnull
-    public LocalizedEntity setLocale(@Nullable Locale locale) {
+    public void setLocale(@Nullable Locale locale) {
         this.locale = locale == null ? Locale.GERMAN : locale;
-        return this;
     }
 }

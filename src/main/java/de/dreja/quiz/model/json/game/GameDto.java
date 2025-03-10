@@ -19,7 +19,7 @@ public record GameDto(@Nonnull
                       List<GameSectionDto> sections,
                       @Nonnull
                       @JsonProperty(required = true)
-                      List<Emoji> availableEmoji,
+                      List<Emoji> availableEmojis,
                       @Nonnull
                       @JsonProperty(required = true)
                       List<Color> availableColors,

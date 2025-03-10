@@ -9,7 +9,6 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.mapstruct.*;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,18 +22,9 @@ public interface TeamMapper {
     @Mapping(target = "players", ignore = true)
     void fromJson(TeamDto teamDto, @MappingTarget Team team, @Context Game game);
 
-    @AfterMapping
-    default void updateEntity(@MappingTarget Team team, @Context Game game) {
-        if (game.getTeams().contains(team)) {
-            return;
-        }
-        game.getTeams().add(team);
-        team.setGame(game);
-    }
-
     @Nonnull
     default List<Emoji> getPlayers(@Nullable List<Player> players) {
-        if(players == null || players.isEmpty()) {
+        if (players == null || players.isEmpty()) {
             return Collections.emptyList();
         }
         return players.stream()
