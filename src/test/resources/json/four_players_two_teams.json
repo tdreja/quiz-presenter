@@ -1,0 +1,49 @@
+{
+  "teams":[
+    {
+      "color": "BLUE",
+      "points": 1000,
+      "nextTurnNumber": 1,
+      "players": [
+        "DUCK", "LEOPARD"
+      ],
+      "gamepadRequested": false
+    },
+    {
+      "color": "RED",
+      "points": 2000,
+      "nextTurnNumber": 0,
+      "players": [
+        "CROCODILE", "RABBIT"
+      ],
+      "gamepadId": "ABC",
+      "gamepadRequested": false
+    }
+  ],
+  "players": [
+    {
+      "emoji": "DUCK",
+      "name": "Ente",
+      "points": 0,
+      "assignedToTeam": "BLUE"
+    },
+    {
+      "emoji": "LEOPARD",
+      "name": "Leopard",
+      "points": 1337,
+      "assignedToTeam": "BLUE"
+    },
+    {
+      "emoji": "CROCODILE",
+      "name": "Krok",
+      "points": 100,
+      "assignedToTeam": "RED"
+    },
+    {
+      "emoji": "RABBIT",
+      "name": "Hase",
+      "points": 23,
+      "assignedToTeam": "RED"
+    }
+  ]
+}

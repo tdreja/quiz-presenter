@@ -44,7 +44,7 @@ alter table game
 alter table game
     drop column active_team_id;
 alter table game
-    add column roundCounter INTEGER not null;
+    add column round_counter INTEGER not null;
 alter table game
     add column state TEXT not null default 'TEAM_SETUP';
 -- changeset tdreja:004-add-enum-tables
